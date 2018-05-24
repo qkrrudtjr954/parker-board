@@ -11,9 +11,19 @@ def create_app(config=None):
     from parker_board.migrate import migrate
     migrate.init_app(app)
 
+    from parker_board.schema import ma
+    ma.init_app(app)
+
     # from yourapplication.views.admin import admin
     # from yourapplication.views.frontend import frontend
     # app.register_blueprint(admin)
     # app.register_blueprint(frontend)
 
+
+    @app.route('/')
+    def index():
+        return 'hello world'
+
     return app
+
+
