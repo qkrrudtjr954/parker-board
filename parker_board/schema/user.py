@@ -5,3 +5,7 @@ from parker_board.model.user import User
 class UserSchema(ma.ModelSchema):
     class Meta:
         model = User
+
+
+user_schema = UserSchema()
+users_schema = UserSchema(many=True)

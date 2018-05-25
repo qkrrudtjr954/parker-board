@@ -4,21 +4,20 @@ from flask import Flask
 def create_app(config=None):
     app = Flask(__name__)
     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:root@localhost/parkerdev'
+    app.config['SECRET_KEY'] = 'dev'
 
-    from parker_board.model import db
+    from parker_board import model as db
     db.init_app(app)
 
-    from parker_board.migrate import migrate
+    from parker_board import migrate
     migrate.init_app(app)
 
-    from parker_board.schema import ma
+    from parker_board import schema as ma
     ma.init_app(app)
 
-    # from yourapplication.views.admin import admin
-    # from yourapplication.views.frontend import frontend
-    # app.register_blueprint(admin)
-    # app.register_blueprint(frontend)
 
+    from parker_board.controller.user_controller import bp as user_bp
+    app.register_blueprint(user_bp)
 
     @app.route('/')
     def index():
