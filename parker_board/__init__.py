@@ -1,10 +1,13 @@
 from flask import Flask
 
 
-def create_app(config=None):
+def create_app():
     app = Flask(__name__)
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:root@localhost/parkerdev'
-    app.config['SECRET_KEY'] = 'some_secret_key'
+
+    # DEV :
+    # TEST :
+    # PRODUCTION :
+    app.config.from_envvar('MODE_SETTINGS', silent=True)
 
     from parker_board import model as db
     db.init_app(app)

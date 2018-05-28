@@ -4,7 +4,7 @@ from parker_board.model import db
 from parker_board.model.board import Board
 
 
-def add_board(board):
+def create(board):
     result = {}
 
     # session 에서 유저를 가져온다.
@@ -32,8 +32,8 @@ def add_board(board):
     return result
 
 
-def remove_board(board_id):
-    del_count = Board.query.filter_by(id=board_id).delete()
+def delete(bid):
+    del_count = Board.query.filter_by(id=bid).delete()
     result = {}
 
     if del_count:
@@ -48,8 +48,12 @@ def remove_board(board_id):
     return result
 
 
-def get_board(board_id):
+def get(board_id):
     return Board.query.get(board_id)
+
+
+def list():
+    return Board.query.all()
 
 
 # def update_board(board_id, data):
