@@ -1,4 +1,5 @@
 from parker_board.model import db
+from parker_board.model.board import Board
 from datetime import datetime
 
 
@@ -7,7 +8,7 @@ class User(db.Model):
     email = db.Column(db.String(200), unique=True, nullable=False, index=True)
     password = db.Column(db.String(200), nullable=False)
 
-    # boards = db.relationship('Board', backref='user', lazy=True)
+    boards = db.relationship('Board', backref='user', lazy=True)
     # posts = db.relationship('Post', backref='user', lazy=True)
     # comments = db.relationship('Comment', backref='user', lazy=True)
 

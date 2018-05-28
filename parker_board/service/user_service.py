@@ -25,7 +25,7 @@ def login_user(user):
     result = {}
     temp_user = User.query.filter_by(email=user.email).filter_by(password=user.password).one_or_none()
 
-    if user is None:
+    if temp_user is None:
         result['status_code'] = 400
         result['message'] = 'No User.'
     else:

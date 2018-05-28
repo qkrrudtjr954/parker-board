@@ -3,14 +3,16 @@ from parker_board import create_app
 
 
 @pytest.fixture(scope='session')
-def app():
+def tapp():
     app = create_app(None)
-    app.config['SQLALCHEMY_DATABASE_URI']='mysql://root:root@localhost/parkertest'
-    app.config['TESTING']=True
+    # app.config['SQLALCHEMY_DATABASE_URI']='mysql://root:root@localhost/parkertest'
+    # app.config['SECRET_KEY'] = 'testing'
+    # app.config['TESTING']=True
+    print(app.config)
 
     return app
 
 
 @pytest.fixture(scope='session')
-def client(app):
-    return app.test_client()
+def client(tapp):
+    return tapp.test_client()

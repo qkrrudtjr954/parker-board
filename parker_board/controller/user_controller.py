@@ -49,7 +49,7 @@ def logout():
 
     if session.get('current_user', None) is not None:
         user = session.pop('current_user')
-        result['message'] = '{} logged out.'.format(user['email'])
+        result['message'] = '{} logged out.'.format(user)
         result['status_code'] = 200
 
     return jsonify(result['message']), result['status_code']
