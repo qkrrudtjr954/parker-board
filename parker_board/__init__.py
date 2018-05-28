@@ -21,6 +21,9 @@ def create_app(config=None):
     from parker_board.controller.board_controller import bp as board_bp
     app.register_blueprint(board_bp)
 
+    from parker_board.controller.post_controller import bp as post_bp
+    app.register_blueprint(post_bp)
+
     @app.route('/')
     def index():
         return 'hello world'

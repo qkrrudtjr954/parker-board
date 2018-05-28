@@ -48,21 +48,11 @@ def remove_board(board_id):
     return result
 
 
+def get_board(board_id):
+    return Board.query.get(board_id)
 
 
-
-
-
-
-
-
-
-
-
-def update_board(board_id, data):
-    result = {}
-    result['message'] = 'update.'
-    result['status_code'] = 200
-
-
-
+# def update_board(board_id, data):
+#     result = {}
+#     result['message'] = 'update.'
+#     result['status_code'] = 200

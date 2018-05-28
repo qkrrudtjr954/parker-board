@@ -42,7 +42,7 @@ def remove_board(board_id):
 
 
 @bp.errorhandler(422)
-def handle_unprocessable_entity(err):
+def board_validation_handler(err):
     exc = getattr(err, 'exc')
 
     if exc:

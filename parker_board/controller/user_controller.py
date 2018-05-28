@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, session
 from parker_board.service import user_service
-from webargs.flaskparser import use_args
+from webargs.flaskparser import use_args, parser, use_kwargs
 from parker_board.schema.login_schema import login_req_schema
 from parker_board.schema.user import user_schema
 
@@ -53,6 +53,7 @@ def logout():
         result['status_code'] = 200
 
     return jsonify(result['message']), result['status_code']
+
 
 
 @bp.errorhandler(422)
