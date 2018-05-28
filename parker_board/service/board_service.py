@@ -1,6 +1,7 @@
 from flask import session
 from parker_board.schema.board import board_schema
 from parker_board.model import db
+from parker_board.model.board import Board
 
 
 def add_board(board):
@@ -29,3 +30,39 @@ def add_board(board):
     result['status_code'] = 200
 
     return result
+
+
+def remove_board(board_id):
+    del_count = Board.query.filter_by(id=board_id).delete()
+    result = {}
+
+    if del_count:
+        result['message'] = 'Board deleted.'
+        result['status_code'] = 204
+
+        db.session.commit()
+    else:
+        result['message'] = 'No Board.'
+        result['status_code'] = 400
+
+    return result
+
+
+
+
+
+
+
+
+
+
+
+
+
+def update_board(board_id, data):
+    result = {}
+    result['message'] = 'update.'
+    result['status_code'] = 200
+
+
+

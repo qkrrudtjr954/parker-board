@@ -1,6 +1,7 @@
 import pytest
 from parker_board.model.board import Board
 from flask import session
+from parker_board.service import board_service
 from tests.factories.user import FakeUserFactory
 from tests.factories.board import FakeBoardFactory
 
@@ -24,3 +25,13 @@ def board(client):
 #
 #     resp = client.post('/boards', data=board_data)
 #     assert resp is None
+
+def test_update_board(client):
+    user = FakeUserFactory()
+    board = FakeBoardFactory(user_id=user.id)
+
+    assert board is not None
+
+    resp = client.patch('/boards/3', data={ 'title':'testing!!!', 'description':'funcing!!!!'})
+    print(resp.get_json())
+    assert False

@@ -5,12 +5,13 @@ from datetime import datetime
 
 
 class FakeUserFactory(factory.alchemy.SQLAlchemyModelFactory):
-    class Meta:
-        model=User
-        sqlalchemy_session = db.session
-
     id = factory.Sequence(lambda n: n+1)
     email = factory.Faker('email')
     password = factory.Faker('password')
     created_at = factory.LazyFunction(datetime.utcnow)
     updated_at = factory.LazyFunction(datetime.utcnow)
+
+    class Meta:
+        model=User
+        sqlalchemy_session = db.session
+

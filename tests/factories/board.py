@@ -5,10 +5,6 @@ from datetime import datetime
 
 
 class FakeBoardFactory(factory.alchemy.SQLAlchemyModelFactory):
-    class Meta:
-        model = Board
-        sqlalchemy_session = db.session
-
     id = factory.Sequence(lambda n:n+1)
     title = factory.Faker('sentence')
     description = factory.Faker('sentence')
@@ -17,6 +13,11 @@ class FakeBoardFactory(factory.alchemy.SQLAlchemyModelFactory):
 
     created_at = factory.LazyFunction(datetime.utcnow)
     updated_at = factory.LazyFunction(datetime.utcnow)
+
+    class Meta:
+        model = Board
+        sqlalchemy_session = db.session
+
 
 
 

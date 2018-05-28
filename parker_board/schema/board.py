@@ -8,8 +8,21 @@ class BoardSchema(ma.ModelSchema):
     description = fields.String(required=False)
 
     class Meta:
+        strict=True
         model = Board
 
 
 boards_schema = BoardSchema(many=True)
 board_schema = BoardSchema()
+
+
+
+class PatchBoardSchema(ma.Schema):
+    title = fields.String(required=False)
+    description = fields.String(required=False)
+
+    class Meta:
+        strict = True
+
+
+patch_board_schema = PatchBoardSchema()

@@ -8,7 +8,6 @@ def tapp():
     # app.config['SQLALCHEMY_DATABASE_URI']='mysql://root:root@localhost/parkertest'
     # app.config['SECRET_KEY'] = 'testing'
     # app.config['TESTING']=True
-    print(app.config)
 
     return app
 
