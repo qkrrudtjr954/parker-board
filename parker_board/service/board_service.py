@@ -18,7 +18,7 @@ def create(board):
         return result
 
     # 유저 있으면 board 객체 생성
-    board.user_id = current_user['id']
+    board.set_user_id(current_user['id'])
 
     # 생성되면 디비 세션에 저장
     db.session.add(board)
