@@ -24,3 +24,9 @@ class Comment(db.Model):
 
     def set_post_id(self, pid):
         self.post_id = pid
+
+    def set_content(self, content):
+        self.content = content
+
+    def set_updated_at(self):
+        self.updated_at = datetime.utcnow()

@@ -27,8 +27,9 @@ def delete(cid):
     return jsonify(result['message']), result['status_code']
 
 
-# @bp.route('/comments/<int:cid>', methods=['PATCH'])
-# def update(cid):
-#     result = comment_service.update(cid)
-#
-#     return jsonify(result['message']), result['status_code']
+@bp.route('/comments/<int:cid>', methods=['PATCH'])
+@use_args(comment_schema)
+def update(comment_args, cid):
+    result = comment_service.update(cid, comment_args)
+
+    return jsonify(result['message']), result['status_code']

@@ -50,3 +50,23 @@ def delete(cid):
             result['status_code'] = 400
 
     return result
+
+
+def update(cid, data):
+    comment = Comment.query.get(cid)
+    result = {}
+
+    if comment:
+        comment.set_content(data.content if data.content else comment.content)
+        comment.set_updated_at()
+
+        db.session.add(comment)
+        db.session.commit()
+
+        result['message'] = comment_schema.dump(comment).data
+        result['status_code'] = 200
+    else:
+        result['message'] = 'No Comment.'
+        result['status_code'] = 400
+
+    return result
