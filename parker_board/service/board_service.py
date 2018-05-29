@@ -66,9 +66,6 @@ def get(bid):
 
 def list():
     boards = Board.query.all()
-    result = {}
-
-    result['message'] = boards_schema.dump(boards).data
-    result['status_code'] = 200
+    result = dict(message= boards_schema.dump(boards).data, status_code= 200)
 
     return result

@@ -1,14 +1,12 @@
 from parker_board.model.post import Post
+from parker_board.model.board import Board
 from parker_board.schema.post import post_schema, posts_schema
 from parker_board.schema.comment import comments_schema
 from parker_board.model import db
 from flask import session
 
 
-from parker_board.service import board_service
-
-
-def create(board, post):
+def create(bid, post):
     result = {}
 
     current_user = session.get('current_user')
@@ -19,6 +17,8 @@ def create(board, post):
         result['status_code'] = 401
 
         return result
+
+    board = Board.query.get(bid)
 
     # 유저 있으면 board 객체 생성
     post.set_user_id(current_user['id'])
@@ -79,7 +79,7 @@ def delete(pid):
 
 
 def list(bid):
-    board = board_service.get(bid)
+    board = Board.query.get(bid)
     result = {}
 
     if board:

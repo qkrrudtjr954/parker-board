@@ -27,9 +27,7 @@ def list(bid):
 @bp.route('/boards/<int:bid>/posts', methods=['POST'])
 @use_args(post_schema)
 def create(post_args, bid):
-    board = board_service.get(bid)
-
-    result = post_service.create(board, post_args)
+    result = post_service.create(bid, post_args)
 
     return jsonify(result['message']), result['status_code']
 
