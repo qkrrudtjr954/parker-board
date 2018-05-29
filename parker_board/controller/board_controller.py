@@ -29,11 +29,11 @@ def read(bid):
 
 
 # update board
-# @bp.route('/boards/<int:bid>', methods=['PATCH'])
-# def update(bid):
-#     data = parser.parse(patch_board_schema)
-#     result = board_service.update_board(bid, data)
-#     return jsonify(result['message']), result['status_code']
+@bp.route('/boards/<int:bid>', methods=['PATCH'])
+@use_args(board_schema)
+def update(board_args, bid):
+    result = board_service.update(bid, board_args)
+    return jsonify(result['message']), result['status_code']
 
 
 # delete board
