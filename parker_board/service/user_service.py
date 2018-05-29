@@ -28,6 +28,9 @@ def login(user):
     if temp_user is None:
         result['status_code'] = 400
         result['message'] = 'No User.'
+    elif temp_user.status == 2:
+        result['status_code'] = 400
+        result['message'] = 'Leave User.'
     else:
         session['current_user'] = user_schema.dump(temp_user).data
 
