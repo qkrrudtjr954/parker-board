@@ -1,11 +1,10 @@
-from marshmallow import fields, ValidationError
 from parker_board.schema import ma
 from parker_board.model.user import User
 
 
 class UserSchema(ma.ModelSchema):
-    email = fields.Email(required=True)
     class Meta:
+        strict = True
         model = User
 
 

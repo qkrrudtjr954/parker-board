@@ -4,7 +4,7 @@ from parker_board.model.user import User
 from parker_board.schema.user import user_schema
 
 
-def register_user(new_user):
+def register(new_user):
     result = {}
 
     try:
@@ -21,7 +21,7 @@ def register_user(new_user):
     return result
 
 
-def login_user(user):
+def login(user):
     result = {}
     temp_user = User.query.filter_by(email=user.email).filter_by(password=user.password).one_or_none()
 
@@ -35,3 +35,4 @@ def login_user(user):
         result['message'] = 'User logged in.'
 
     return result
+
