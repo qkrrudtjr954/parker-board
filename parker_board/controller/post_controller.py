@@ -4,7 +4,7 @@ from parker_board.service import board_service, post_service
 from parker_board.schema.post import posts_schema, post_schema
 
 
-bp = Blueprint('post', __name__, url_prefix='/boards/<int:bid>')
+bp = Blueprint('post', __name__)
 
 
 '''
@@ -14,17 +14,17 @@ bp = Blueprint('post', __name__, url_prefix='/boards/<int:bid>')
 
 
 # list post
-@bp.route('/posts', methods=['GET'])
+# GET /boards/1/posts
+@bp.route('/boards/<int:bid>/posts', methods=['GET'])
 def list(bid):
-    board = board_service.get(bid)
+    result = post_service.list(bid)
 
-    posts = board.posts
-
-    return posts_schema.jsonify(posts), 200
+    return jsonify(result['message']), result['status_code']
 
 
 # create post
-@bp.route('/posts', methods=['POST'])
+# POST /boards/1/posts
+@bp.route('/boards/<int:bid>/posts', methods=['POST'])
 @use_args(post_schema)
 def create(post_args, bid):
     board = board_service.get(bid)
@@ -34,17 +34,30 @@ def create(post_args, bid):
     return jsonify(result['message']), result['status_code']
 
 
-# delete post
+# read post
+# GET /posts/1
 @bp.route('/posts/<int:pid>')
-def delete(bid, pid):
-    board = board_service.get(bid)
+def read(pid):
+    result = post_service.get(pid)
 
+    return jsonify(result['message']), result['status_code']
+
+
+# # update post
+# # PATCH /posts/1
+# @bp.route('/posts/<int:pid>', methods=['PATCH'])
+# def update(pid):
+
+
+# delete post
+# DELETE /posts/1
+@bp.route('/posts/<int:pid>', methods=['DELETE'])
+def delete(pid):
     result = post_service.delete(pid)
 
+    return jsonify(result['message']), result['status_code']
 
-# update post
 
-# read post
 @bp.errorhandler(422)
 def post_validation_handler(err):
     exc = getattr(err, 'exc')

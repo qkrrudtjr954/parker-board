@@ -22,4 +22,10 @@ class Post(db.Model):
                % (self.id, self.title, self.content, self.description, self.status, self.user_id,
                   self.created_at, self.updated_at)
 
+    def set_user_id(self, uid):
+        self.user_id = uid
+
+    def set_board_id(self, bid):
+        self.board_id = bid
+
 

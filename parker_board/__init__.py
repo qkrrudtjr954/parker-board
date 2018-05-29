@@ -4,10 +4,7 @@ from flask import Flask
 def create_app():
     app = Flask(__name__)
 
-    # DEV :
-    # TEST :
-    # PRODUCTION :
-    app.config.from_envvar('MODE_SETTINGS', silent=True)
+    app.config.from_envvar('APP_SETTING')
 
     from parker_board import model as db
     db.init_app(app)
