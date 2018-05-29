@@ -32,7 +32,28 @@ def login(user):
         session['current_user'] = user_schema.dump(temp_user).data
 
         result['status_code'] = 200
-        result['message'] = 'User logged in.'
+        result['message'] = user_schema.dump(temp_user).data
+
+    return result
+
+
+def leave(uid):
+    result = {}
+
+    user = User.query.get(uid)
+    current_user = user_schema.load(session.get('current_user')).data
+
+    if user == current_user:
+        user.leave()
+
+        db.session.add(user)
+        db.session.commit()
+
+        result['status_code'] = 200
+        result['message'] = 'User Leave.'
+    else:
+        result['status_code'] = 400
+        result['message'] = 'Bad Request'
 
     return result
 

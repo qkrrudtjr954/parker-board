@@ -22,3 +22,6 @@ class User(db.Model):
         return "<User email: %s, password: %s, created_at: %s, updated_at: %s>" \
                % (self.email, self.password, self.created_at, self.updated_at)
 
+
+    def leave(self):
+        self.status = 2

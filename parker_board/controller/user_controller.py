@@ -26,13 +26,19 @@ def login(user_args):
 def logout():
     result = {'message':'No user who signed in.', 'status_code':400}
 
-    if session.get('current_user', None):
+    if session.get('current_user'):
         user = session.pop('current_user')
         result['message'] = user_schema.dump(user).data
         result['status_code'] = 200
 
     return jsonify(result['message']), result['status_code']
 
+
+@bp.route('/<int:uid>', methods=['DELETE'])
+def leave(uid):
+    result = user_service.leave(uid)
+
+    return jsonify(result['message']), result['status_code']
 
 
 @bp.errorhandler(422)

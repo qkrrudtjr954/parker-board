@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from parker_board.service import board_service
 from parker_board.model.board import Board
-from parker_board.schema.board import boards_schema, board_schema, patch_board_schema
+from parker_board.schema.board import board_schema
 from webargs.flaskparser import use_args, parser
 
 
