@@ -41,10 +41,14 @@ def read(pid):
     return jsonify(result['message']), result['status_code']
 
 
-# # update post
-# # PATCH /posts/1
-# @bp.route('/posts/<int:pid>', methods=['PATCH'])
-# def update(pid):
+# update post
+# PATCH /posts/1
+@bp.route('/posts/<int:pid>', methods=['PATCH'])
+@use_args(post_schema)
+def update(post_args, pid):
+    result = post_service.update(pid, post_args)
+
+    return jsonify(result['message']), result['status_code']
 
 
 # delete post

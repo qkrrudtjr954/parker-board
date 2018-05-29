@@ -29,4 +29,16 @@ class Post(db.Model):
     def set_board_id(self, bid):
         self.board_id = bid
 
+    def set_title(self, title):
+        self.title = title
+
+    def set_content(self, content):
+        self.content = content
+
+    def set_description(self, description):
+        self.description = description
+
+    def set_updated_at(self):
+        self.updated_at = datetime.utcnow()
+
 

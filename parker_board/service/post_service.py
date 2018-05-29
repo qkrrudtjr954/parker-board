@@ -78,6 +78,29 @@ def delete(pid):
     return result
 
 
+def update(pid, data):
+    post = Post.query.get(pid)
+    result = {}
+
+    if post:
+        post.set_title(data.title if data.title else post.title)
+        post.set_description(data.description if data.description else post.description)
+        post.set_content(data.content if data.content else post.content)
+        post.set_updated_at()
+
+        db.session.add(post)
+        db.session.commit()
+
+        result['message'] = post_schema.dump(post).data
+        result['message']['comments'] = comments_schema.dump(post.comments).data
+        result['status_code'] = 200
+    else:
+        result['message'] = 'No Post.'
+        result['status_code'] = 400
+
+    return result
+
+
 def list(bid):
     board = Board.query.get(bid)
     result = {}
