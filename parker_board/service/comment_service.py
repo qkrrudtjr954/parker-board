@@ -1,10 +1,7 @@
 from flask import session
-from parker_board.model.board import Board
-from parker_board.model.post import Post
-from parker_board.schema.comment import comments_schema, comment_schema
+from parker_board.schema.comment import comment_schema
 from parker_board.model.comment import Comment
 from parker_board.model import db
-
 
 
 def create(comment, pid):
@@ -30,5 +27,26 @@ def create(comment, pid):
 
     return result
 
+
 def delete(cid):
-    pass
+    result = {}
+
+    current_user = session.get('current_user')
+
+    # 유저 없으면 종료
+    if current_user is None:
+        result['message'] = 'Session expried. Please Login.'
+        result['status_code'] = 401
+    else:
+        # 유저 권한 검사 들어가야함.
+        del_count = Comment.query.filter_by(id=cid).delete()
+
+        if del_count:
+            result['message'] = 'Comment deleted'
+            result['status_code'] = 204
+            db.session.commit()
+        else:
+            result['message'] = 'No Comment.'
+            result['status_code'] = 400
+
+    return result

@@ -1,5 +1,6 @@
 from parker_board.model.post import Post
 from parker_board.schema.post import post_schema, posts_schema
+from parker_board.schema.comment import comments_schema
 from parker_board.model import db
 from flask import session
 
@@ -41,6 +42,7 @@ def get(pid):
 
     if post:
         result['message'] = post_schema.dump(post).data
+        result['message']['comments'] = comments_schema.dump(post.comments).data
         result['status_code'] = 200
     else:
         result['message'] = 'No Post.'

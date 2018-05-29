@@ -1,5 +1,6 @@
 from flask import session
-from parker_board.schema.board import board_schema
+from parker_board.schema.board import board_schema, boards_schema
+from parker_board.schema.post import posts_schema
 from parker_board.model import db
 from parker_board.model.board import Board
 
@@ -48,15 +49,26 @@ def delete(bid):
     return result
 
 
-def get(board_id):
-    return Board.query.get(board_id)
+def get(bid):
+    board = Board.query.get(bid)
+    result = {}
+
+    if board:
+        result['message'] = board_schema.dump(board).data
+        result['message']['posts'] = posts_schema.dump(board.posts).data
+        result['status_code'] = 200
+    else:
+        result['message'] = 'No Post.'
+        result['status_code'] = 400
+
+    return result
 
 
 def list():
-    return Board.query.all()
+    boards = Board.query.all()
+    result = {}
 
+    result['message'] = boards_schema.dump(boards).data
+    result['status_code'] = 200
 
-# def update_board(board_id, data):
-#     result = {}
-#     result['message'] = 'update.'
-#     result['status_code'] = 200
+    return result

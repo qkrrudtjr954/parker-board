@@ -24,8 +24,8 @@ def create(board_args):
 # read board
 @bp.route('/boards/<int:bid>', methods=['GET'])
 def read(bid):
-    board = board_service.get(bid)
-    return board_schema.jsonify(board), 200
+    result = board_service.get(bid)
+    return jsonify(result['message']), result['status_code']
 
 
 # update board
@@ -46,8 +46,8 @@ def delete(bid):
 # list board
 @bp.route('/boards', methods=['GET'])
 def list():
-    boards = board_service.list()
-    return boards_schema.jsonify(boards), 200
+    result = board_service.list()
+    return jsonify(result['message']), result['status_code']
 
 
 @bp.errorhandler(422)
