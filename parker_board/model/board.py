@@ -24,3 +24,13 @@ class Board(db.Model):
 
     def set_user_id(self, uid):
         self.user_id = uid
+
+    def set_title(self, title):
+        self.title = title
+
+    def set_description(self, description):
+        self.description = description
+
+    def set_updated_at(self):
+        self.updated_at = datetime.utcnow()
+

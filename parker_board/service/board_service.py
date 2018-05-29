@@ -58,7 +58,29 @@ def get(bid):
         result['message']['posts'] = posts_schema.dump(board.posts).data
         result['status_code'] = 200
     else:
-        result['message'] = 'No Post.'
+        result['message'] = 'No Board.'
+        result['status_code'] = 400
+
+    return result
+
+
+def update(bid, data):
+    board = Board.query.get(bid)
+    result = {}
+
+    if board:
+        board.set_title(data.title if data.title else board.title)
+        board.set_description(data.description if data.description else board.description)
+        board.set_updated_at()
+
+        db.session.add(board)
+        db.session.commit()
+
+        result['message'] = board_schema.dump(board).data
+        result['message']['posts'] = posts_schema.dump(board.posts).data
+        result['status_code'] = 200
+    else:
+        result['message'] = 'No Board.'
         result['status_code'] = 400
 
     return result
