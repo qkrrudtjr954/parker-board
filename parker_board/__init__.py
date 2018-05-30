@@ -1,4 +1,8 @@
 from flask import Flask
+from flask_login import LoginManager
+
+
+login_manager = LoginManager()
 
 
 def create_app():
@@ -9,11 +13,13 @@ def create_app():
     from parker_board import model as db
     db.init_app(app)
 
-    from parker_board import migrate
-    migrate.init_app(app)
+    from parker_board import migrate as mi
+    mi.init_app(app)
 
     from parker_board import schema as ma
     ma.init_app(app)
+
+    login_manager.init_app(app)
 
     from parker_board.controller.user_controller import bp as user_bp
     app.register_blueprint(user_bp)
