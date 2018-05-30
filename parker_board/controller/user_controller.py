@@ -5,7 +5,7 @@ from parker_board.service import user_service
 from webargs.flaskparser import use_args
 from parker_board.schema.user import user_schema
 from parker_board.schema.resp import resp_schema
-from flask_login import login_user, login_required, logout_user
+from flask_login import login_user, login_required, logout_user, current_user
 
 bp = Blueprint('user', __name__, url_prefix='/users')
 
@@ -50,6 +50,21 @@ def register(user_args):
 
     return resp_schema.jsonify(result), result['status_code']
 
+
+@bp.route('/<int:uid>', methods=['DELETE'])
+@login_required
+def leave(uid):
+    if current_user.id == uid:
+        result = user_service.leave(uid)
+
+        if result['status']:
+            result['status_code'] = 200
+        else:
+            result['status_code'] = 500
+    else:
+        result = dict(errors='Wrong Access.', status_code=400)
+
+    return resp_schema.jsonify(result), result['status_code']
 
 
 @bp.errorhandler(422)

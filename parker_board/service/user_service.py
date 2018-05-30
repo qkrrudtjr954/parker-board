@@ -27,7 +27,7 @@ def register(new_user):
     return result
 
 
-def get_user_by_email_and_password(user_data):
+def get_user_for_login(user_data):
     user = User.query.filter_by(email=user_data.email, password=user_data.password).first()
 
     result = {}
@@ -45,3 +45,22 @@ def get_user_by_email_and_password(user_data):
 
     return result
 
+
+def leave(uid):
+    user = User.query.get(uid)
+    result = {}
+
+    user.status = 2
+
+    try:
+        db.session.add(user)
+        db.session.commit()
+
+        result['data'] = dict(blocked=user_schema.dump(user).data)
+        result['status'] = True
+    except Exception:
+        db.session.rollback()
+        result['errors'] = 'Server Error. Please try again.'
+        result['status'] = False
+
+    return result
