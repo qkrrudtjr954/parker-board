@@ -3,23 +3,14 @@ from parker_board.schema.board import board_schema, boards_schema
 from parker_board.schema.post import posts_schema
 from parker_board.model import db
 from parker_board.model.board import Board
+from flask_login import current_user
 
 
 def create(board):
     result = {}
 
-    # session 에서 유저를 가져온다.
-    current_user = session.get('current_user')
-
-    # 유저 없으면 종료
-    if current_user is None:
-        result['message'] = 'Session expried. Please Login.'
-        result['status_code'] = 401
-
-        return result
-
     # 유저 있으면 board 객체 생성
-    board.set_user_id(current_user['id'])
+    board.set_user_id(current_user.id)
 
     # 생성되면 디비 세션에 저장
     db.session.add(board)

@@ -1,8 +1,8 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, jsonify
 from parker_board.service import board_service
-from parker_board.model.board import Board
 from parker_board.schema.board import board_schema
-from webargs.flaskparser import use_args, parser
+from webargs.flaskparser import use_args
+from flask_login import login_required
 
 
 bp = Blueprint('board', __name__)
@@ -16,6 +16,7 @@ Board
 # create board
 @bp.route('/boards', methods=['POST'])
 @use_args(board_schema)
+@login_required
 def create(board_args):
     result = board_service.create(board_args)
     return jsonify(result['message']), result['status_code']
@@ -23,6 +24,7 @@ def create(board_args):
 
 # read board
 @bp.route('/boards/<int:bid>', methods=['GET'])
+@login_required
 def read(bid):
     result = board_service.get(bid)
     return jsonify(result['message']), result['status_code']
@@ -31,6 +33,7 @@ def read(bid):
 # update board
 @bp.route('/boards/<int:bid>', methods=['PATCH'])
 @use_args(board_schema)
+@login_required
 def update(board_args, bid):
     result = board_service.update(bid, board_args)
     return jsonify(result['message']), result['status_code']
@@ -38,6 +41,7 @@ def update(board_args, bid):
 
 # delete board
 @bp.route('/boards/<int:bid>', methods=['DELETE'])
+@login_required
 def delete(bid):
     result = board_service.delete(bid)
     return jsonify(result['message']), result['status_code']
