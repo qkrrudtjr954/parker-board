@@ -16,12 +16,12 @@ def register(new_user):
     except IntegrityError:
         db.session.rollback()
 
-        result['data'] = 'Duplicate Email'
+        result['errors'] = 'Duplicate Email'
         result['status'] = False
 
     except Exception:
         db.session.rollback()
-        result['data'] = 'Server Error. Please try again.'
+        result['errors'] = 'Server Error. Please try again.'
         result['status'] = False
 
     return result
@@ -33,8 +33,12 @@ def get_user_by_email_and_password(user_data):
     result = {}
 
     if user:
-        result['data'] = user_schema.dump(user).data
-        result['status'] = True
+        if user.status == 2:
+            result['errors'] = 'Leaved User.'
+            result['status'] = False
+        else:
+            result['data'] = user_schema.dump(user).data
+            result['status'] = True
     else:
         result['data'] = 'No User.'
         result['status'] = False

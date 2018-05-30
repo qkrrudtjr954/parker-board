@@ -18,7 +18,7 @@ def load_user(user_id):
 @bp.route('/login', methods=['POST'])
 @use_args(user_schema)
 def login(user_args):
-    result = user_service.get_user_by_email_and_password(user_args)
+    result = user_service.get_user_for_login(user_args)
 
     if result['status']:
         login_user(user_schema.load(result['data']).data)
@@ -61,7 +61,5 @@ def handle_unprocessable_entity(err):
     else:
         messages = ['Invalid request']
 
-    return jsonify({
-        'data': messages, 'status_code' : 422
-    }), 422
+    return resp_schema.jsonify({'errors':messages, 'status_code':422}), 422
 
