@@ -98,4 +98,4 @@ def update(post_args, pid):
 def delete(pid):
     result = post_service.delete(pid)
 
-    return jsonify(result['message']), result['status_code']
+    return resp_schema.jsonify(result), result['status_code']

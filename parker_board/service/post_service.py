@@ -1,9 +1,6 @@
 from parker_board.model.post import Post
-from parker_board.model.board import Board
-from parker_board.schema.post import post_schema, posts_schema
-from parker_board.schema.comment import comments_schema
+from parker_board.schema.post import post_schema
 from parker_board.model import db
-from flask_login import current_user
 
 
 def create(post):
@@ -24,23 +21,20 @@ def create(post):
 
 
 def delete(pid):
+    post = Post.query.get(pid)
     result = {}
 
-    # 유저 없으면 종료
-    if current_user is None:
-        result['message'] = 'Session expried. Please Login.'
-        result['status_code'] = 401
-    else:
-        # 유저 권한 검사 들어가야함.
-        del_count = Post.query.filter_by(id=pid).delete()
+    if post:
+        post.change_status()
 
-        if del_count:
-            result['message'] = 'Post deleted'
-            result['status_code'] = 204
-            db.session.commit()
-        else:
-            result['message'] = 'No Post.'
-            result['status_code'] = 400
+        db.session.add(post)
+        db.session.commit()
+
+        result['data'] = post_schema.dump(post).data
+        result['status_code'] = 204
+    else:
+        result['errors'] = dict(error='No Post.')
+        result['status_code'] = 404
 
     return result
 
@@ -62,6 +56,6 @@ def update(pid, data):
         result['status_code'] = 200
     else:
         result['errors'] = dict(error='No Post.')
-        result['status_code'] = 400
+        result['status_code'] = 404
 
     return result
