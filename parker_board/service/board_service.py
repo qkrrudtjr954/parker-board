@@ -1,25 +1,18 @@
-from flask import session
 from parker_board.schema.board import board_schema, boards_schema
 from parker_board.schema.post import posts_schema
 from parker_board.model import db
 from parker_board.model.board import Board
-from flask_login import current_user
 
 
 def create(board):
-    result = {}
+    result = False
 
-    # 유저 있으면 board 객체 생성
-    board.set_user_id(current_user.id)
-
-    # 생성되면 디비 세션에 저장
-    db.session.add(board)
-
-    # 커밋
-    db.session.commit()
-
-    result['message'] = board_schema.dump(board).data
-    result['status_code'] = 200
+    try:
+        db.session.add(board)
+        db.session.commit()
+        result = True
+    except Exception:
+        db.session.rollback()
 
     return result
 

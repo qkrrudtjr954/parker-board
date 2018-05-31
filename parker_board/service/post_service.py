@@ -3,35 +3,22 @@ from parker_board.model.board import Board
 from parker_board.schema.post import post_schema, posts_schema
 from parker_board.schema.comment import comments_schema
 from parker_board.model import db
-from flask import session
+from flask_login import current_user
 
 
-def create(bid, post):
+def create(post):
     result = {}
+    try:
+        db.session.add(post)
+        db.session.commit()
 
-    current_user = session.get('current_user')
+        result['data'] = post_schema.dump(post).data
+        result['status_code'] = 200
+    except Exception:
+        db.session.rollback()
 
-    # 유저 없으면 종료
-    if current_user is None:
-        result['message'] = 'Session expried. Please Login.'
-        result['status_code'] = 401
-
-        return result
-
-    board = Board.query.get(bid)
-
-    # 유저 있으면 board 객체 생성
-    post.set_user_id(current_user['id'])
-    post.set_board_id(board.id)
-
-    # 생성되면 디비 세션에 저장
-    db.session.add(post)
-
-    # 커밋
-    db.session.commit()
-
-    result['message'] = post_schema.dump(post).data
-    result['status_code'] = 200
+        result['errors'] = dict(error='Server Error.')
+        result['status_code'] = 500
 
     return result
 
@@ -51,13 +38,8 @@ def get(pid):
     return result
 
 
-# def update(pid, data):
-
-
 def delete(pid):
     result = {}
-
-    current_user = session.get('current_user')
 
     # 유저 없으면 종료
     if current_user is None:

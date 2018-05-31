@@ -1,7 +1,13 @@
-from flask import Blueprint, jsonify
-from webargs.flaskparser import use_args, parser
-from parker_board.service import board_service, post_service
+from flask import Blueprint, jsonify, abort, redirect
+from webargs.flaskparser import use_args
+from parker_board.service import post_service
+from parker_board.model.board import Board
+from parker_board.model.post import Post
 from parker_board.schema.post import posts_schema, post_schema
+from parker_board.schema.board import board_schema
+from parker_board.schema.resp import resp_schema
+from flask_login import login_required, current_user
+
 
 
 bp = Blueprint('post', __name__)
@@ -16,34 +22,57 @@ bp = Blueprint('post', __name__)
 # list post
 # GET /boards/1/posts
 @bp.route('/boards/<int:bid>/posts', methods=['GET'])
-def list(bid):
-    result = post_service.list(bid)
+@login_required
+def post_view(bid):
+    board = Board.query.get(bid)
 
-    return jsonify(result['message']), result['status_code']
+    if board:
+        return posts_schema.jsonify(board.posts), 200
+    else:
+        abort(404, 'No Board.')
+
+
+# read post
+# GET /posts/1
+@bp.route('/posts/<int:pid>', methods=['GET'])
+@login_required
+def detail_view(pid):
+    post = Post.query.get(pid)
+
+    if post:
+        return post_schema.jsonify(post).data, 200
+    else:
+        abort(404, 'No Post.')
+
+
+@bp.route('/boards/<int:bid>/posts/create', methods=['GET'])
+@login_required
+def create_view(bid):
+    board = Board.query.get(bid)
+    return board_schema.jsonify(board), 200
 
 
 # create post
 # POST /boards/1/posts
 @bp.route('/boards/<int:bid>/posts', methods=['POST'])
+@login_required
 @use_args(post_schema)
 def create(post_args, bid):
-    result = post_service.create(bid, post_args)
+    post_args.set_board_id(bid)
+    post_args.set_user_id(current_user.id)
 
-    return jsonify(result['message']), result['status_code']
+    result = post_service.create(post_args)
 
+    return resp_schema.jsonify(result), result['status_code']
 
-# read post
-# GET /posts/1
-@bp.route('/posts/<int:pid>')
-def read(pid):
-    result = post_service.get(pid)
-
-    return jsonify(result['message']), result['status_code']
+    # post_id = result['data']['id']
+    # return redirect('/posts/%d'%post_id)
 
 
 # update post
 # PATCH /posts/1
 @bp.route('/posts/<int:pid>', methods=['PATCH'])
+@login_required
 @use_args(post_schema)
 def update(post_args, pid):
     result = post_service.update(pid, post_args)
@@ -54,24 +83,8 @@ def update(post_args, pid):
 # delete post
 # DELETE /posts/1
 @bp.route('/posts/<int:pid>', methods=['DELETE'])
+@login_required
 def delete(pid):
     result = post_service.delete(pid)
 
     return jsonify(result['message']), result['status_code']
-
-
-@bp.errorhandler(422)
-def post_validation_handler(err):
-    exc = getattr(err, 'exc')
-
-    if exc:
-        messages = exc.messages
-    else:
-        messages = ['Invalid request']
-
-    return jsonify({
-        'errors': messages
-    }), 422
-
-
-
