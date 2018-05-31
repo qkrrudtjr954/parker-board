@@ -1,9 +1,10 @@
-from flask import Blueprint, jsonify, redirect
+from flask import Blueprint, jsonify, redirect, abort
 from parker_board.service import board_service
 from parker_board.schema.board import board_schema
 from webargs.flaskparser import use_args
 from flask_login import login_required, current_user
 from parker_board.schema.resp import resp_schema
+from parker_board.model.board import Board
 
 
 bp = Blueprint('board', __name__)
@@ -38,12 +39,15 @@ def create(board_args):
         ), 500
 
 
-# read board
-@bp.route('/boards/<int:bid>', methods=['GET'])
+@bp.route('/boards/<int:uid>/update', methods=['GET'])
 @login_required
-def read(bid):
-    result = board_service.get(bid)
-    return jsonify(result['message']), result['status_code']
+def board_update_view(uid):
+    board = Board.query.get(uid)
+
+    if board:
+        return board_schema.jsonify(board), 200
+    else:
+        abort(404, 'No Board.')
 
 
 # update board
@@ -52,7 +56,7 @@ def read(bid):
 @login_required
 def update(board_args, bid):
     result = board_service.update(bid, board_args)
-    return jsonify(result['message']), result['status_code']
+    return resp_schema.jsonify(result), result['status_code']
 
 
 # delete board

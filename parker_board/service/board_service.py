@@ -33,21 +33,6 @@ def delete(bid):
     return result
 
 
-def get(bid):
-    board = Board.query.get(bid)
-    result = {}
-
-    if board:
-        result['message'] = board_schema.dump(board).data
-        result['message']['posts'] = posts_schema.dump(board.posts).data
-        result['status_code'] = 200
-    else:
-        result['message'] = 'No Board.'
-        result['status_code'] = 400
-
-    return result
-
-
 def update(bid, data):
     board = Board.query.get(bid)
     result = {}
@@ -60,18 +45,10 @@ def update(bid, data):
         db.session.add(board)
         db.session.commit()
 
-        result['message'] = board_schema.dump(board).data
-        result['message']['posts'] = posts_schema.dump(board.posts).data
+        result['data'] = board_schema.dump(board).data
         result['status_code'] = 200
     else:
-        result['message'] = 'No Board.'
+        result['errors'] = dict(error='No Board.')
         result['status_code'] = 400
-
-    return result
-
-
-def list():
-    boards = Board.query.all()
-    result = dict(message= boards_schema.dump(boards).data, status_code= 200)
 
     return result
