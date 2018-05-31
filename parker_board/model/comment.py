@@ -30,3 +30,6 @@ class Comment(db.Model):
 
     def set_updated_at(self):
         self.updated_at = datetime.utcnow()
+
+    def change_status(self):
+        self.status = 2

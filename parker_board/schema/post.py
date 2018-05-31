@@ -1,4 +1,4 @@
-from marshmallow import fields, post_dump
+from marshmallow import fields, post_dump, pre_dump
 from parker_board.schema import ma
 from parker_board.model.post import Post
 from parker_board.schema.comment import CommentSchema
@@ -12,6 +12,7 @@ class PostSchema(ma.ModelSchema):
     def count(self, data):
         data['comments_count'] = len(data['comments'])
         return data
+
 
     class Meta:
         strict = True
