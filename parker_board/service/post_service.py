@@ -23,21 +23,6 @@ def create(post):
     return result
 
 
-def get(pid):
-    post = Post.query.get(pid)
-    result = {}
-
-    if post:
-        result['message'] = post_schema.dump(post).data
-        result['message']['comments'] = comments_schema.dump(post.comments).data
-        result['status_code'] = 200
-    else:
-        result['message'] = 'No Post.'
-        result['status_code'] = 400
-
-    return result
-
-
 def delete(pid):
     result = {}
 
@@ -73,25 +58,10 @@ def update(pid, data):
         db.session.add(post)
         db.session.commit()
 
-        result['message'] = post_schema.dump(post).data
-        result['message']['comments'] = comments_schema.dump(post.comments).data
+        result['data'] = post_schema.dump(post).data
         result['status_code'] = 200
     else:
-        result['message'] = 'No Post.'
-        result['status_code'] = 400
-
-    return result
-
-
-def list(bid):
-    board = Board.query.get(bid)
-    result = {}
-
-    if board:
-        result['message'] = posts_schema.dump(board.posts).data
-        result['status_code'] = 200
-    else:
-        result['message'] = 'No Board'
+        result['errors'] = dict(error='No Post.')
         result['status_code'] = 400
 
     return result

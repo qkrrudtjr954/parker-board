@@ -69,6 +69,17 @@ def create(post_args, bid):
     # return redirect('/posts/%d'%post_id)
 
 
+@bp.route('/posts/<int:pid>/update', methods=['GET'])
+@login_required
+def update_view(pid):
+    post = Post.query.get(pid)
+
+    if post:
+        return post_schema.jsonify(post).data, 200
+    else:
+        abort(404, 'No Post.')
+
+
 # update post
 # PATCH /posts/1
 @bp.route('/posts/<int:pid>', methods=['PATCH'])
@@ -77,7 +88,7 @@ def create(post_args, bid):
 def update(post_args, pid):
     result = post_service.update(pid, post_args)
 
-    return jsonify(result['message']), result['status_code']
+    return resp_schema.jsonify(result), result['status_code']
 
 
 # delete post
