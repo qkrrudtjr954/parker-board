@@ -64,4 +64,4 @@ def update(board_args, bid):
 @login_required
 def delete(bid):
     result = board_service.delete(bid)
-    return jsonify(result['message']), result['status_code']
+    return resp_schema.jsonify(result), result['status_code']

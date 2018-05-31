@@ -2,6 +2,7 @@ from parker_board.schema.board import board_schema, boards_schema
 from parker_board.schema.post import posts_schema
 from parker_board.model import db
 from parker_board.model.board import Board
+from flask_login import current_user
 
 
 def create(board):
@@ -18,16 +19,19 @@ def create(board):
 
 
 def delete(bid):
-    del_count = Board.query.filter_by(id=bid).delete()
+    board = Board.query.get(bid)
     result = {}
 
-    if del_count:
-        result['message'] = 'Board deleted.'
-        result['status_code'] = 204
+    if board:
+        board.change_status()
 
+        db.session.add(board)
         db.session.commit()
+
+        result['data'] = board_schema.dump(board).data
+        result['status_code'] = 200
     else:
-        result['message'] = 'No Board.'
+        result['errors'] = dict(error='No Board.')
         result['status_code'] = 400
 
     return result
