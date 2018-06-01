@@ -13,6 +13,6 @@ users_schema = UserSchema(many=True)
 
 
 
-class CommentUserSchema(ma.Schema):
+class SimpleUserSchema(ma.Schema):
     id = fields.Integer()
     email = fields.String()

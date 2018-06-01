@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint
 from webargs.flaskparser import use_args
 from parker_board.schema.comment import comment_schema
 from parker_board.service import comment_service

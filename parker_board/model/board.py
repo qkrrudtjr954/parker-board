@@ -21,7 +21,6 @@ class Board(db.Model):
                % (self.id, self.title, self.description, self.status,
                   self.created_at, self.updated_at)
 
-
     def set_user_id(self, uid):
         self.user_id = uid
 
@@ -36,4 +35,3 @@ class Board(db.Model):
 
     def change_status(self):
         self.status = 2
-

@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, abort, redirect
+from flask import Blueprint, abort, request
 from webargs.flaskparser import use_args
 from parker_board.service import post_service
 from parker_board.model.board import Board
@@ -24,12 +24,12 @@ bp = Blueprint('post', __name__)
 @bp.route('/boards/<int:bid>/posts', methods=['GET'])
 @login_required
 def post_view(bid):
-    board = Board.query.get(bid)
+    posts = Post.query.filter(Post.board_id==bid).filter(Post.status!=2).paginate(per_page=3, error_out=False)
+    posts.page = int(request.args.get('page')) if request.args.get('page') else 1
 
-    if board:
-        return posts_schema.jsonify(board.posts), 200
-    else:
-        abort(404, 'No Board.')
+    result = dict(data=posts_schema.dump(posts.items).data, status_code=200)
+
+    return resp_schema.jsonify(result), 200
 
 
 # read post
