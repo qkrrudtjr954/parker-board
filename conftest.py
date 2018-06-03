@@ -40,4 +40,3 @@ def test_session(tsession, fuser):
 
 def test_session_rollback(tsession):
     assert tsession.query(User).count() == 0
-
