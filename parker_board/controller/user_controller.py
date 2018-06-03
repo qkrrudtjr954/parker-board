@@ -3,7 +3,7 @@ from parker_board import login_manager
 from parker_board.model.user import User
 from parker_board.service import user_service
 from webargs.flaskparser import use_args
-from parker_board.schema.user import user_schema
+from parker_board.schema.user import login_user_schema, user_schema
 from parker_board.schema.resp import resp_schema
 from flask_login import login_user, login_required, logout_user, current_user
 

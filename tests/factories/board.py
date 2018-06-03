@@ -1,6 +1,7 @@
 import factory
 from parker_board.model import db
 from parker_board.model.board import Board
+from parker_board.model.user import User
 from datetime import datetime
 
 
@@ -8,8 +9,8 @@ class FakeBoardFactory(factory.alchemy.SQLAlchemyModelFactory):
     id = factory.Sequence(lambda n:n+1)
     title = factory.Faker('sentence')
     description = factory.Faker('sentence')
-
-    # user_id
+    user = factory.SubFactory('tests.factories.user.FakeUserFactory')
+    status = 0
 
     created_at = factory.LazyFunction(datetime.utcnow)
     updated_at = factory.LazyFunction(datetime.utcnow)

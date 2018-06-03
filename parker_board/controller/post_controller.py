@@ -24,7 +24,7 @@ bp = Blueprint('post', __name__)
 @bp.route('/boards/<int:bid>/posts', methods=['GET'])
 @login_required
 def post_view(bid):
-    posts = Post.query.filter(Post.board_id==bid).filter(Post.status!=2).paginate(per_page=3, error_out=False)
+    posts = Post.query.filter(Post.board_id==bid).filter(Post.status!=2).order_by(Post.created_at.asc()).paginate(per_page=3, error_out=False)
     posts.page = int(request.args.get('page')) if request.args.get('page') else 1
 
     result = dict(data=posts_schema.dump(posts.items).data, status_code=200)
