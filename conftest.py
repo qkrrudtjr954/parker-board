@@ -22,19 +22,20 @@ def tclient(tapp):
 
 @pytest.fixture(scope='function')
 def tsession(tapp):
+    db.session.autocommit = False
+    db.session.autoflush = False
     session = db.session
     yield session
     session.rollback()
-    session.close()
-    print('session rollback!')
 
 
 def test_app(tapp):
     assert tapp.config['TESTING']
+    assert tapp.config['SQLALCHEMY_DATABASE_URI']=='mysql://root:root@localhost/parkertest'
 
 
-def test_session(tsession, fuser):
-    print(fuser)
+def test_session(tsession):
+    FakeUserFactory()
     assert tsession.query(User).count() == 1
 
 

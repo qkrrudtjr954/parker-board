@@ -9,7 +9,7 @@ def register(new_user):
 
     try:
         db.session.add(new_user)
-        db.session.commit()
+        db.session.flush()
         result['data'] = user_schema.dump(new_user).data
         result['status_code'] = 200
 
@@ -41,7 +41,7 @@ def leave(uid):
 
         try:
             db.session.add(user)
-            db.session.commit()
+            db.session.flush()
 
             result['data'] = dict(user=user_schema.dump(user).data)
             result['status_code'] = 200

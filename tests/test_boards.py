@@ -24,6 +24,6 @@ class TestBoard:
         assert Board.query.one()
 
         Board.query.filter(Board.id == result['data']['id']).delete()
-        tsession.commit()
+        tsession.flush()
 
         assert Board.query.count() == 0

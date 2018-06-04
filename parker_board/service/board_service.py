@@ -9,7 +9,7 @@ def create(board):
 
     try:
         db.session.add(board)
-        db.session.commit()
+        db.session.flush()
 
         result['data'] = board_schema.dump(board).data
         result['status_code'] = 200
@@ -31,7 +31,7 @@ def delete(bid):
             board.change_status()
 
             db.session.add(board)
-            db.session.commit()
+            db.session.flush()
 
             result['data'] = board_schema.dump(board).data
             result['status_code'] = 200
@@ -56,7 +56,7 @@ def update(bid, data):
             board.set_updated_at()
 
             db.session.add(board)
-            db.session.commit()
+            db.session.flush()
 
             result['data'] = board_schema.dump(board).data
             result['status_code'] = 200

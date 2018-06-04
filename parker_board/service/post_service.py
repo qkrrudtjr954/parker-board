@@ -27,7 +27,7 @@ def create(post):
     result = {}
     try:
         db.session.add(post)
-        db.session.commit()
+        db.session.flush()
 
         result['data'] = post_schema.dump(post).data
         result['status_code'] = 200
@@ -49,7 +49,7 @@ def delete(pid):
             post.change_status()
 
             db.session.add(post)
-            db.session.commit()
+            db.session.flush()
 
             result['data'] = post_schema.dump(post).data
             result['status_code'] = 204
@@ -75,7 +75,7 @@ def update(pid, data):
             post.set_updated_at()
 
             db.session.add(post)
-            db.session.commit()
+            db.session.flush()
 
             result['data'] = post_schema.dump(post).data
             result['status_code'] = 200

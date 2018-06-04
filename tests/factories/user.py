@@ -1,4 +1,5 @@
 import factory
+from parker_board.model import db
 from parker_board.model.user import User
 from datetime import datetime
 
@@ -12,3 +13,4 @@ class FakeUserFactory(factory.alchemy.SQLAlchemyModelFactory):
 
     class Meta:
         model=User
+        sqlalchemy_session = db.session

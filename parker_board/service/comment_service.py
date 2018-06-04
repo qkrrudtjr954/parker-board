@@ -12,7 +12,7 @@ def create(comment, pid):
 
     try:
         db.session.add(comment)
-        db.session.commit()
+        db.session.flush()
 
         result['data'] = comment_schema.dump(comment).data
         result['status_code'] = 200
@@ -32,7 +32,7 @@ def delete(cid):
             comment.change_status()
 
             db.session.add(comment)
-            db.session.commit()
+            db.session.flush()
 
             result['data'] = comment_schema.dump(comment).data
             result['status_code'] = 200
@@ -56,7 +56,7 @@ def update(cid, data):
             comment.set_updated_at()
 
             db.session.add(comment)
-            db.session.commit()
+            db.session.flush()
 
             result['data'] = comment_schema.dump(comment).data
             result['status_code'] = 200

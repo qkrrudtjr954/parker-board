@@ -1,6 +1,6 @@
 from parker_board.schema import ma
 from parker_board.model.user import User
-from marshmallow import fields
+from marshmallow import fields, ValidationError
 
 class UserSchema(ma.ModelSchema):
     class Meta:
@@ -18,9 +18,14 @@ class SimpleUserSchema(ma.Schema):
     email = fields.String()
 
 
+def password_length_check(pwd):
+    print(pwd+'asdf')
+    if len(pwd) < 5:
+        raise ValidationError('Password too short', code=422)
+
 class LoginUserSchema(ma.Schema):
     email = fields.Email()
-    password = fields.String(lambda pwd : len(pwd) > 6)
+    password = fields.String(validate=password_length_check)
 
 
-login_schema = LoginUserSchema()
+login_schema = LoginUserSchema(strict=True)

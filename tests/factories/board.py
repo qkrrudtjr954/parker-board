@@ -1,7 +1,6 @@
 import factory
 from parker_board.model import db
 from parker_board.model.board import Board
-from parker_board.model.user import User
 from datetime import datetime
 
 
