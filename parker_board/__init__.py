@@ -41,7 +41,12 @@ def create_app():
     def unauthorized_callback():
         # 로그인이 안됐을때, 로그인 뷰로 이동 시킴.
         next = request.path if request.path else '/'
-        return redirect('/users/login?next={}'.format(next))
+
+        result = {}
+        result['errors'] = dict(error='Login First.', next=next)
+        result['status_code'] = 400
+
+        return resp_schema.jsonify(result), result['status_code']
 
     @app.errorhandler(404)
     def not_found_handler(err):

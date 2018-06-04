@@ -3,7 +3,8 @@ from tests.factories.user import FakeUserFactory
 from parker_board.schema.resp import resp_schema
 from parker_board.schema.user import user_schema, login_schema
 from parker_board.model.user import User
-from flask_login import login_user, current_user
+from flask_login import current_user, login_user
+from marshmallow import ValidationError
 
 
 @pytest.fixture(scope='function')
@@ -23,87 +24,96 @@ def no_password_user(tsession):
 
 class TestRegister():
     def test_no_email(self, tclient, no_email_user):
-        resp = tclient.post('/users', data = login_schema.dumps(no_email_user).data, content_type='application/json')
-        result = resp_schema.loads(resp.data.decode()).data
-        print(result)
-        assert result['status_code'] == 422
+        with pytest.raises(ValidationError):
+            resp = tclient.post('/users', data=login_schema.dumps(no_email_user).data, content_type='application/json')
+            result = resp_schema.loads(resp.data.decode()).data
+            assert result['status_code'] == 422
 
     def test_no_password(self, tclient, no_password_user):
         resp = tclient.post('/users', data=login_schema.dumps(no_password_user).data, content_type='application/json')
         result = resp_schema.loads(resp.data.decode()).data
-
         assert result['status_code'] == 422
 
+    def test_register(self, tclient, fuser):
+        resp = tclient.post('/users', data=login_schema.dumps(fuser).data, content_type='application/json')
+        result = resp_schema.loads(resp.data.decode()).data
+
+        assert result['status_code'] == 200
+        assert result['data']['email'] == fuser.email
+
+        resp = tclient.post('/users', data=login_schema.dumps(fuser).data, content_type='application/json')
+        result = resp_schema.loads(resp.data.decode()).data
+
+        assert result['status_code'] == 400
+        assert result['errors']['error'] == 'Duplicate Email.'
 
 
+@pytest.fixture(scope='function')
+def dummy_register(tsession, fuser):
+    tsession.add(fuser)
+    tsession.flush()
+    yield fuser
 
 
-# @pytest.fixture(scope='function')
-# def fuser(tsession):
-#     FakeUserFactory._meta.sqlalchemy_session = tsession
-#     user = FakeUserFactory()
-#     return user
-#
-# @pytest.fixture(scope='function')
-# def fuser_obj(tsession):
-#     FakeUserFactory._meta.sqlalchemy_session = tsession
-#     user = FakeUserFactory.build()
-#     return user
-#
-#
-# class TestUser:
-#     def test_sign_in(self, tclient, fuser):
-#         data = login_user_schema.dumps(fuser).data
-#         resp = tclient.post('/users/login', data=data, content_type='application/json')
-#         result = resp_schema.loads(resp.data.decode()).data
-#         assert result['status_code'] == 200
-#
-#     def test_sign_in_wrong_data(self, tclient, fuser):
-#         # fail case ( wrong password )
-#         data = login_user_schema.dumps({'email':fuser.email, 'password':'wrong pwd'}).data
-#         resp = tclient.post('/users/login', data=data, content_type='application/json')
-#         result = resp_schema.loads(resp.data.decode()).data
-#         assert result['status_code'] == 401
-#
-#         # fail case ( wrong email )
-#         data = login_user_schema.dumps({'email': 'fake@fake.com', 'password': fuser.password}).data
-#         resp = tclient.post('/users/login', data=data, content_type='application/json')
-#         result = resp_schema.loads(resp.data.decode()).data
-#         assert result['status_code'] == 401
-#
-#     def test_register(self, tclient, fuser_obj, tsession):
-#         data = login_user_schema.dumps(fuser_obj).data
-#         resp = tclient.post('/users', data=data, content_type='application/json')
-#         result = resp_schema.loads(resp.data.decode()).data
-#         assert result['status_code'] == 200
-#         assert User.query.one()
-#
-#         User.query.filter(User.id == result['data']['id']).delete()
-#         tsession.flush()
-#         assert User.query.count() == 0
-#
-#     def test_register_no_data(self, tclient, fuser_obj):
-#         # fail case ( no password )
-#         data = login_user_schema.dumps({'email': fuser_obj.email}).data
-#         resp = tclient.post('/users', data=data, content_type='application/json')
-#         result = resp_schema.loads(resp.data.decode()).data
-#         assert result['status_code'] == 422
-#
-#     def test_register_wrong_data(self, tclient, fuser_obj):
-#         # fail case ( not email structure )
-#         data = login_user_schema.dumps({'email':'fakefake.com', 'password': fuser_obj.password}).data
-#         resp = tclient.post('/users', data=data, content_type='application/json')
-#         result = resp_schema.loads(resp.data.decode()).data
-#         assert result['status_code'] == 422
-#
-#     def test_logout(self, tclient, fuser):
-#         data = login_user_schema.dumps(fuser).data
-#         resp = tclient.post('/users/login', data=data, content_type='application/json')
-#         result = resp_schema.loads(resp.data.decode()).data
-#         assert result['status_code'] == 200
-#
-#         resp = tclient.delete('/users/logout')
-#         result = resp_schema.loads(resp.data.decode()).data
-#         assert result['status_code'] == 200
+@pytest.fixture(scope='function')
+def dummy_leaved_user(tsession, fuser):
+    fuser.status = 2
+    tsession.add(fuser)
+    tsession.flush()
+    yield fuser
 
+
+class TestLogin():
+    def test_no_email(self, tclient, no_email_user):
+        with pytest.raises(ValidationError):
+            resp = tclient.post('/users/login', data=login_schema.dumps(no_email_user).data, content_type='application/json')
+            result = resp_schema.loads(resp.data.decode()).data
+            assert result['status_code'] == 422
+
+    def test_no_password(self, tclient, no_password_user):
+        resp = tclient.post('/users/login', data=login_schema.dumps(no_password_user).data, content_type='application/json')
+        result = resp_schema.loads(resp.data.decode()).data
+        assert result['status_code'] == 422
+
+    def test_login(self, tclient, dummy_register, tsession):
+        assert tsession.query(User).one()
+
+        resp = tclient.post('/users/login', data=login_schema.dumps(dummy_register).data, content_type='application/json')
+        result = resp_schema.loads(resp.data.decode()).data
+        assert result['status_code'] == 200
+
+    def test_leaved_user_login(self, tclient, dummy_leaved_user, tsession):
+        assert tsession.query(User).one()
+
+        resp = tclient.post('/users/login', data=login_schema.dumps(dummy_leaved_user).data, content_type='application/json')
+        result = resp_schema.loads(resp.data.decode()).data
+
+        assert result['status_code'] == 401
+        assert result['errors']['error'] == 'Leaved User.'
+
+    def test_no_user_login(self, tclient, fuser):
+        resp = tclient.post('/users/login', data=login_schema.dumps(fuser).data, content_type='application/json')
+        result = resp_schema.loads(resp.data.decode()).data
+
+        assert result['status_code'] == 400
+        assert result['errors']['error'] == 'No User.'
+
+
+class TestLeave():
+    def test_leave(self, tclient, dummy_register):
+        resp = tclient.delete('/users/%d' % dummy_register.id, data=login_schema.dumps(dummy_register).data, content_type='application/json')
+        result = resp_schema.loads(resp.data.decode()).data
+
+        assert result['status_code'] == 400
+        assert result['errors']['error'] == 'Login First.'
+
+        resp = tclient.post('/users/login', data=login_schema.dumps(dummy_register).data, content_type='application/json')
+        result = resp_schema.loads(resp.data.decode()).data
+        assert result['status_code'] == 200
+
+        resp = tclient.delete('/users/%d' % dummy_register.id, data=login_schema.dumps(dummy_register).data, content_type='application/json')
+        result = resp_schema.loads(resp.data.decode()).data
+
+        assert result['status_code'] == 200
+        assert result['data']['user']['status'] == 2
 

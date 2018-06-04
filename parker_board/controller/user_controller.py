@@ -30,13 +30,15 @@ def login_logic(user_args):
 
     if user:
         if user.status == 2:
-            result = dict(errors='Leaved User.', status_code=401)
+            result['errors'] = dict(error='Leaved User.')
+            result['status_code'] = 401
         else:
             login_user(user)
             result['data'] = dict(user=user_schema.dump(user).data, next=next)
             result['status_code'] = 200
     else:
-        result = dict(errors='No User.', status_code=401)
+        result['errors'] = dict(error='No User.')
+        result['status_code'] = 400
 
     return resp_schema.jsonify(result), result['status_code']
 
@@ -51,7 +53,7 @@ def logout():
 
 
 @bp.route('', methods=['POST'])
-@use_args(user_schema)
+@use_args(login_schema)
 def register(user_args):
     result = user_service.register(user_args)
     return resp_schema.jsonify(result), result['status_code']

@@ -8,6 +8,5 @@ def init_app(app):
     print('db initializing')
     db.app = app
     db.init_app(app)
-    print(db.session.autoflush)
-    print(db.session.autocommit)
+
 

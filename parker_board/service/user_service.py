@@ -4,10 +4,12 @@ from parker_board.schema.user import user_schema
 from sqlalchemy.exc import IntegrityError
 
 
-def register(new_user):
+def register(user_data):
     result = {}
 
     try:
+        new_user = user_schema.load(user_data).data
+
         db.session.add(new_user)
         db.session.flush()
         result['data'] = user_schema.dump(new_user).data
@@ -16,12 +18,13 @@ def register(new_user):
     except IntegrityError:
         db.session.rollback()
 
-        result['errors'] = 'Duplicate Email'
+        result['errors'] = dict(error='Duplicate Email.')
         result['status_code'] = 400
 
-    except Exception:
+    except Exception as e:
+        print(e)
         db.session.rollback()
-        result['errors'] = 'Server Error. Please try again.'
+        result['errors'] = dict(error='Server Error. Please try again.')
         result['status_code'] = 500
 
     return result
@@ -45,13 +48,12 @@ def leave(uid):
 
             result['data'] = dict(user=user_schema.dump(user).data)
             result['status_code'] = 200
-
         except Exception:
             db.session.rollback()
-            result['errors'] = 'Server Error. Please try again.'
+            result['errors'] = dict(error='Server Error. Please try again.')
             result['status_code'] = 500
 
         return result
     else:
-        result['errors'] = 'No User'
+        result['errors'] = dict(error='No User')
         result['status_code'] = 500
