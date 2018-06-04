@@ -1,14 +1,8 @@
 from parker_board.schema import ma
 from parker_board.model.user import User
-from marshmallow import fields, ValidationError
-
-import re
-
-EMAIL_REGEX = re.compile(r"[^@]+@[^@]+\.[^@]+")
+from marshmallow import fields
 
 class UserSchema(ma.ModelSchema):
-    email = fields.Email()
-
     class Meta:
         strict = True
         model = User
@@ -25,8 +19,8 @@ class SimpleUserSchema(ma.Schema):
 
 
 class LoginUserSchema(ma.Schema):
-    email = fields.String()
-    password = fields.String()
+    email = fields.Email()
+    password = fields.String(lambda pwd : len(pwd) > 6)
 
 
-login_user_schema = LoginUserSchema(strict=True)
+login_schema = LoginUserSchema()

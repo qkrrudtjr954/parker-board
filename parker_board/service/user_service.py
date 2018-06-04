@@ -11,56 +11,47 @@ def register(new_user):
         db.session.add(new_user)
         db.session.commit()
         result['data'] = user_schema.dump(new_user).data
-        result['status'] = True
+        result['status_code'] = 200
 
     except IntegrityError:
         db.session.rollback()
 
         result['errors'] = 'Duplicate Email'
-        result['status'] = False
+        result['status_code'] = 400
 
     except Exception:
         db.session.rollback()
         result['errors'] = 'Server Error. Please try again.'
-        result['status'] = False
+        result['status_code'] = 500
 
     return result
 
 
-def get_user_for_login(user_data):
-    user = User.query.filter_by(email=user_data.email, password=user_data.password).first()
-
-    result = {}
-
-    if user:
-        if user.status == 2:
-            result['errors'] = 'Leaved User.'
-            result['status'] = False
-        else:
-            result['data'] = user_schema.dump(user).data
-            result['status'] = True
-    else:
-        result['data'] = 'No User.'
-        result['status'] = False
-
-    return result
+def login(user_data):
+    user = User.query.filter_by(email=user_data['email'], password=user_data['password']).first()
+    return user
 
 
 def leave(uid):
     user = User.query.get(uid)
     result = {}
 
-    user.status = 2
+    if user:
+        user.status = 2
 
-    try:
-        db.session.add(user)
-        db.session.commit()
+        try:
+            db.session.add(user)
+            db.session.commit()
 
-        result['data'] = dict(blocked=user_schema.dump(user).data)
-        result['status'] = True
-    except Exception:
-        db.session.rollback()
-        result['errors'] = 'Server Error. Please try again.'
-        result['status'] = False
+            result['data'] = dict(user=user_schema.dump(user).data)
+            result['status_code'] = 200
 
-    return result
+        except Exception:
+            db.session.rollback()
+            result['errors'] = 'Server Error. Please try again.'
+            result['status_code'] = 500
+
+        return result
+    else:
+        result['errors'] = 'No User'
+        result['status_code'] = 500

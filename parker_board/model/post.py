@@ -1,5 +1,6 @@
 from datetime import datetime
 from parker_board.model.comment import Comment
+
 from parker_board.model import db
 
 
@@ -12,7 +13,8 @@ class Post(db.Model):
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     board_id = db.Column(db.Integer, db.ForeignKey('board.id'), nullable=False)
-    comments = db.relationship('Comment', backref='post', lazy=True)
+    # comments = db.relationship('Comment', backref='post', lazy=True)
+    comments = db.relationship('Comment', backref='post', lazy=True, primaryjoin='and_(Post.id == Comment.post_id, Comment.status != 2)')
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow)

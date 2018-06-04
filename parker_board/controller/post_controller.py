@@ -1,10 +1,8 @@
 from flask import Blueprint, abort, request
 from webargs.flaskparser import use_args
 from parker_board.service import post_service
-from parker_board.model.board import Board
 from parker_board.model.post import Post
-from parker_board.schema.post import posts_schema, post_schema
-from parker_board.schema.board import board_schema
+from parker_board.schema.post import post_schema, simple_posts_schema
 from parker_board.schema.resp import resp_schema
 from flask_login import login_required, current_user
 
@@ -24,10 +22,10 @@ bp = Blueprint('post', __name__)
 @bp.route('/boards/<int:bid>/posts', methods=['GET'])
 @login_required
 def post_view(bid):
-    posts = Post.query.filter(Post.board_id==bid).filter(Post.status!=2).order_by(Post.created_at.asc()).paginate(per_page=3, error_out=False)
+    posts = Post.query.filter(Post.board_id==bid).filter(Post.status!=2).order_by(Post.created_at.desc()).paginate(per_page=3, error_out=False)
     posts.page = int(request.args.get('page')) if request.args.get('page') else 1
 
-    result = dict(data=posts_schema.dump(posts.items).data, status_code=200)
+    result = dict(data=simple_posts_schema.dump(posts.items).data, status_code=200)
 
     return resp_schema.jsonify(result), 200
 
@@ -37,19 +35,9 @@ def post_view(bid):
 @bp.route('/posts/<int:pid>', methods=['GET'])
 @login_required
 def detail_view(pid):
-    post = Post.query.get(pid)
+    result = post_service.read(pid)
 
-    if post:
-        return post_schema.jsonify(post).data, 200
-    else:
-        abort(404, 'No Post.')
-
-
-@bp.route('/boards/<int:bid>/posts/create', methods=['GET'])
-@login_required
-def create_view(bid):
-    board = Board.query.get(bid)
-    return board_schema.jsonify(board), 200
+    return resp_schema.jsonify(result), result['status_code']
 
 
 # create post
@@ -64,20 +52,6 @@ def create(post_args, bid):
     result = post_service.create(post_args)
 
     return resp_schema.jsonify(result), result['status_code']
-
-    # post_id = result['data']['id']
-    # return redirect('/posts/%d'%post_id)
-
-
-@bp.route('/posts/<int:pid>/update', methods=['GET'])
-@login_required
-def update_view(pid):
-    post = Post.query.get(pid)
-
-    if post:
-        return post_schema.jsonify(post).data, 200
-    else:
-        abort(404, 'No Post.')
 
 
 # update post

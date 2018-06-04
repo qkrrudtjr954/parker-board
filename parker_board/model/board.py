@@ -10,7 +10,7 @@ class Board(db.Model):
     status = db.Column(db.SmallInteger, default=0)
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    posts = db.relationship('Post', backref='board', lazy=True)
+    posts = db.relationship('Post', backref='board', lazy=True, primaryjoin='and_(Board.id == Post.board_id, Post.status != 2)')
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow)

@@ -1,19 +1,23 @@
 from parker_board.schema.board import board_schema, boards_schema
-from parker_board.schema.post import posts_schema
 from parker_board.model import db
 from parker_board.model.board import Board
 from flask_login import current_user
 
 
 def create(board):
-    result = False
+    result = {}
 
     try:
         db.session.add(board)
         db.session.commit()
-        result = True
+
+        result['data'] = board_schema.dump(board).data
+        result['status_code'] = 200
+
     except Exception:
         db.session.rollback()
+        result['errors'] = 'Server Error. Please Try again.'
+        result['status_code'] = 500
 
     return result
 
@@ -23,13 +27,17 @@ def delete(bid):
     result = {}
 
     if board:
-        board.change_status()
+        if board.user_id == current_user.id:
+            board.change_status()
 
-        db.session.add(board)
-        db.session.commit()
+            db.session.add(board)
+            db.session.commit()
 
-        result['data'] = board_schema.dump(board).data
-        result['status_code'] = 200
+            result['data'] = board_schema.dump(board).data
+            result['status_code'] = 200
+        else:
+            result['errors'] = 'Only writer\'s can delete.'
+            result['status_code'] = 401
     else:
         result['errors'] = dict(error='No Board.')
         result['status_code'] = 400
@@ -42,15 +50,19 @@ def update(bid, data):
     result = {}
 
     if board:
-        board.set_title(data.title if data.title else board.title)
-        board.set_description(data.description if data.description else board.description)
-        board.set_updated_at()
+        if board.user_id == current_user.id:
+            board.set_title(data.title if data.title else board.title)
+            board.set_description(data.description if data.description else board.description)
+            board.set_updated_at()
 
-        db.session.add(board)
-        db.session.commit()
+            db.session.add(board)
+            db.session.commit()
 
-        result['data'] = board_schema.dump(board).data
-        result['status_code'] = 200
+            result['data'] = board_schema.dump(board).data
+            result['status_code'] = 200
+        else:
+            result['errors'] = 'Can\'t update.'
+            result['status_code'] = 401
     else:
         result['errors'] = dict(error='No Board.')
         result['status_code'] = 400
