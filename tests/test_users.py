@@ -1,9 +1,8 @@
 import pytest
 from tests.factories.user import FakeUserFactory
 from parker_board.schema.resp import resp_schema
-from parker_board.schema.user import user_schema, login_schema
+from parker_board.schema.user import login_schema
 from parker_board.model.user import User
-from flask_login import current_user, login_user
 from marshmallow import ValidationError
 
 

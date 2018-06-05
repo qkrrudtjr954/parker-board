@@ -12,5 +12,5 @@ class FakeUserFactory(factory.alchemy.SQLAlchemyModelFactory):
     updated_at = factory.LazyFunction(datetime.utcnow)
 
     class Meta:
-        model=User
+        model = User
         sqlalchemy_session = db.session

@@ -16,12 +16,11 @@ Board
 
 # create board
 @bp.route('/boards', methods=['POST'])
-@use_args(board_schema)
 @login_required
+@use_args(board_schema)
 def create(board_args):
     board_args.set_user_id(current_user.id)
     result = board_service.create(board_args)
-    print(result)
     return resp_schema.jsonify(result), result['status_code']
 
 
