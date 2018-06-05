@@ -51,3 +51,4 @@ class SimplePostSchema(ma.ModelSchema):
 
 
 simple_posts_schema = SimplePostSchema(many=True)
+

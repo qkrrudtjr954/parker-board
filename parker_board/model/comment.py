@@ -14,9 +14,9 @@ class Comment(db.Model):
     updated_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     def __repr__(self):
-        return "<Comment id: %d, content: %s, status: %d, user_id: %d," \
+        return "<Comment id: %d, content: %s, status: %d" \
                " created_at: %s, updated_at: %s>"\
-               % (self.id, self.content, self.status, self.user_id,
+               % (self.id, self.content, self.status,
                   self.created_at, self.updated_at)
 
     def set_user_id(self, uid):

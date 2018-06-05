@@ -11,9 +11,4 @@ def fcomment(tsession):
 
 
 
-def test_comment_factory(fcomment):
-    print(fcomment)
-    assert Comment.query.one()
-
-
 

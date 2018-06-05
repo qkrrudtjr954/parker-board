@@ -14,3 +14,4 @@ class FakeUserFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
         model = User
         sqlalchemy_session = db.session
+

@@ -11,13 +11,13 @@ def read(pid):
 
     if post:
         if post.status == 2:
-            result['errors'] = 'Deleted Post.'
+            result['errors'] = dict(error='Deleted Post.')
             result['status_code'] = 400
         else:
             result['data'] = post_schema.dump(post).data
             result['status_code'] = 200
     else:
-        result['errors'] = 'No Post.'
+        result['errors'] = dict(error='No Post.')
         result['status_code'] = 404
 
     return result
@@ -54,7 +54,7 @@ def delete(pid):
             result['data'] = post_schema.dump(post).data
             result['status_code'] = 204
         else:
-            result['errors'] = 'Can\'t delete.'
+            result['errors'] = dict(error='Can\'t delete.')
             result['status_code'] = 401
     else:
         result['errors'] = dict(error='No Post.')
@@ -80,7 +80,7 @@ def update(pid, data):
             result['data'] = post_schema.dump(post).data
             result['status_code'] = 200
         else:
-            result['errors'] = 'Can\'t update.'
+            result['errors'] = dict(error='Can\'t update.')
             result['status_code'] = 401
     else:
         result['errors'] = dict(error='No Post.')

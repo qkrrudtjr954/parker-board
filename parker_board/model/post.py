@@ -11,18 +11,17 @@ class Post(db.Model):
     description = db.Column(db.String(200), nullable=True)
     status = db.Column(db.SmallInteger, default=0)
 
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
     board_id = db.Column(db.Integer, db.ForeignKey('board.id'), nullable=False)
-    # comments = db.relationship('Comment', backref='post', lazy=True)
     comments = db.relationship('Comment', backref='post', lazy=True, primaryjoin='and_(Post.id == Comment.post_id, Comment.status != 2)')
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     def __repr__(self):
-        return "<Post id: %d, title: %s, content: %s, description: %s, status: %d, user_id: %d," \
+        return "<Post title: %s, content: %s, description: %s, status: %d," \
                " created_at: %s, updated_at: %s>"\
-               % (self.id, self.title, self.content, self.description, self.status, self.user_id,
+               % (self.title, self.content, self.description, self.status,
                   self.created_at, self.updated_at)
 
     def set_user_id(self, uid):
