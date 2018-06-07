@@ -46,15 +46,12 @@ def create_app():
         # 로그인이 안됐을때, 로그인 뷰로 이동 시킴.
         next = request.path if request.path else '/'
 
-        result = {}
-        result['errors'] = dict(error='Login First.', next=next)
-        result['status_code'] = 400
-
-        return resp_schema.jsonify(result), result['status_code']
+        result = {'errors':dict(message='Login First.', next=next), 'status_code':404}
+        return resp_schema.jsonify(result), 400
 
     @app.errorhandler(404)
     def not_found_handler(err):
-        result = {'errors':dict(error=str(err)), 'status_code':404}
+        result = {'errors':dict(message=str(err)), 'status_code':404}
         return resp_schema.jsonify(result), 404
 
     @app.errorhandler(422)

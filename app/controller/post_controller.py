@@ -46,12 +46,11 @@ def detail_view(pid):
 @login_required
 @use_args(post_schema)
 def create(post_args, bid):
-    post_args.set_board_id(bid)
-    post_args.set_user_id(current_user.id)
-
-    result = post_service.create(post_args)
-
-    return resp_schema.jsonify(result), result['status_code']
+    try:
+        result = post_service.create(bid, post_args, current_user)
+        return resp_schema.jsonify(result), 200
+    except Exception as e:
+        return 'Server Error.', 500
 
 
 # update post

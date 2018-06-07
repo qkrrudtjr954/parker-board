@@ -7,12 +7,13 @@ name = "pypi"
 flask = "*"
 flask-sqlalchemy = "*"
 flask-migrate = "*"
-mysqlclient = "*"
+flask-login = "*"
 flask-marshmallow = "*"
 marshmallow-sqlalchemy = "*"
-
+sqlalchemy-utils = "*"
+mysqlclient = "*"
 webargs = "*"
-flask-login = "*"
+
 
 [dev-packages]
 factory-boy = "*"

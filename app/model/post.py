@@ -12,7 +12,11 @@ class Post(db.Model):
     status = db.Column(db.SmallInteger, default=0)
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+    user = db.relationship("User")
+
     board_id = db.Column(db.Integer, db.ForeignKey('board.id'), nullable=False)
+    board = db.relationship("Board", back_populates="posts")
+
     comments = db.relationship('Comment', backref='post', lazy=True, primaryjoin='and_(Post.id == Comment.post_id, Comment.status != 2)')
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)

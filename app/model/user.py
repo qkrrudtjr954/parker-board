@@ -12,9 +12,9 @@ class User(UserMixin, db.Model):
     password = db.Column(db.String(200), nullable=False)
     status = db.Column(db.SmallInteger, default=0)
 
-    boards = db.relationship('Board', backref='user', lazy=True)
-    posts = db.relationship('Post', backref='user', lazy=True)
-    comments = db.relationship('Comment', backref='user', lazy=True)
+    # boards = db.relationship('Board', backref='user', lazy=True)
+    # posts = db.relationship('Post', backref='user', lazy=True)
+    # comments = db.relationship('Comment', backref='user', lazy=True)
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow)

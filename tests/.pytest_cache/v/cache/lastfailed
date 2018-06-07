@@ -1,1 +1,14 @@
-{}
+{
+  "test_boards.py::TestDeleteBoard::()::test_delete_no_auth": true,
+  "test_boards.py::TestDeleteBoard::()::test_delete_no_login": true,
+  "test_boards.py::TestUpdateBoard::()::test_update_no_auth": true,
+  "test_boards.py::TestUpdateBoard::()::test_update_no_login": true,
+  "test_post.py::TestDeletePost::()::test_delete_no_auth": true,
+  "test_post.py::TestDeletePost::()::test_delete_no_login": true,
+  "test_post.py::TestReadPost::()::test_read_no_login": true,
+  "test_post.py::TestUpdatePost::()::test_update_no_auth": true,
+  "test_users.py::TestLeave::()::test_leave": true,
+  "test_users.py::TestLogin::()::test_leaved_user_login": true,
+  "test_users.py::TestLogin::()::test_no_user_login": true,
+  "test_users.py::TestRegister::()::test_register": true
+}

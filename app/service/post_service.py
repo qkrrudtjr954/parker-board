@@ -1,3 +1,4 @@
+from app.model.board import Board
 from app.model.post import Post
 from app.model.comment import Comment
 from app.schema.post import post_schema
@@ -23,21 +24,17 @@ def read(pid):
     return result
 
 
-def create(post):
-    result = {}
+def create(board_id, post: Post, user):
     try:
+        board = Board.find_or_fail(board_id)
+        post.board = board
+        post.user = user
+
         db.session.add(post)
         db.session.flush()
-
-        result['data'] = post_schema.dump(post).data
-        result['status_code'] = 200
-    except Exception:
+    except Exception as e:
         db.session.rollback()
-
-        result['errors'] = dict(error='Server Error.')
-        result['status_code'] = 500
-
-    return result
+        raise e
 
 
 def delete(pid):

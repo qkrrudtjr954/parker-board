@@ -32,8 +32,7 @@ class TestCreatePost:
         resp = tclient.post('/boards/%d/posts'%fpost.board_id, data=post_schema.dumps(fpost).data, content_type='application/json')
         result = resp_schema.loads(resp.data.decode()).data
         assert resp.status_code == 400
-        assert result['status_code'] == 400
-        assert result['errors']['error'] == 'Login First.'
+        assert result['errors']['message'] == 'Login First.'
 
     # def test_create_post(self, tclient, fpost, tsession):
     #     assert tsession.query(User).one()
@@ -66,8 +65,7 @@ class TestUpdatePost:
         result = resp_schema.loads(resp.data.decode()).data
 
         assert resp.status_code == 400
-        assert result['status_code'] == 400
-        assert result['errors']['error'] == 'Login First.'
+        assert result['errors']['message'] == 'Login First.'
 
     def test_update_post(self, tclient, fpost, tsession):
         tsession.add(fpost)
@@ -108,7 +106,7 @@ class TestUpdatePost:
         result = resp_schema.loads(resp.data.decode()).data
         assert resp.status_code == 401
         assert result['status_code'] == 401
-        assert result['errors']['error'] == 'Can\'t update.'
+        assert result['errors']['message'] == 'Can\'t update.'
 
 
 class TestDeletePost:
@@ -136,7 +134,7 @@ class TestDeletePost:
 
         assert resp.status_code == 400
         assert result['status_code'] == 400
-        assert result['errors']['error'] == 'Login First.'
+        assert result['errors']['message'] == 'Login First.'
 
     def test_delete_no_auth(self, tsession, tclient, fpost):
         tsession.add(fpost)
@@ -156,7 +154,7 @@ class TestDeletePost:
         assert resp.status_code == 401
         result = resp_schema.loads(resp.data.decode()).data
         assert result['status_code'] == 401
-        assert result['errors']['error'] == 'Can\'t delete.'
+        assert result['errors']['message'] == 'Can\'t delete.'
 
 
 class TestReadPost:
@@ -189,4 +187,4 @@ class TestReadPost:
 
         result = resp_schema.loads(resp.data.decode()).data
         assert result['status_code'] == 400
-        assert result['errors']['error'] == 'Login First.'
+        assert result['errors']['message'] == 'Login First.'
