@@ -1,6 +1,6 @@
 import pytest
 from tests.factories.comment import FakeCommentFactory
-from parker_board.model.comment import Comment
+from app.model.comment import Comment
 
 
 

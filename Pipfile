@@ -10,13 +10,15 @@ flask-migrate = "*"
 mysqlclient = "*"
 flask-marshmallow = "*"
 marshmallow-sqlalchemy = "*"
-pytest = "*"
-factory-boy = "*"
+
 webargs = "*"
-pytest-flask = "*"
 flask-login = "*"
 
 [dev-packages]
+factory-boy = "*"
+pytest = "*"
+pytest-flask = "*"
+pytest-env = "*"
 
 [requires]
 python_version = "3.6"

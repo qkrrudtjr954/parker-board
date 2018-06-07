@@ -1,6 +1,6 @@
 import factory
-from parker_board.model import db
-from parker_board.model.post import Post
+from app.model import db
+from app.model.post import Post
 from datetime import datetime
 from tests.factories.board import FakeBoardFactory
 from tests.factories.user import FakeUserFactory

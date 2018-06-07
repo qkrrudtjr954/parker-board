@@ -1,9 +1,9 @@
 from tests.factories.board import FakeBoardAndUserFactory
-from parker_board.model.board import Board
-from parker_board.schema.board import board_schema
-from parker_board.schema.resp import resp_schema
-from parker_board.schema.user import login_schema
-from parker_board.model.user import User
+from app.model.board import Board
+from app.schema.board import board_schema
+from app.schema.resp import resp_schema
+from app.schema.user import login_schema
+from app.model.user import User
 import pytest
 
 
