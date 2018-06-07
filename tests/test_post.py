@@ -4,7 +4,7 @@ from tests.factories.board import FakeBoardAndUserFactory
 from tests.factories.user import FakeUserFactory
 from app.model.user import User
 from app.model.board import Board
-from app.model.post import Post
+from app.model.post import Post, PostStatus
 from app.schema.post import post_schema
 from app.schema.user import login_schema
 from app.schema.resp import resp_schema
@@ -45,12 +45,12 @@ class TestCreatePost:
     #     resp = tclient.post('/users/login', data=login_schema.dumps(login_user).data, content_type='application/json')
     #     result = resp_schema.loads(resp.data.decode()).data
     #     print(result)
-    #     assert result['status_code'] == 200
+    #     assert resp.status_code == 200
     #
     #     resp = tclient.post('/boards/%d/posts' % fpost.board_id, data=post_schema.dumps(fpost).data, content_type='application/json')
     #     result = resp_schema.loads(resp.data.decode()).data
     #
-    #     assert result['status_code'] == 200
+    #     assert resp.status_code == 200
     #     assert Post.query.one()
 
 
@@ -75,14 +75,14 @@ class TestUpdatePost:
         resp = tclient.post('/users/login', data=login_schema.dumps(fpost.user).data, content_type='application/json')
         result = resp_schema.loads(resp.data.decode()).data
         assert resp.status_code == 200
-        assert result['status_code'] == 200
+        assert resp.status_code == 200
 
         update_data = dict(title='changed title', content='changed content', comments=[])
         resp = tclient.patch('/posts/%d' % fpost.id, data=post_schema.dumps(update_data).data, content_type='application/json')
         result = resp_schema.loads(resp.data.decode()).data
 
         assert resp.status_code == 200
-        assert result['status_code'] == 200
+        assert resp.status_code == 200
         assert fpost.title == 'changed title'
         assert fpost.content == 'changed content'
 
@@ -98,14 +98,14 @@ class TestUpdatePost:
         resp = tclient.post('/users/login', data=login_schema.dumps(login_user).data, content_type='application/json')
         result = resp_schema.loads(resp.data.decode()).data
         assert resp.status_code == 200
-        assert result['status_code'] == 200
+        assert resp.status_code == 200
 
         update_data = dict(title='changed title', content='changed content', comments=[])
         resp = tclient.patch('/posts/%d' % fpost.id, data=post_schema.dumps(update_data).data,
                              content_type='application/json')
         result = resp_schema.loads(resp.data.decode()).data
         assert resp.status_code == 401
-        assert result['status_code'] == 401
+        assert resp.status_code == 401
         assert result['errors']['message'] == 'Can\'t update.'
 
 
@@ -118,11 +118,11 @@ class TestDeletePost:
         resp = tclient.post('/users/login', data=login_schema.dumps(fpost.user).data, content_type='application/json')
         result = resp_schema.loads(resp.data.decode()).data
         assert resp.status_code == 200
-        assert result['status_code'] == 200
 
         resp = tclient.delete('/posts/%d' % fpost.id, content_type='application/json')
         assert resp.status_code == 204
-        assert resp.status_code == 204
+
+        assert fpost.status == PostStatus.DELETED
 
     def test_delete_no_login(self, tsession, tclient, fpost):
         tsession.add(fpost)
@@ -133,7 +133,7 @@ class TestDeletePost:
         result = resp_schema.loads(resp.data.decode()).data
 
         assert resp.status_code == 400
-        assert result['status_code'] == 400
+        assert resp.status_code == 400
         assert result['errors']['message'] == 'Login First.'
 
     def test_delete_no_auth(self, tsession, tclient, fpost):
@@ -148,12 +148,12 @@ class TestDeletePost:
         resp = tclient.post('/users/login', data=login_schema.dumps(login_user).data, content_type='application/json')
         result = resp_schema.loads(resp.data.decode()).data
         assert resp.status_code == 200
-        assert result['status_code'] == 200
+        assert resp.status_code == 200
 
         resp = tclient.delete('/posts/%d' % fpost.id, content_type='application/json')
         assert resp.status_code == 401
         result = resp_schema.loads(resp.data.decode()).data
-        assert result['status_code'] == 401
+        assert resp.status_code == 401
         assert result['errors']['message'] == 'Can\'t delete.'
 
 
@@ -168,13 +168,13 @@ class TestReadPost:
         resp = tclient.post('/users/login', data=login_schema.dumps(login_user).data, content_type='application/json')
         result = resp_schema.loads(resp.data.decode()).data
         assert resp.status_code == 200
-        assert result['status_code'] == 200
+        assert resp.status_code == 200
 
         resp = tclient.get('/posts/%d' % fpost.id, content_type='application/json')
         assert resp.status_code == 200
 
         result = resp_schema.loads(resp.data.decode()).data
-        assert result['status_code'] == 200
+        assert resp.status_code == 200
         assert result['data']['content'] == fpost.content
 
     def test_read_no_login(self, fpost, tsession, tclient):
@@ -186,5 +186,5 @@ class TestReadPost:
         assert resp.status_code == 400
 
         result = resp_schema.loads(resp.data.decode()).data
-        assert result['status_code'] == 400
+        assert resp.status_code == 400
         assert result['errors']['message'] == 'Login First.'

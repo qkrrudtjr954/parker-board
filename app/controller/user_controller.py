@@ -1,6 +1,6 @@
 from flask import Blueprint, request
 from app import login_manager
-from app.model.user import User
+from app.model.user import User, UserStatus
 from app.service import user_service
 from webargs.flaskparser import use_args
 from app.schema.user import user_schema, login_schema
@@ -29,15 +29,15 @@ def login_logic(user_args):
     user = user_service.login(user_args)
 
     if user:
-        if user.status == 2:
-            result['errors'] = dict(error='Leaved User.')
+        if user.status == UserStatus.INACTIVE:
+            result['errors'] = dict(message='Leaved User.')
             result['status_code'] = 401
         else:
             login_user(user)
             result['data'] = dict(user=user_schema.dump(user).data, next=next)
             result['status_code'] = 200
     else:
-        result['errors'] = dict(error='No User.')
+        result['errors'] = dict(message='No User.')
         result['status_code'] = 400
 
     return resp_schema.jsonify(result), result['status_code']

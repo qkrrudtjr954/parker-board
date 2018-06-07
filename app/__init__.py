@@ -1,6 +1,7 @@
 from flask import Flask, request, redirect
 from flask_login import LoginManager
 from app.schema.resp import resp_schema
+from flask_debugtoolbar import DebugToolbarExtension
 
 
 login_manager = LoginManager()
@@ -14,6 +15,8 @@ def create_app():
         os.environ['APP_SETTING'] = 'config/dev.cfg'
 
     app.config.from_envvar('APP_SETTING', silent=True)
+
+    toolbar = DebugToolbarExtension(app)
 
     from app import model as db
     db.init_app(app)
@@ -46,13 +49,8 @@ def create_app():
         # 로그인이 안됐을때, 로그인 뷰로 이동 시킴.
         next = request.path if request.path else '/'
 
-        result = {'errors':dict(message='Login First.', next=next), 'status_code':404}
+        result = {'errors': dict(message='Login First.', next=next), 'status_code':404}
         return resp_schema.jsonify(result), 400
-
-    @app.errorhandler(404)
-    def not_found_handler(err):
-        result = {'errors':dict(message=str(err)), 'status_code':404}
-        return resp_schema.jsonify(result), 404
 
     @app.errorhandler(422)
     def schema_validation_handler(err):

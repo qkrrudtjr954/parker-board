@@ -22,12 +22,12 @@ class TestCreateBoard:
     #
     #     resp = tclient.post('/users/login', data=login_schema.dumps(user).data, content_type='application/json')
     #     result = resp_schema.loads(resp.data.decode()).data
-    #     assert result['status_code'] == 200
+    #     assert resp.status_code == 200
     #
     #     board = FakeBoardFactory.build()
     #     resp = tclient.post('/boards', data=board_schema.dumps(board).data, content_type='application/json')
     #     result = resp_schema.loads(resp.data.decode()).data
-    #     assert result['status_code'] == 200
+    #     assert resp.status_code == 200
 
 
 class TestReadBoard:
@@ -53,7 +53,7 @@ class TestUpdateBoard:
 
         resp = tclient.post('/users/login', data=login_schema.dumps(login_user).data, content_type='application/json')
         result = resp_schema.loads(resp.data.decode()).data
-        assert result['status_code'] == 200
+        assert resp.status_code == 200
 
         # board update
         board = fboards[0]
@@ -61,7 +61,7 @@ class TestUpdateBoard:
         resp = tclient.patch('/boards/%d' % board.id, data=board_schema.dumps(update_data).data, content_type='application/json')
         result = resp_schema.loads(resp.data.decode()).data
 
-        assert result['status_code'] == 200
+        assert resp.status_code == 200
         assert board.title == 'changed title'
 
     def test_update_no_login(self, tclient, fboards):
@@ -75,7 +75,7 @@ class TestUpdateBoard:
         resp = tclient.patch('/boards/%d' % board.id, data=board_schema.dumps(update_data).data, content_type='application/json')
         result = resp_schema.loads(resp.data.decode()).data
 
-        assert result['status_code'] == 400
+        assert resp.status_code == 400
         assert result['errors']['message'] == 'Login First.'
         assert board.title != 'changed title'
 
@@ -89,7 +89,7 @@ class TestUpdateBoard:
 
         resp = tclient.post('/users/login', data=login_schema.dumps(login_user).data, content_type='application/json')
         result = resp_schema.loads(resp.data.decode()).data
-        assert result['status_code'] == 200
+        assert resp.status_code == 200
 
         # board update
         board = fboards[0]
@@ -100,7 +100,7 @@ class TestUpdateBoard:
         resp = tclient.patch('/boards/%d' % board.id, data=board_schema.dumps(update_data).data, content_type='application/json')
         result = resp_schema.loads(resp.data.decode()).data
 
-        assert result['status_code'] == 401
+        assert resp.status_code == 401
         assert result['errors']['message'] == 'Can\'t update.'
         assert board.title != 'changed title'
 
@@ -116,14 +116,14 @@ class TestDeleteBoard:
 
         resp = tclient.post('/users/login', data=login_schema.dumps(login_user).data, content_type='application/json')
         result = resp_schema.loads(resp.data.decode()).data
-        assert result['status_code'] == 200
+        assert resp.status_code == 200
 
         # board delete
         board = fboards[0]
         resp = tclient.delete('/boards/%d' % board.id, content_type='application/json')
         result = resp_schema.loads(resp.data.decode()).data
 
-        assert result['status_code'] == 200
+        assert resp.status_code == 200
         assert board.status == BoardStatus.DELETED
         assert Board.query.filter(Board.status!=2).count() == 9
 
@@ -138,7 +138,7 @@ class TestDeleteBoard:
         resp = tclient.delete('/boards/%d' % board.id, content_type='application/json')
         result = resp_schema.loads(resp.data.decode()).data
 
-        assert result['status_code'] == 400
+        assert resp.status_code == 400
         assert result['errors']['message'] == 'Login First.'
         assert board.status != 2
 
@@ -152,7 +152,7 @@ class TestDeleteBoard:
 
         resp = tclient.post('/users/login', data=login_schema.dumps(login_user).data, content_type='application/json')
         result = resp_schema.loads(resp.data.decode()).data
-        assert result['status_code'] == 200
+        assert resp.status_code == 200
 
         # board delete
         board = fboards[0]
@@ -162,7 +162,7 @@ class TestDeleteBoard:
         resp = tclient.delete('/boards/%d' % board.id, content_type='application/json')
         result = resp_schema.loads(resp.data.decode()).data
 
-        assert result['status_code'] == 401
+        assert resp.status_code == 401
         assert result['errors']['message'] == 'Can\'t delete.'
         assert board.status == 0
         assert Board.query.filter(Board.status != 2).count() == 10

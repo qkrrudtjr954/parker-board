@@ -29,11 +29,6 @@ def tsession(tapp):
     session.rollback()
 
 
-def test_app(tapp):
-    assert tapp.config['TESTING']
-    assert tapp.config['SQLALCHEMY_DATABASE_URI']=='mysql://root:root@localhost/parkertest'
-
-
 def test_session(tsession):
     FakeUserFactory()
     assert tsession.query(User).count() == 1

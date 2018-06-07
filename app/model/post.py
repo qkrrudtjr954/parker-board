@@ -1,7 +1,16 @@
+import enum
 from datetime import datetime
-from app.model.comment import Comment
+
+from sqlalchemy_utils import ChoiceType
+
+from app.model.comment import Comment, CommentStatus
 
 from app.model import db
+
+
+class PostStatus(enum.Enum):
+    NOMAL = 0
+    DELETED = 2
 
 
 class Post(db.Model):
@@ -9,7 +18,7 @@ class Post(db.Model):
     title = db.Column(db.String(200), nullable=False)
     content = db.Column(db.String(2000), nullable=False)
     description = db.Column(db.String(200), nullable=True)
-    status = db.Column(db.SmallInteger, default=0)
+    status = db.Column(ChoiceType(PostStatus), default=PostStatus.NOMAL)
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
     user = db.relationship("User")
@@ -17,13 +26,15 @@ class Post(db.Model):
     board_id = db.Column(db.Integer, db.ForeignKey('board.id'), nullable=False)
     board = db.relationship("Board", back_populates="posts")
 
-    comments = db.relationship('Comment', backref='post', lazy=True, primaryjoin='and_(Post.id == Comment.post_id, Comment.status != 2)')
+    comments = db.relationship('Comment', backref='post', lazy=True)
+
+    # comments = db.relationship('Comment', backref='post', lazy=True, primaryjoin='and_(Post.id == Comment.post_id, Comment.status != CommentStatus.DELETED)')
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     def __repr__(self):
-        return "<Post title: %s, content: %s, description: %s, status: %d," \
+        return "<Post title: %s, content: %s, description: %s, status: %s," \
                " created_at: %s, updated_at: %s>"\
                % (self.title, self.content, self.description, self.status,
                   self.created_at, self.updated_at)
@@ -47,6 +58,6 @@ class Post(db.Model):
         self.updated_at = datetime.utcnow()
 
     def change_status(self):
-        self.status = 2
+        self.status = PostStatus.DELETED
 
 

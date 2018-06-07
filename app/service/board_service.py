@@ -17,7 +17,7 @@ def create(board, user_id):
 
     except Exception:
         db.session.rollback()
-        result['errors'] = dict(error='Server Error. Please Try again.')
+        result['errors'] = dict(message='Server Error. Please Try again.')
         result['status_code'] = 500
 
     return result
@@ -37,10 +37,10 @@ def delete(bid):
             result['data'] = board_schema.dump(board).data
             result['status_code'] = 200
         else:
-            result['errors'] = dict(error='Can\'t delete.')
+            result['errors'] = dict(message='Can\'t delete.')
             result['status_code'] = 401
     else:
-        result['errors'] = dict(error='No Board.')
+        result['errors'] = dict(message='No Board.')
         result['status_code'] = 400
 
     return result
@@ -63,10 +63,10 @@ def update(board_id, data, user):
             result['data'] = board_schema.dump(board).data
             result['status_code'] = 200
         else:
-            result['errors'] = dict(error='Can\'t update.')
+            result['errors'] = dict(message='Can\'t update.')
             result['status_code'] = 401
     else:
-        result['errors'] = dict(error='No Board.')
+        result['errors'] = dict(message='No Board.')
         result['status_code'] = 400
 
     return result

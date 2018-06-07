@@ -17,7 +17,7 @@ def create(comment, pid):
         result['data'] = comment_schema.dump(comment).data
         result['status_code'] = 200
     except Exception:
-        result['errors'] = dict(error='Server Error. Please Try again.')
+        result['errors'] = dict(message='Server Error. Please Try again.')
         result['status_code'] = 500
 
     return result
@@ -40,7 +40,7 @@ def delete(cid):
             result['errors'] = 'Can\'t delete.'
             result['status_code'] = 401
     else:
-        result['errors'] = dict(error='No Comment.')
+        result['errors'] = dict(message='No Comment.')
         result['status_code'] = 400
 
     return result
@@ -64,7 +64,7 @@ def update(cid, data):
             result['errors'] = 'Can\'t update.'
             result['status_code'] = 401
     else:
-        result['errors'] = dict(error='No Comment.')
+        result['errors'] = dict(message='No Comment.')
         result['status_code'] = 400
 
     return result

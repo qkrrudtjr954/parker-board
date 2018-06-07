@@ -18,13 +18,13 @@ def register(user_data):
     except IntegrityError:
         db.session.rollback()
 
-        result['errors'] = dict(error='Duplicate Email.')
+        result['errors'] = dict(message='Duplicate Email.')
         result['status_code'] = 400
 
     except Exception as e:
         print(e)
         db.session.rollback()
-        result['errors'] = dict(error='Server Error. Please try again.')
+        result['errors'] = dict(message='Server Error. Please try again.')
         result['status_code'] = 500
 
     return result
@@ -50,10 +50,10 @@ def leave(uid):
             result['status_code'] = 200
         except Exception:
             db.session.rollback()
-            result['errors'] = dict(error='Server Error. Please try again.')
+            result['errors'] = dict(message='Server Error. Please try again.')
             result['status_code'] = 500
 
         return result
     else:
-        result['errors'] = dict(error='No User')
+        result['errors'] = dict(message='No User')
         result['status_code'] = 500
