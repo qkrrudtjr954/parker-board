@@ -1,13 +1,14 @@
-from parker_board.schema.board import board_schema, boards_schema
-from parker_board.model import db
-from parker_board.model.board import Board
+from app.schema.board import board_schema, boards_schema
+from app.model import db
+from app.model.board import Board
 from flask_login import current_user
 
 
-def create(board):
+def create(board, user_id):
     result = {}
 
     try:
+        board.user_id = user_id
         db.session.add(board)
         db.session.flush()
 
@@ -28,7 +29,7 @@ def delete(bid):
 
     if board:
         if board.user_id == current_user.id:
-            board.change_status()
+            board.deleted()
 
             db.session.add(board)
             db.session.flush()
@@ -45,12 +46,13 @@ def delete(bid):
     return result
 
 
-def update(bid, data):
-    board = Board.query.get(bid)
+def update(board_id, data, user):
+    board = Board.query.get(board_id)
     result = {}
 
     if board:
-        if board.user_id == current_user.id:
+        if board.user_id == user.id:
+
             board.set_title(data.title if data.title else board.title)
             board.set_description(data.description if data.description else board.description)
             board.set_updated_at()

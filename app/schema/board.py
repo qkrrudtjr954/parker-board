@@ -1,7 +1,7 @@
-from parker_board.model.board import Board
-from parker_board.schema import ma
+from app.model.board import Board
+from app.schema import ma
 from marshmallow import fields
-from parker_board.schema.user import SimpleUserSchema
+from app.schema.user import SimpleUserSchema
 
 
 class BoardSchema(ma.ModelSchema):

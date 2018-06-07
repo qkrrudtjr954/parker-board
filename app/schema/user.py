@@ -1,5 +1,5 @@
-from parker_board.schema import ma
-from parker_board.model.user import User
+from app.schema import ma
+from app.model.user import User
 from marshmallow import fields, ValidationError, validates
 
 class UserSchema(ma.ModelSchema):

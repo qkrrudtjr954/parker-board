@@ -1,8 +1,8 @@
-from parker_board.model import db
+from app.model import db
 from flask_login import UserMixin
-from parker_board.model.board import Board
-from parker_board.model.post import Post
-from parker_board.model.comment import Comment
+from app.model.board import Board
+from app.model.post import Post
+from app.model.comment import Comment
 from datetime import datetime
 
 
@@ -12,9 +12,9 @@ class User(UserMixin, db.Model):
     password = db.Column(db.String(200), nullable=False)
     status = db.Column(db.SmallInteger, default=0)
 
-    boards = db.relationship('Board', backref='user', lazy=True)
-    posts = db.relationship('Post', backref='user', lazy=True)
-    comments = db.relationship('Comment', backref='user', lazy=True)
+    # boards = db.relationship('Board', backref='user', lazy=True)
+    # posts = db.relationship('Post', backref='user', lazy=True)
+    # comments = db.relationship('Comment', backref='user', lazy=True)
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow)

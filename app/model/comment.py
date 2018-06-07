@@ -1,5 +1,5 @@
 from datetime import datetime
-from parker_board.model import db
+from app.model import db
 
 
 class Comment(db.Model):

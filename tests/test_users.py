@@ -1,8 +1,8 @@
 import pytest
 from tests.factories.user import FakeUserFactory
-from parker_board.schema.resp import resp_schema
-from parker_board.schema.user import login_schema
-from parker_board.model.user import User
+from app.schema.resp import resp_schema
+from app.schema.user import login_schema
+from app.model.user import User
 from marshmallow import ValidationError
 
 
@@ -26,12 +26,11 @@ class TestRegister():
         with pytest.raises(ValidationError):
             resp = tclient.post('/users', data=login_schema.dumps(no_email_user).data, content_type='application/json')
             result = resp_schema.loads(resp.data.decode()).data
-            assert result['status_code'] == 422
 
     def test_no_password(self, tclient, no_password_user):
         resp = tclient.post('/users', data=login_schema.dumps(no_password_user).data, content_type='application/json')
         result = resp_schema.loads(resp.data.decode()).data
-        assert result['status_code'] == 422
+        assert resp.status_code == 422
 
     def test_register(self, tclient, fuser):
         resp = tclient.post('/users', data=login_schema.dumps(fuser).data, content_type='application/json')
@@ -44,7 +43,7 @@ class TestRegister():
         result = resp_schema.loads(resp.data.decode()).data
 
         assert result['status_code'] == 400
-        assert result['errors']['error'] == 'Duplicate Email.'
+        assert result['errors']['message'] == 'Duplicate Email.'
 
 
 @pytest.fixture(scope='function')
@@ -88,14 +87,14 @@ class TestLogin():
         result = resp_schema.loads(resp.data.decode()).data
 
         assert result['status_code'] == 401
-        assert result['errors']['error'] == 'Leaved User.'
+        assert result['errors']['message'] == 'Leaved User.'
 
     def test_no_user_login(self, tclient, fuser):
         resp = tclient.post('/users/login', data=login_schema.dumps(fuser).data, content_type='application/json')
         result = resp_schema.loads(resp.data.decode()).data
 
         assert result['status_code'] == 400
-        assert result['errors']['error'] == 'No User.'
+        assert result['errors']['message'] == 'No User.'
 
 
 class TestLeave():
@@ -104,7 +103,7 @@ class TestLeave():
         result = resp_schema.loads(resp.data.decode()).data
 
         assert result['status_code'] == 400
-        assert result['errors']['error'] == 'Login First.'
+        assert result['errors']['message'] == 'Login First.'
 
         resp = tclient.post('/users/login', data=login_schema.dumps(dummy_register).data, content_type='application/json')
         result = resp_schema.loads(resp.data.decode()).data

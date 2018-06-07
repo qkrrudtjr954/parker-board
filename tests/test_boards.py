@@ -1,9 +1,9 @@
 from tests.factories.board import FakeBoardAndUserFactory
-from parker_board.model.board import Board
-from parker_board.schema.board import board_schema
-from parker_board.schema.resp import resp_schema
-from parker_board.schema.user import login_schema
-from parker_board.model.user import User
+from app.model.board import Board, BoardStatus
+from app.schema.board import board_schema
+from app.schema.resp import resp_schema
+from app.schema.user import login_schema
+from app.model.user import User
 import pytest
 
 
@@ -76,7 +76,7 @@ class TestUpdateBoard:
         result = resp_schema.loads(resp.data.decode()).data
 
         assert result['status_code'] == 400
-        assert result['errors']['error'] == 'Login First.'
+        assert result['errors']['message'] == 'Login First.'
         assert board.title != 'changed title'
 
     def test_update_no_auth(self, tclient, fboards):
@@ -101,7 +101,7 @@ class TestUpdateBoard:
         result = resp_schema.loads(resp.data.decode()).data
 
         assert result['status_code'] == 401
-        assert result['errors']['error'] == 'Can\'t update.'
+        assert result['errors']['message'] == 'Can\'t update.'
         assert board.title != 'changed title'
 
 
@@ -124,7 +124,7 @@ class TestDeleteBoard:
         result = resp_schema.loads(resp.data.decode()).data
 
         assert result['status_code'] == 200
-        assert board.status == 2
+        assert board.status == BoardStatus.DELETED
         assert Board.query.filter(Board.status!=2).count() == 9
 
     def test_delete_no_login(self, tclient, fboards):
@@ -139,7 +139,7 @@ class TestDeleteBoard:
         result = resp_schema.loads(resp.data.decode()).data
 
         assert result['status_code'] == 400
-        assert result['errors']['error'] == 'Login First.'
+        assert result['errors']['message'] == 'Login First.'
         assert board.status != 2
 
     def test_delete_no_auth(self, tclient, fboards):
@@ -163,6 +163,6 @@ class TestDeleteBoard:
         result = resp_schema.loads(resp.data.decode()).data
 
         assert result['status_code'] == 401
-        assert result['errors']['error'] == 'Can\'t delete.'
+        assert result['errors']['message'] == 'Can\'t delete.'
         assert board.status == 0
         assert Board.query.filter(Board.status != 2).count() == 10

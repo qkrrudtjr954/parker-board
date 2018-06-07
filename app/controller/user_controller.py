@@ -1,10 +1,10 @@
 from flask import Blueprint, request
-from parker_board import login_manager
-from parker_board.model.user import User
-from parker_board.service import user_service
+from app import login_manager
+from app.model.user import User
+from app.service import user_service
 from webargs.flaskparser import use_args
-from parker_board.schema.user import user_schema, login_schema
-from parker_board.schema.resp import resp_schema
+from app.schema.user import user_schema, login_schema
+from app.schema.resp import resp_schema
 from flask_login import login_user, login_required, logout_user, current_user
 
 bp = Blueprint('user', __name__, url_prefix='/users')

@@ -7,16 +7,19 @@ name = "pypi"
 flask = "*"
 flask-sqlalchemy = "*"
 flask-migrate = "*"
-mysqlclient = "*"
+flask-login = "*"
 flask-marshmallow = "*"
 marshmallow-sqlalchemy = "*"
-pytest = "*"
-factory-boy = "*"
+sqlalchemy-utils = "*"
+mysqlclient = "*"
 webargs = "*"
-pytest-flask = "*"
-flask-login = "*"
+
 
 [dev-packages]
+factory-boy = "*"
+pytest = "*"
+pytest-flask = "*"
+pytest-env = "*"
 
 [requires]
 python_version = "3.6"

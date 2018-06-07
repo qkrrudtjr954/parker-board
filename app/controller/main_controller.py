@@ -1,7 +1,7 @@
 from flask import Blueprint, request
-from parker_board.schema.board import main_boards_schema
-from parker_board.model.board import Board
-from parker_board.schema.resp import resp_schema
+from app.schema.board import main_boards_schema
+from app.model.board import Board
+from app.schema.resp import resp_schema
 
 
 bp = Blueprint('main', __name__)

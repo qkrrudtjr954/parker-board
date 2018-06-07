@@ -1,8 +1,8 @@
 import pytest
-from parker_board import create_app
-from parker_board.model import db
+from app import create_app
+from app.model import db
 from tests.factories.user import FakeUserFactory
-from parker_board.model.user import User
+from app.model.user import User
 
 
 @pytest.fixture(scope='session')

@@ -1,6 +1,6 @@
 import factory
-from parker_board.model import db
-from parker_board.model.comment import Comment
+from app.model import db
+from app.model.comment import Comment
 from datetime import datetime
 
 

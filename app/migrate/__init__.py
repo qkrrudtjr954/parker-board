@@ -1,5 +1,5 @@
 from flask_migrate import Migrate, Manager, MigrateCommand
-from parker_board.model import db
+from app.model import db
 
 
 migrate = Migrate(db=db)

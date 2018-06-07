@@ -1,7 +1,7 @@
-from parker_board.schema import ma
-from parker_board.model.comment import Comment
+from app.schema import ma
+from app.model.comment import Comment
 from marshmallow import fields
-from parker_board.schema.user import SimpleUserSchema
+from app.schema.user import SimpleUserSchema
 
 
 class CommentSchema(ma.ModelSchema):

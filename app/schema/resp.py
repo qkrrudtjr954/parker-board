@@ -1,4 +1,4 @@
-from parker_board.schema import ma
+from app.schema import ma
 from marshmallow import fields
 
 

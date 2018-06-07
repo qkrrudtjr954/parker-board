@@ -1,9 +1,9 @@
 from flask import Blueprint, abort, request
 from webargs.flaskparser import use_args
-from parker_board.service import post_service
-from parker_board.model.post import Post
-from parker_board.schema.post import post_schema, simple_posts_schema
-from parker_board.schema.resp import resp_schema
+from app.service import post_service
+from app.model.post import Post
+from app.schema.post import post_schema, simple_posts_schema
+from app.schema.resp import resp_schema
 from flask_login import login_required, current_user
 
 
@@ -46,12 +46,11 @@ def detail_view(pid):
 @login_required
 @use_args(post_schema)
 def create(post_args, bid):
-    post_args.set_board_id(bid)
-    post_args.set_user_id(current_user.id)
-
-    result = post_service.create(post_args)
-
-    return resp_schema.jsonify(result), result['status_code']
+    try:
+        result = post_service.create(bid, post_args, current_user)
+        return resp_schema.jsonify(result), 200
+    except Exception as e:
+        return 'Server Error.', 500
 
 
 # update post

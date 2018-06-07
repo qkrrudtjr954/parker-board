@@ -1,6 +1,6 @@
-from parker_board.model import db
-from parker_board.model.user import User
-from parker_board.schema.user import user_schema
+from app.model import db
+from app.model.user import User
+from app.schema.user import user_schema
 from sqlalchemy.exc import IntegrityError
 
 

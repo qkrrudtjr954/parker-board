@@ -1,7 +1,8 @@
-from parker_board.model.post import Post
-from parker_board.model.comment import Comment
-from parker_board.schema.post import post_schema
-from parker_board.model import db
+from app.model.board import Board
+from app.model.post import Post
+from app.model.comment import Comment
+from app.schema.post import post_schema
+from app.model import db
 from flask_login import current_user
 
 
@@ -23,21 +24,17 @@ def read(pid):
     return result
 
 
-def create(post):
-    result = {}
+def create(board_id, post: Post, user):
     try:
+        board = Board.find_or_fail(board_id)
+        post.board = board
+        post.user = user
+
         db.session.add(post)
         db.session.flush()
-
-        result['data'] = post_schema.dump(post).data
-        result['status_code'] = 200
-    except Exception:
+    except Exception as e:
         db.session.rollback()
-
-        result['errors'] = dict(error='Server Error.')
-        result['status_code'] = 500
-
-    return result
+        raise e
 
 
 def delete(pid):

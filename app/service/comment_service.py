@@ -1,6 +1,6 @@
-from parker_board.schema.comment import comment_schema
-from parker_board.model.comment import Comment
-from parker_board.model import db
+from app.schema.comment import comment_schema
+from app.model.comment import Comment
+from app.model import db
 from flask_login import current_user
 
 

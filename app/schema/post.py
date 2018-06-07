@@ -1,8 +1,8 @@
 from marshmallow import fields, post_dump
-from parker_board.schema import ma
-from parker_board.model.post import Post
-from parker_board.schema.comment import CommentSchema
-from parker_board.schema.user import SimpleUserSchema
+from app.schema import ma
+from app.model.post import Post
+from app.schema.comment import CommentSchema
+from app.schema.user import SimpleUserSchema
 
 
 class PostSchema(ma.ModelSchema):

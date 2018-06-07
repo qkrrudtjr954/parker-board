@@ -1,9 +1,11 @@
 from flask import Blueprint
-from parker_board.service import board_service
-from parker_board.schema.board import board_schema
+
+from app.model.board import Board
+from app.service import board_service
+from app.schema.board import board_schema
 from webargs.flaskparser import use_args
 from flask_login import login_required, current_user
-from parker_board.schema.resp import resp_schema
+from app.schema.resp import resp_schema
 
 
 bp = Blueprint('board', __name__)
@@ -18,9 +20,8 @@ Board
 @bp.route('/boards', methods=['POST'])
 @login_required
 @use_args(board_schema)
-def create(board_args):
-    board_args.set_user_id(current_user.id)
-    result = board_service.create(board_args)
+def create(board: Board):
+    result = board_service.create(board, current_user.id)
     return resp_schema.jsonify(result), result['status_code']
 
 
@@ -29,7 +30,7 @@ def create(board_args):
 @use_args(board_schema)
 @login_required
 def update(board_args, bid):
-    result = board_service.update(bid, board_args)
+    result = board_service.update(bid, board_args, current_user)
     return resp_schema.jsonify(result), result['status_code']
 
 
