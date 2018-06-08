@@ -1,9 +1,9 @@
 import enum
 from datetime import datetime
-
 from sqlalchemy_utils import ChoiceType
 
 from app.model import db
+from app.model.user import User
 
 
 class CommentStatus(enum.Enum):
@@ -17,9 +17,9 @@ class Comment(db.Model):
     status = db.Column(ChoiceType(CommentStatus), default=CommentStatus.NOMAL)
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
+    user = db.relationship("User")
 
-    # user = db.relationship("User")
+    post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow)

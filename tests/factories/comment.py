@@ -2,6 +2,8 @@ import factory
 from app.model import db
 from app.model.comment import Comment
 from datetime import datetime
+from tests.factories.user import FakeUserFactory
+from tests.factories.post import FakePostFactory
 
 
 class FakeCommentFactory(factory.alchemy.SQLAlchemyModelFactory):
@@ -9,8 +11,8 @@ class FakeCommentFactory(factory.alchemy.SQLAlchemyModelFactory):
     content = factory.Faker('sentence')
     status = 0
 
-    user = factory.SubFactory('tests.factories.user.FakeUserFactory')
-    post = factory.SubFactory('tests.factories.post.FakePostFactory')
+    user = factory.SubFactory(FakeUserFactory)
+    post = factory.SubFactory(FakePostFactory)
 
     created_at = factory.LazyFunction(datetime.utcnow)
     updated_at = factory.LazyFunction(datetime.utcnow)

@@ -43,7 +43,7 @@ class TestRegister():
         result = resp_schema.loads(resp.data.decode()).data
 
         assert resp.status_code == 400
-        assert result['errors']['message'] == 'Duplicate Email.'
+        assert result['errors']['message'] == 'That Email already exists.'
 
 
 @pytest.fixture(scope='function')

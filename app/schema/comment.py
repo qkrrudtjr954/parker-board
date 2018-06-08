@@ -1,11 +1,11 @@
 from app.schema import ma
 from app.model.comment import Comment
 from marshmallow import fields
-from app.schema.user import SimpleUserSchema
+from app.schema.user import simple_user_schema
 
 
 class CommentSchema(ma.ModelSchema):
-    user = fields.Nested(SimpleUserSchema())
+    user = fields.Nested(simple_user_schema)
 
     class Meta:
         strict = True

@@ -1,1 +1,6 @@
-{}
+{
+  "test_boards.py::TestDeleteBoard::()::test_delete_board": true,
+  "test_boards.py::TestDeleteBoard::()::test_delete_no_auth": true,
+  "test_boards.py::TestUpdateBoard::()::test_update_board": true,
+  "test_boards.py::TestUpdateBoard::()::test_update_no_auth": true
+}

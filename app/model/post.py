@@ -3,9 +3,9 @@ from datetime import datetime
 
 from sqlalchemy_utils import ChoiceType
 
-from app.model.comment import Comment, CommentStatus
-
 from app.model import db
+from app.model.user import User
+from app.model.comment import Comment
 
 
 class PostStatus(enum.Enum):
@@ -24,11 +24,8 @@ class Post(db.Model):
     user = db.relationship("User")
 
     board_id = db.Column(db.Integer, db.ForeignKey('board.id'), nullable=False)
-    board = db.relationship("Board", back_populates="posts")
 
-    comments = db.relationship('Comment', backref='post', lazy=True)
-
-    # comments = db.relationship('Comment', backref='post', lazy=True, primaryjoin='and_(Post.id == Comment.post_id, Comment.status != CommentStatus.DELETED)')
+    comments = db.relationship("Comment", backref='post', lazy=True)
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow)

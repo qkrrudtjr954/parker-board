@@ -1,7 +1,7 @@
 import pytest
-from tests.factories.post import FakeUserAndPostFactory, FakePostFactory
-from tests.factories.board import FakeBoardAndUserFactory
+from tests.factories.post import FakePostFactory
 from tests.factories.user import FakeUserFactory
+from tests.factories.board import FakeBoardFactory
 from app.model.user import User
 from app.model.board import Board
 from app.model.post import Post, PostStatus
@@ -12,13 +12,13 @@ from app.schema.resp import resp_schema
 
 @pytest.fixture(scope='function')
 def fboard(tsession):
-    board = FakeBoardAndUserFactory()
+    board = FakeBoardFactory()
     tsession.flush()
     return board
 
 @pytest.fixture(scope='function')
 def fpost(fboard, tsession):
-    post = FakeUserAndPostFactory.build(board_id=fboard.id, board=fboard)
+    post = FakePostFactory.build(board_id=fboard.id, board=fboard)
     return post
 
 

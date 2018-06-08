@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect
+from flask import Flask, request
 from flask_login import LoginManager
 from app.schema.resp import resp_schema
 

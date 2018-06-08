@@ -1,9 +1,9 @@
 import enum
 from datetime import datetime
-
 from sqlalchemy_utils import ChoiceType
 
 from app.model import db
+from app.model.user import User
 from app.model.post import Post
 
 
@@ -21,14 +21,13 @@ class Board(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     user = db.relationship("User")
 
-    posts = db.relationship("Post", back_populates="board")
-    # posts = db.relationship('Post', backref='board', lazy=True, primaryjoin='and_(Board.id == Post.board_id, Post.status != 2)')
+    posts = db.relationship("Post", backref="board", lazy=True)
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     def __repr__(self):
-        return "<Board id: %d, title: %s, description: %s, status: %d," \
+        return "<Board id: %d, title: %s, description: %s, status: %s," \
                " created_at: %s, updated_at: %s>"\
                % (self.id, self.title, self.description, self.status,
                   self.created_at, self.updated_at)

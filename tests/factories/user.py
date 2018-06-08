@@ -8,6 +8,7 @@ class FakeUserFactory(factory.alchemy.SQLAlchemyModelFactory):
     id = factory.Sequence(lambda n: n+1)
     email = factory.Faker('email')
     password = factory.Faker('password')
+
     created_at = factory.LazyFunction(datetime.utcnow)
     updated_at = factory.LazyFunction(datetime.utcnow)
 

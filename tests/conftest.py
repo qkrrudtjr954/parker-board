@@ -1,8 +1,6 @@
 import pytest
 from app import create_app
 from app.model import db
-from tests.factories.user import FakeUserFactory
-from app.model.user import User
 
 
 @pytest.fixture(scope='session')
@@ -15,24 +13,21 @@ def tapp():
 
 
 @pytest.fixture(scope='session')
+def tdb(tapp):
+    db.init_app(tapp)
+    return db
+
+
+@pytest.fixture(scope='session')
 def tclient(tapp):
     client = tapp.test_client()
     return client
 
 
 @pytest.fixture(scope='function')
-def tsession(tapp):
-    db.session.autocommit = False
-    db.session.autoflush = False
-    session = db.session
+def tsession(tdb):
+    tdb.session.autocommit = False
+    tdb.session.autoflush = False
+    session = tdb.session
     yield session
     session.rollback()
-
-
-def test_session(tsession):
-    FakeUserFactory()
-    assert tsession.query(User).count() == 1
-
-
-def test_session_rollback(tsession):
-    assert tsession.query(User).count() == 0

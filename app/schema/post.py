@@ -2,11 +2,11 @@ from marshmallow import fields, post_dump
 from app.schema import ma
 from app.model.post import Post
 from app.schema.comment import CommentSchema
-from app.schema.user import SimpleUserSchema
+from app.schema.user import simple_user_schema
 
 
 class PostSchema(ma.ModelSchema):
-    user = fields.Nested(SimpleUserSchema())
+    user = fields.Nested(simple_user_schema)
     comments = fields.List(fields.Nested(CommentSchema()))
     comments_count = fields.Integer(missing=0, dump_only=True)
 
