@@ -30,9 +30,6 @@ def create_app():
 
     login_manager.init_app(app)
 
-    from app.controller.main_controller import bp as main_bp
-    app.register_blueprint(main_bp)
-
     from app.controller.user_controller import bp as user_bp
     app.register_blueprint(user_bp)
 

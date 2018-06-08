@@ -31,18 +31,3 @@ class Board(db.Model):
                " created_at: %s, updated_at: %s>"\
                % (self.id, self.title, self.description, self.status,
                   self.created_at, self.updated_at)
-
-    def set_user_id(self, uid):
-        self.user_id = uid
-
-    def set_title(self, title):
-        self.title = title
-
-    def set_description(self, description):
-        self.description = description
-
-    def set_updated_at(self):
-        self.updated_at = datetime.utcnow()
-
-    def deleted(self):
-        self.status = BoardStatus.DELETED
