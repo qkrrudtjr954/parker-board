@@ -1,7 +1,6 @@
 from flask import Flask, request, redirect
 from flask_login import LoginManager
 from app.schema.resp import resp_schema
-from flask_debugtoolbar import DebugToolbarExtension
 
 
 login_manager = LoginManager()
@@ -15,8 +14,6 @@ def create_app():
         os.environ['APP_SETTING'] = 'config/dev.cfg'
 
     app.config.from_envvar('APP_SETTING', silent=True)
-
-    toolbar = DebugToolbarExtension(app)
 
     from app import model as db
     db.init_app(app)

@@ -13,7 +13,6 @@ marshmallow-sqlalchemy = "*"
 sqlalchemy-utils = "*"
 mysqlclient = "*"
 webargs = "*"
-flask-debugtoolbar = "*"
 
 [dev-packages]
 factory-boy = "*"
