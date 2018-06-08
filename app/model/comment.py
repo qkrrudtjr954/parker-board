@@ -7,14 +7,14 @@ from app.model.user import User
 
 
 class CommentStatus(enum.Enum):
-    NOMAL = 0
-    DELETED = 1
+    NORMAL = 0
+    DELETED = 2
 
 
 class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True, nullable=False)
     content = db.Column(db.String(1000), nullable=False)
-    status = db.Column(ChoiceType(CommentStatus), default=CommentStatus.NOMAL)
+    status = db.Column(ChoiceType(CommentStatus, impl=db.Integer()), default=CommentStatus.NORMAL)
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     user = db.relationship("User")

@@ -13,9 +13,9 @@ class UserSchema(ma.ModelSchema):
             raise ValidationError('Password too short', status_code=422)
 
     class Meta:
+        sqla_session = db.session
         strict = True
         model = User
-        sqla_session = db.session
 
 
 user_schema = UserSchema()

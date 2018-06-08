@@ -9,7 +9,7 @@ from flask_login import current_user
 
 
 class UserStatus(enum.Enum):
-    ACTIVE = 0
+    ACTIVES = 0
     INACTIVE = 2
 
 
@@ -19,7 +19,7 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(200), unique=True, nullable=False, index=True)
     password = db.Column(db.String(200), nullable=False)
 
-    status = db.Column(ChoiceType(UserStatus), default=UserStatus.ACTIVE)
+    status = db.Column(ChoiceType(UserStatus, impl=db.Integer()), default=UserStatus.ACTIVES)
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow)

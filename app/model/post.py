@@ -9,7 +9,7 @@ from app.model.comment import Comment
 
 
 class PostStatus(enum.Enum):
-    NOMAL = 0
+    NORMAL = 0
     DELETED = 2
 
 
@@ -18,7 +18,7 @@ class Post(db.Model):
     title = db.Column(db.String(200), nullable=False)
     content = db.Column(db.String(2000), nullable=False)
     description = db.Column(db.String(200), nullable=True)
-    status = db.Column(ChoiceType(PostStatus), default=PostStatus.NOMAL)
+    status = db.Column(ChoiceType(PostStatus, impl=db.Integer()), default=PostStatus.NORMAL)
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
     user = db.relationship("User")
