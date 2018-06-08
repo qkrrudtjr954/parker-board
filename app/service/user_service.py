@@ -1,6 +1,7 @@
 from app.model import db
+from app.model.user import User, UserStatus
 
-# user에 필요한 모든 로직을 service 로 옮기고 web 에 관련된 내용만 controller로 빼라.
+
 def register(user):
     try:
         db.session.add(user)
@@ -12,8 +13,30 @@ def register(user):
 
 def leave(user):
     try:
-        user.be_inactive()
+        user.status = UserStatus.INACTIVE.value
         db.session.flush()
-    except Exception:
+
+    except Exception as e:
         db.session.rollback()
         raise e
+
+
+def get_user_by_email_and_password(email, password):
+    user = User.query.filter_by(email=email, password=password).one_or_none()
+    return user
+
+
+def is_exists(user):
+    temp = User.query.filter(User.email == user.email).one_or_none()
+
+    if temp:
+        return True
+    else:
+        return False
+
+
+def is_active(user):
+    if user.status == UserStatus.INACTIVE:
+        return False
+    else:
+        return True

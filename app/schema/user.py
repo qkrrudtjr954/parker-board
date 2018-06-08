@@ -1,11 +1,13 @@
 from app.model import db
 from app.schema import ma
-from app.model.user import User
+from app.model.user import User, UserStatus
 from marshmallow import fields, ValidationError, validates
+from marshmallow_enum import EnumField
 
 
 class UserSchema(ma.ModelSchema):
     email = fields.Email()
+    status = EnumField(UserStatus)
 
     @validates('password')
     def validate_length_check(self, pwd):
@@ -22,6 +24,7 @@ user_schema = UserSchema()
 users_schema = UserSchema(many=True)
 
 after_register_schema = UserSchema(only=['id', 'email', 'created_at'])
+after_login_schema = UserSchema(only=['id', 'email', 'status'])
 after_leave_schema = UserSchema(only=['id', 'email', 'created_at', 'updated_at', 'status'])
 
 simple_user_schema = UserSchema(only=['id', 'email'])

@@ -45,9 +45,9 @@ def detail_view(pid):
 @bp.route('/boards/<int:bid>/posts', methods=['POST'])
 @login_required
 @use_args(post_schema)
-def create(post_args, bid):
+def create(post, bid):
     try:
-        result = post_service.create(bid, post_args, current_user)
+        result = post_service.create(bid, post, current_user)
         return resp_schema.jsonify(result), 200
     except Exception as e:
         return 'Server Error.', 500

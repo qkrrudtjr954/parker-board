@@ -28,25 +28,3 @@ class User(UserMixin, db.Model):
         return "<User email: %s, password: %s, created_at: %s, updated_at: %s>" \
                % (self.email, self.password, self.created_at, self.updated_at)
 
-    def be_inactive(self):
-        self.status = UserStatus.INACTIVE
-
-    def is_exists(self):
-        temp = User.query.filter(User.email == self.email).one_or_none()
-
-        if temp:
-            return True
-        else:
-            return False
-
-    def is_current_user(self):
-        if current_user.id == self.id :
-            return True
-        else:
-            return False
-
-    def is_inactive(self):
-        if self.status == UserStatus.INACTIVE:
-            return True
-        else:
-            return False
