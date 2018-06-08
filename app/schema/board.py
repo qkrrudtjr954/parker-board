@@ -1,3 +1,4 @@
+from app.model import db
 from app.model.board import Board
 from app.schema import ma
 from marshmallow import fields
@@ -8,6 +9,7 @@ class BoardSchema(ma.ModelSchema):
     class Meta:
         strict = True
         model = Board
+        sqla_session = db.session
 
 
 boards_schema = BoardSchema(many=True)

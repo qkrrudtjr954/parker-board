@@ -1,3 +1,4 @@
+from app.model import db
 from app.schema import ma
 from app.model.user import User
 from marshmallow import fields, ValidationError, validates
@@ -14,6 +15,7 @@ class UserSchema(ma.ModelSchema):
     class Meta:
         strict = True
         model = User
+        sqla_session = db.session
 
 
 user_schema = UserSchema()

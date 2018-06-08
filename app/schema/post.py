@@ -1,4 +1,6 @@
 from marshmallow import fields, post_dump
+
+from app.model import db
 from app.schema import ma
 from app.model.post import Post
 from app.schema.comment import CommentSchema
@@ -18,6 +20,7 @@ class PostSchema(ma.ModelSchema):
     class Meta:
         strict = True
         model = Post
+        sqla_session = db.session
 
 
 post_schema = PostSchema()

@@ -43,7 +43,8 @@ class TestUpdateBoard:
         assert tsession.query(User).one()
         assert tsession.query(Board).one()
 
-        resp = tclient.post('/users/login', data=user_schema.dumps(fboard.user).data, content_type='application/json')
+        data = user_schema.dumps(fboard.user).data
+        resp = tclient.post('/users/login', data=data, content_type='application/json')
         result = resp_schema.loads(resp.data.decode()).data
         assert resp.status_code == 200
 

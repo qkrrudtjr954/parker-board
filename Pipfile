@@ -19,6 +19,7 @@ factory-boy = "*"
 pytest = "*"
 pytest-flask = "*"
 pytest-env = "*"
+pytest-capturelog = "*"
 
 [requires]
 python_version = "3.6"

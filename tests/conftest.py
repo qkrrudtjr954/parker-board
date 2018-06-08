@@ -1,6 +1,12 @@
+import logging
+import sys
+
 import pytest
 from app import create_app
+
 from app.model import db
+
+logging.basicConfig(level=logging.INFO, stream=sys.stdout)
 
 
 @pytest.fixture(scope='session')
@@ -14,6 +20,7 @@ def tapp():
 
 @pytest.fixture(scope='session')
 def tdb(tapp):
+
     db.init_app(tapp)
     return db
 
@@ -26,8 +33,6 @@ def tclient(tapp):
 
 @pytest.fixture(scope='function')
 def tsession(tdb):
-    tdb.session.autocommit = False
-    tdb.session.autoflush = False
     session = tdb.session
     yield session
     session.rollback()

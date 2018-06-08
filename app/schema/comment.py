@@ -1,3 +1,4 @@
+from app.model import db
 from app.schema import ma
 from app.model.comment import Comment
 from marshmallow import fields
@@ -10,6 +11,7 @@ class CommentSchema(ma.ModelSchema):
     class Meta:
         strict = True
         model = Comment
+        sqla_session = db.session
 
 
 comment_schema = CommentSchema()
