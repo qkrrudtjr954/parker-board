@@ -23,3 +23,4 @@ after_fix_board_schema = BoardSchema(only=['id', 'description', 'title', 'create
 after_del_board_schema = BoardSchema(only=['id', 'status', 'updated_at'])
 
 main_board_schema = BoardSchema(only=['id', 'title', 'description', 'created_at'], many=True)
+simple_board_schema = BoardSchema(only=['id', 'title'])

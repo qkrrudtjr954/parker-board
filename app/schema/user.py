@@ -29,14 +29,4 @@ after_leave_schema = UserSchema(only=['id', 'email', 'created_at', 'updated_at',
 
 simple_user_schema = UserSchema(only=['id', 'email'])
 
-
-class LoginSchema(ma.Schema):
-    email = fields.Email()
-    password = fields.String()
-
-    @validates('password')
-    def validate_length_check(self, pwd):
-        if len(pwd) < 5:
-            raise ValidationError('Password too short', status_code=422)
-
-login_schema = LoginSchema(strict=True)
+login_schema = UserSchema(strict=True, only=['email', 'password'])

@@ -4,7 +4,10 @@ from datetime import datetime
 
 
 def pagination_boards(page, per_page):
-    boards = Board.query.filter(Board.status != BoardStatus.DELETED).order_by(Board.created_at.desc()).paginate(per_page=per_page, error_out=False)
+    boards = Board.query\
+        .filter(Board.status != BoardStatus.DELETED)\
+        .order_by(Board.created_at.desc())\
+        .paginate(per_page=per_page, error_out=False)
     boards.page = page
 
     return boards

@@ -1,32 +1,27 @@
-from app.model.board import Board
-from app.model.post import Post
-from app.model.comment import Comment
-from app.schema.post import post_schema
+from datetime import datetime
 from app.model import db
-from flask_login import current_user
+from app.model.board import Board
+from app.model.post import Post, PostStatus
 
 
-def read(pid):
-    post = Post.query.get(pid)
-    result = {}
+def pagination_posts(page, per_page, board_id):
+    posts = Post.query\
+        .filter(Post.status != PostStatus.DELETED)\
+        .filter(Post.board_id == board_id)\
+        .order_by(Post.created_at.desc())\
+        .paginate(per_page=per_page, error_out=False)
+    posts.page = page
 
-    if post:
-        if post.status == 2:
-            result['errors'] = dict(message='Deleted Post.')
-            result['status_code'] = 400
-        else:
-            result['data'] = post_schema.dump(post).data
-            result['status_code'] = 200
-    else:
-        result['errors'] = dict(message='No Post.')
-        result['status_code'] = 404
+    return posts
 
-    return result
+
+def get_post(post_id):
+    return Post.query.get(post_id)
 
 
 def create(board_id, post: Post, user):
     try:
-        board = Board.find_or_fail(board_id)
+        board = Board.query.get(board_id)
         post.board = board
         post.user = user
 
@@ -37,50 +32,24 @@ def create(board_id, post: Post, user):
         raise e
 
 
-def delete(pid):
-    post = Post.query.get(pid)
-    result = {}
+def update(target_post: Post, post_data: Post):
+    try:
+        target_post.title = post_data.title
+        target_post.content = post_data.content
+        target_post.description = post_data.description
 
-    if post:
-        if post.user_id == current_user.id:
-            post.change_status()
-
-            db.session.add(post)
-            db.session.flush()
-
-            result['data'] = post_schema.dump(post).data
-            result['status_code'] = 204
-        else:
-            result['errors'] = dict(message='Can\'t delete.')
-            result['status_code'] = 401
-    else:
-        result['errors'] = dict(message='No Post.')
-        result['status_code'] = 404
-
-    return result
+        db.session.flush()
+    except Exception as e:
+        db.session.rollback()
+        raise e
 
 
-def update(pid, data):
-    post = Post.query.get(pid)
-    result = {}
+def delete(target_post: Post):
+    try:
+        target_post.status = PostStatus.DELETED
+        target_post.updated_at = datetime.utcnow()
 
-    if post:
-        if post.user_id == current_user.id:
-            post.set_title(data.title if data.title else post.title)
-            post.set_description(data.description if data.description else post.description)
-            post.set_content(data.content if data.content else post.content)
-            post.set_updated_at()
-
-            db.session.add(post)
-            db.session.flush()
-
-            result['data'] = post_schema.dump(post).data
-            result['status_code'] = 200
-        else:
-            result['errors'] = dict(message='Can\'t update.')
-            result['status_code'] = 401
-    else:
-        result['errors'] = dict(message='No Post.')
-        result['status_code'] = 404
-
-    return result
+        db.session.flush()
+    except Exception as e:
+        db.session.rollback()
+        raise e
