@@ -1,7 +1,7 @@
 import logging
 import sys
 
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from flask_login import LoginManager
 from app.schema.resp import resp_schema
 
@@ -47,8 +47,8 @@ def create_app():
         # 로그인이 안됐을때, 로그인 뷰로 이동 시킴.
         next = request.path if request.path else '/'
 
-        result = {'errors': dict(message='Login First.', next=next), 'status_code':404}
-        return resp_schema.jsonify(result), 400
+        result = dict(message='Login First.', next=next)
+        return jsonify(result), 400
 
     @app.errorhandler(422)
     def schema_validation_handler(err):
