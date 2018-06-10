@@ -1,70 +1,55 @@
-from app.schema.comment import comment_schema
-from app.model.comment import Comment
+from datetime import datetime
 from app.model import db
-from flask_login import current_user
+from app.model.user import User
+from app.model.post import Post
+from app.model.comment import Comment, CommentStatus
 
 
-def create(comment, pid):
-    result = {}
 
-    comment.set_user_id(current_user.id)
-    comment.set_post_id(pid)
-
+def create(post_id, comment: Comment, user: User):
     try:
+        target_post = Post.query.get(post_id)
+        comment.user_id = user.id
+        comment.post_id = target_post.id
+
         db.session.add(comment)
         db.session.flush()
-
-        result['data'] = comment_schema.dump(comment).data
-        result['status_code'] = 200
-    except Exception:
-        result['errors'] = dict(message='Server Error. Please Try again.')
-        result['status_code'] = 500
-
-    return result
+    except Exception as e:
+        db.session.rollback()
+        raise e
 
 
-def delete(cid):
-    comment = Comment.query.get(cid)
-    result = {}
+def pagination_comments(page, per_page, post_id):
+    comments = Comment.query \
+        .filter(Comment.status != CommentStatus.DELETED) \
+        .filter(Comment.post_id == post_id) \
+        .order_by(Comment.created_at.desc()) \
+        .paginate(per_page=per_page, error_out=False)
+    comments.page = page
 
-    if comment:
-        if current_user.id == comment.user_id:
-            comment.change_status()
-
-            db.session.add(comment)
-            db.session.flush()
-
-            result['data'] = comment_schema.dump(comment).data
-            result['status_code'] = 200
-        else:
-            result['errors'] = 'Can\'t delete.'
-            result['status_code'] = 401
-    else:
-        result['errors'] = dict(message='No Comment.')
-        result['status_code'] = 400
-
-    return result
+    return comments
 
 
-def update(cid, data):
-    comment = Comment.query.get(cid)
-    result = {}
+def get_comment(comment_id):
+    return Comment.query.get(comment_id)
 
-    if comment:
-        if current_user.id == comment.user_id:
-            comment.set_content(data.content if data.content else comment.content)
-            comment.set_updated_at()
 
-            db.session.add(comment)
-            db.session.flush()
+def delete(comment: Comment):
+    try:
+        comment.status = CommentStatus.DELETED
 
-            result['data'] = comment_schema.dump(comment).data
-            result['status_code'] = 200
-        else:
-            result['errors'] = 'Can\'t update.'
-            result['status_code'] = 401
-    else:
-        result['errors'] = dict(message='No Comment.')
-        result['status_code'] = 400
+        db.session.flush()
+    except Exception as e:
+        db.session.rollback()
+        raise e
 
-    return result
+
+def update(target_comment: Comment, comment_data: Comment):
+    try:
+        target_comment.content = comment_data.content
+        target_comment.updated_at = datetime.utcnow()
+
+        db.session.flush()
+    except Exception as e:
+        db.session.rollback()
+        raise e

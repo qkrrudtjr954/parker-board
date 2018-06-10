@@ -1,12 +1,14 @@
-from app.model import db
-from app.schema import ma
-from app.model.comment import Comment
 from marshmallow import fields
+from marshmallow_enum import EnumField
+from app.model import db
+from app.model.comment import Comment, CommentStatus
+from app.schema import ma
 from app.schema.user import simple_user_schema
 
 
 class CommentSchema(ma.ModelSchema):
     user = fields.Nested(simple_user_schema)
+    status = EnumField(CommentStatus)
 
     class Meta:
         strict = True

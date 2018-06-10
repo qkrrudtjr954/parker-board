@@ -1,13 +1,11 @@
-from flask import Blueprint, abort, request, jsonify
+from flask import Blueprint, jsonify
 from webargs.flaskparser import use_args
-from app.service import post_service
+from app.service import post_service, comment_service
 from app.model.post import Post
+from app.schema.post import post_schema, main_post_schema, main_posts_schema
+from app.schema.comment import comments_schema
 from app.schema.pagination import pagination_schema
-from app.schema.post import post_schema, main_post_schema
-from app.schema.resp import resp_schema
 from flask_login import login_required, current_user
-
-
 
 bp = Blueprint('post', __name__)
 
@@ -26,7 +24,7 @@ bp = Blueprint('post', __name__)
 def post_view(pagination, board_id):
     posts = post_service.pagination_posts(pagination.page, pagination.per_page, board_id)
 
-    posts_item = main_post_schema.dump(posts.items).data
+    posts_item = main_posts_schema.dump(posts.items).data
     pagination = pagination_schema.dump(posts).data
 
     result = dict(posts=posts_item, pagination=pagination)
@@ -37,12 +35,19 @@ def post_view(pagination, board_id):
 # read post
 # GET /posts/1
 @bp.route('/posts/<int:post_id>', methods=['GET'])
+@use_args(pagination_schema)
 @login_required
-def detail_view(post_id):
+def detail_view(pagination, post_id):
     post = post_service.get_post(post_id)
 
     if post:
-        return post_schema.jsonify(post), 200
+        comments = comment_service.pagination_comments(pagination.page, pagination.per_page, post_id)
+
+        comments_item = comments_schema.dump(comments.items).data
+        pagination = pagination_schema.dump(comments).data
+
+        result = dict(post=main_post_schema.dump(post).data, comments=comments_item, pagination=pagination)
+        return jsonify(result), 200
     else:
         return 'No Post.', 400
 
