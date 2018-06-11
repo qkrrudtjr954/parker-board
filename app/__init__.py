@@ -1,6 +1,3 @@
-import logging
-import sys
-
 from flask import Flask, request, jsonify
 from flask_login import LoginManager
 from app.schema.resp import resp_schema
@@ -44,7 +41,6 @@ def create_app():
 
     @login_manager.unauthorized_handler
     def unauthorized_callback():
-        # 로그인이 안됐을때, 로그인 뷰로 이동 시킴.
         next = request.path if request.path else '/'
 
         result = dict(message='Login First.', next=next)
@@ -55,9 +51,9 @@ def create_app():
         exc = getattr(err, 'exc')
         messages = exc.messages if exc else ['Invalid request']
 
-        result = dict(errors=messages, status_code=422)
+        result = dict(errors=messages)
 
-        return resp_schema.jsonify(result), 422
+        return jsonify(result), 422
 
     return app
 

@@ -1,7 +1,3 @@
 {
-  "test_users.py::TestLeave::()::test_leave": true,
-  "test_users.py::TestLogin::()::test_leaved_user_login": true,
-  "test_users.py::TestLogin::()::test_no_user_login": true,
-  "test_users.py::TestRegister::()::test_no_password": true,
-  "test_users.py::TestRegister::()::test_register": true
+  "test_users.py::TestLeave::()::test_leave": true
 }

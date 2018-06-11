@@ -5,7 +5,6 @@ from sqlalchemy_utils import ChoiceType
 from app.model import db
 from flask_login import UserMixin
 from datetime import datetime
-from flask_login import current_user
 
 
 class UserStatus(enum.Enum):

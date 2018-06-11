@@ -13,7 +13,7 @@ def register(user):
 
 def leave(user):
     try:
-        user.status = UserStatus.INACTIVE.value
+        user.status = UserStatus.INACTIVE
         db.session.flush()
 
     except Exception as e:

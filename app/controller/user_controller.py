@@ -58,7 +58,7 @@ def register(user):
 def leave():
     try:
         user_service.leave(current_user)
-    except Exception as e:
+    except Exception:
         return 'Server Error.', 500
     else:
         return after_leave_schema.jsonify(current_user), 200
