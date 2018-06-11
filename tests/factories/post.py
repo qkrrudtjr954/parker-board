@@ -1,6 +1,6 @@
 import factory
 from app.model import db
-from app.model.post import Post
+from app.model.post import Post, PostStatus
 from datetime import datetime
 from tests.factories.board import FakeBoardFactory
 from tests.factories.user import FakeUserFactory
@@ -12,7 +12,7 @@ class FakePostFactory(factory.alchemy.SQLAlchemyModelFactory):
     title = factory.Faker('sentence')
     content = factory.Faker('sentence')
     description = factory.Faker('sentence')
-    status = 0
+    status = PostStatus.NORMAL
 
     user = factory.SubFactory(FakeUserFactory)
     board = factory.SubFactory(FakeBoardFactory)
