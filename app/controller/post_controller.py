@@ -38,10 +38,13 @@ def post_view(pagination, board_id):
 @use_args(pagination_schema)
 @login_required
 def detail_view(pagination, post_id):
+    # comments = post_service.get_comments(post_id, pagination.page, pagination.per_page)
+
     post = post_service.get_post(post_id)
 
     if post:
-        comments = comment_service.pagination_comments(pagination.page, pagination.per_page, post_id)
+        comments = post.get_comments(pagination.page, pagination.per_page)
+        # comments = comment_service.pagination_comments(pagination.page, pagination.per_page, post_id)
 
         comments_item = comments_schema.dump(comments.items).data
         pagination = pagination_schema.dump(comments).data
@@ -71,19 +74,20 @@ def create(post: Post, board_id):
 @login_required
 @use_args(post_schema)
 def update(post_data: Post, post_id):
-    target_post = post_service.get_post(post_id)
+    # post_service.update(post_id, post_data, current_user)
+    target_post = Post.query.get(post_id)
 
-    if target_post:
-        if target_post.user_id == current_user.id:
-            try:
-                post_service.update(target_post, post_data)
-                return post_schema.jsonify(target_post), 200
-            except Exception:
-                return 'Server Error.', 500
-        else:
-            return 'No Authentication.', 401
-    else:
+    if not target_post:
         return 'No Post.', 400
+
+    if target_post.user_id != current_user.id:
+        return 'No Authentication.', 401
+
+    try:
+        post_service.update(target_post, post_data)
+        return post_schema.jsonify(target_post), 200
+    except Exception:
+        return 'Server Error.', 500
 
 
 # delete post

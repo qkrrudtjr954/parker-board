@@ -25,10 +25,15 @@ class Post(db.Model):
 
     board_id = db.Column(db.Integer, db.ForeignKey('board.id'), nullable=False)
 
-    comments = db.relationship("Comment", backref='post', lazy=True)
+    comments = db.relationship("Comment", back_populates='post', lazy='dynamic')
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def get_comments(self, page, per_page):
+        return self.comments.filter(
+            ~Comment.is_deleted
+        ).order_by(Comment.created_at.desc()).paginate(page=page, per_page=per_page, error_out=False)
 
     def __repr__(self):
         return "<Post title: %s, content: %s, description: %s, status: %s," \
@@ -54,7 +59,7 @@ class Post(db.Model):
     def set_updated_at(self):
         self.updated_at = datetime.utcnow()
 
-    def change_status(self):
+    def deleted(self):
         self.status = PostStatus.DELETED
 
 

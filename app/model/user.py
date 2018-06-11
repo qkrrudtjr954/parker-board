@@ -8,7 +8,7 @@ from datetime import datetime
 
 
 class UserStatus(enum.Enum):
-    ACTIVES = 0
+    ACTIVE = 0
     INACTIVE = 2
 
 
@@ -18,10 +18,13 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(200), unique=True, nullable=False, index=True)
     password = db.Column(db.String(200), nullable=False)
 
-    status = db.Column(ChoiceType(UserStatus, impl=db.Integer()), default=UserStatus.ACTIVES)
+    status = db.Column(ChoiceType(UserStatus, impl=db.Integer()), default=UserStatus.ACTIVE)
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def is_active(self):
+        return self.status == UserStatus.ACTIVE
 
     def __repr__(self):
         return "<User email: %s, password: %s, created_at: %s, updated_at: %s>" \

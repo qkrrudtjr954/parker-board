@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from app import login_manager
+from app.error import UserNotExistError
 from app.model.user import User
 from app.service import user_service
 from webargs.flaskparser import use_args
@@ -20,16 +21,18 @@ def load_user(user_id):
 def login(user):
     next = request.args.get('next') if 'next' in request.args else '/'
 
-    loged_in_user = user_service.get_user_by_email_and_password(user.email, user.password)
+    try:
+        logged_in_user = user_service.login(user.email, user.password)
 
-    if loged_in_user:
-        if user_service.is_active(loged_in_user):
-            login_user(loged_in_user)
-            return jsonify(dict(user=after_login_schema.dump(loged_in_user).data, next=next)), 200
+        if logged_in_user:
+            login_user(logged_in_user)
+            return jsonify(dict(user=after_login_schema.dump(logged_in_user).data, next=next)), 200
         else:
-            return 'Leaved User.', 400
-    else:
-        return 'No User.', 400
+            return 'No User.', 400
+
+    except UserNotExistError as e:
+        return 'Leaved User.', 400
+
 
 
 @bp.route('/logout', methods=['DELETE'])

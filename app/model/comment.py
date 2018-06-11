@@ -1,5 +1,7 @@
 import enum
 from datetime import datetime
+
+from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy_utils import ChoiceType
 
 from app.model import db
@@ -20,9 +22,14 @@ class Comment(db.Model):
     user = db.relationship("User")
 
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
+    post = db.relationship("Post", back_populates='comments')
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    @hybrid_property
+    def is_deleted(self):
+        return self.status == CommentStatus.DELETED
 
     def __repr__(self):
         return "<Comment id: %d, content: %s, status: %s" \

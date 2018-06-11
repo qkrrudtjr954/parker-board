@@ -9,7 +9,7 @@ class FakeUserFactory(factory.alchemy.SQLAlchemyModelFactory):
     email = factory.Faker('email')
     password = factory.Faker('password')
 
-    status = UserStatus.ACTIVES
+    status = UserStatus.ACTIVE
 
     created_at = factory.LazyFunction(datetime.utcnow)
     updated_at = factory.LazyFunction(datetime.utcnow)

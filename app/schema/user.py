@@ -14,6 +14,8 @@ class UserSchema(ma.ModelSchema):
         if len(pwd) < 5:
             raise ValidationError('Password too short', status_code=422)
 
+
+
     class Meta:
         sqla_session = db.session
         strict = True

@@ -8,6 +8,37 @@ from app.schema.user import simple_user_schema
 from app.schema.board import simple_board_schema
 
 
+# class PostSchema(ma.ModelSchema):
+#     class Meta:
+#         strict = True
+#         model = Post
+#         sqla_session = db.session
+#
+#
+# class PostInListSchema(PostSchema):
+#     board = fields.Nested(simple_board_schema)
+#     user = fields.Nested(simple_user_schema)
+#
+#     comments_count = fields.Method('get_comments_count')
+#
+#     def get_comments_count(self, obj):
+#         comments = [c for c in obj.comments if c.status != CommentStatus.DELETED]
+#         return len(comments)
+
+
+# post_write_schema = PostSchema(only=['title', 'content'])
+# post_update_schema = PostSchema(only=['title', 'content'])
+#
+#
+# post_form_schema = PostSchema(only=['title', 'content'])
+#
+#
+# class PostFormSchema(ma.Schema):
+#     title = fields.String()
+#     content = fields.String()
+#
+#
+
 class PostSchema(ma.ModelSchema):
     board = fields.Nested(simple_board_schema)
     user = fields.Nested(simple_user_schema)
