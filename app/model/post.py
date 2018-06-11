@@ -1,6 +1,7 @@
 import enum
 from datetime import datetime
 
+from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy_utils import ChoiceType
 
 from app.model import db
@@ -35,31 +36,16 @@ class Post(db.Model):
             ~Comment.is_deleted
         ).order_by(Comment.created_at.desc()).paginate(page=page, per_page=per_page, error_out=False)
 
+    @hybrid_property
+    def is_deleted(self):
+        return self.status == PostStatus.DELETED
+
+    def deleted(self):
+        self.status = PostStatus.DELETED
+
     def __repr__(self):
         return "<Post title: %s, content: %s, description: %s, status: %s," \
                " created_at: %s, updated_at: %s>"\
                % (self.title, self.content, self.description, self.status,
                   self.created_at, self.updated_at)
-
-    def set_user_id(self, uid):
-        self.user_id = uid
-
-    def set_board_id(self, bid):
-        self.board_id = bid
-
-    def set_title(self, title):
-        self.title = title
-
-    def set_content(self, content):
-        self.content = content
-
-    def set_description(self, description):
-        self.description = description
-
-    def set_updated_at(self):
-        self.updated_at = datetime.utcnow()
-
-    def deleted(self):
-        self.status = PostStatus.DELETED
-
 

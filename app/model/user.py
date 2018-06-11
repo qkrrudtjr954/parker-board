@@ -26,6 +26,16 @@ class User(UserMixin, db.Model):
     def is_active(self):
         return self.status == UserStatus.ACTIVE
 
+    def leaved(self):
+        self.status = UserStatus.INACTIVE
+
+    def is_exists(self):
+        temp = User.query.filter(User.email == self.email).one_or_none()
+        if temp:
+            return True
+        else:
+            return False
+
     def __repr__(self):
         return "<User email: %s, password: %s, created_at: %s, updated_at: %s>" \
                % (self.email, self.password, self.created_at, self.updated_at)

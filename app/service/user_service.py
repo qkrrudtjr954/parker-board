@@ -1,12 +1,18 @@
-from app.error import UserNotExistError
+from app.error import NotFoundError, DuplicateValueError
 from app.model import db
-from app.model.user import User, UserStatus
+from app.model.user import User
 
 
 def register(user):
+    if is_duplicate_email(user.email):
+        raise DuplicateValueError('That Email already exists.')
+
     try:
         db.session.add(user)
         db.session.flush()
+
+        return user
+
     except Exception as e:
         db.session.rollback()
         raise e
@@ -14,8 +20,8 @@ def register(user):
 
 def leave(user):
     try:
-        # FIXME : user의 상태는 스스로
-        user.status = UserStatus.INACTIVE
+        # 상태는 객체 스스로 변경할 수 있다.
+        user.leaved()
         db.session.flush()
 
     except Exception as e:
@@ -26,8 +32,11 @@ def leave(user):
 def login(email, password):
     user = _get_user_by_email_and_password(email, password)
 
+    if not user:
+        raise NotFoundError('No User.')
+
     if not user.is_active():
-        raise UserNotExistError()
+        raise NotFoundError('Leaved User.')
 
     return user
 
@@ -37,10 +46,6 @@ def _get_user_by_email_and_password(email, password):
     return user
 
 
-def is_exists(user):
-    temp = User.query.filter(User.email == user.email).one_or_none()
-
-    if temp:
-        return True
-    else:
-        return False
+def is_duplicate_email(email):
+    temp = User.query.filter_by(email=email).one_or_none()
+    return temp

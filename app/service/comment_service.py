@@ -5,7 +5,6 @@ from app.model.post import Post
 from app.model.comment import Comment, CommentStatus
 
 
-
 def create(post_id, comment: Comment, user: User):
     try:
         target_post = Post.query.get(post_id)
@@ -17,17 +16,6 @@ def create(post_id, comment: Comment, user: User):
     except Exception as e:
         db.session.rollback()
         raise e
-
-
-def pagination_comments(page, per_page, post_id):
-    comments = Comment.query \
-        .filter(Comment.status != CommentStatus.DELETED) \
-        .filter(Comment.post_id == post_id) \
-        .order_by(Comment.created_at.desc()) \
-        .paginate(per_page=per_page, error_out=False)
-    comments.page = page
-
-    return comments
 
 
 def get_comment(comment_id):

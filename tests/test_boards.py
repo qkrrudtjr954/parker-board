@@ -1,10 +1,24 @@
 from tests.factories.board import FakeBoardFactory
 from app.model.board import Board, BoardStatus
-from app.schema.board import board_schema
+from app.schema.board import board_schema, before_create_board_schema
 from app.schema.user import user_schema
 from app.model.user import User
 import pytest
 import json
+
+from tests.factories.post import FakePostFactory
+
+
+@pytest.fixture(scope='function')
+def fboard_build():
+    board = FakeBoardFactory.build()
+    return board
+
+
+@pytest.fixture(scope='function')
+def no_title_fboard_build():
+    board = FakeBoardFactory.build(title=None)
+    return board
 
 
 @pytest.fixture(scope='function')
@@ -21,13 +35,51 @@ def fboards(tsession):
     return board
 
 
+@pytest.fixture(scope='function')
+def many_post_board(tsession):
+    board = FakeBoardFactory()
+    tsession.flush()
+
+    for i in range(15):
+        FakePostFactory(board=board, board_id=board.id)
+    tsession.flush()
+    return board
+
+
+
+
 class TestCreateBoard:
-    def test_create_board(self, tclient, tsession):
-        pass
+    def test_create_board(self, tclient, tsession, fboard_build):
+        login_user = fboard_build.user
+
+        tsession.add(login_user)
+        tsession.flush()
+
+        resp = tclient.post('/users/login', data=user_schema.dumps(login_user).data, content_type='application/json')
+        assert resp.status_code == 200
+
+        resp = tclient.post('/boards', data=before_create_board_schema.dumps(fboard_build).data, content_type='application/json')
+        result = json.loads(resp.data)
+
+        assert resp.status_code == 200
+        assert result['user']['email'] == fboard_build.user.email
+
+    def test_no_title_create_board(self, tclient, tsession, no_title_fboard_build):
+        login_user = no_title_fboard_build.user
+
+        tsession.add(login_user)
+        tsession.flush()
+
+        resp = tclient.post('/users/login', data=user_schema.dumps(login_user).data, content_type='application/json')
+        assert resp.status_code == 200
+
+        resp = tclient.post('/boards', data=before_create_board_schema.dumps(no_title_fboard_build).data, content_type='application/json')
+
+        assert resp.status_code == 422
 
 
 class TestReadBoard:
-    def test_read_board(self, tclient, fboards):
+    def test_read_board_list(self, tclient, fboards):
         assert len(fboards) == 10
         assert Board.query.count() == 10
         assert User.query.count() == 10
@@ -52,6 +104,34 @@ class TestReadBoard:
         result = json.loads(resp.data)
 
         assert len(result['boards']) == 3
+
+    def test_read_board(self, tclient, many_post_board):
+
+        login_user = many_post_board.user
+
+        resp = tclient.post('/users/login', data=user_schema.dumps(login_user).data, content_type='application/json')
+        assert resp.status_code == 200
+
+        resp = tclient.get('/boards/%d/posts' % many_post_board.id)
+        result = json.loads(resp.data)
+
+        assert resp.status_code == 200
+        assert len(result['posts']) == 10
+
+        resp = tclient.get('/boards/%d/posts?per_page=5' % many_post_board.id)
+        result = json.loads(resp.data)
+
+        assert resp.status_code == 200
+        assert len(result['posts']) == 5
+        assert result['pagination']['has_next']
+        assert not result['pagination']['has_prev']
+
+        resp = tclient.get('/boards/%d/posts?per_page=15' % many_post_board.id)
+        result = json.loads(resp.data)
+
+        assert resp.status_code == 200
+        assert not result['pagination']['has_next']
+        assert not result['pagination']['has_prev']
 
 
 class TestUpdateBoard:

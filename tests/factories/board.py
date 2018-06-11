@@ -20,10 +20,3 @@ class FakeBoardFactory(factory.alchemy.SQLAlchemyModelFactory):
         model = Board
         sqlalchemy_session = db.session
 
-
-
-
-
-
-
-

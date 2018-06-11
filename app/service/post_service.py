@@ -2,28 +2,14 @@ from datetime import datetime
 from app.model import db
 from app.model.board import Board
 from app.model.post import Post, PostStatus
+from app.model.user import User
 
 
-def pagination_posts(page, per_page, board_id):
-    posts = Post.query\
-        .filter(Post.status != PostStatus.DELETED)\
-        .filter(Post.board_id == board_id)\
-        .order_by(Post.created_at.desc())\
-        .paginate(per_page=per_page, error_out=False)
-    posts.page = page
-
-    return posts
-
-
-def get_post(post_id):
-    return Post.query.get(post_id)
-
-
-def create(board_id, post: Post, user):
+def create(board_id, post: Post, user: User):
     try:
         board = Board.query.get(board_id)
-        post.board = board
-        post.user = user
+        post.board_id = board.id
+        post.user_id = user.id
 
         db.session.add(post)
         db.session.flush()
@@ -46,7 +32,7 @@ def update(target_post: Post, post_data: Post):
 
 def delete(target_post: Post):
     try:
-        target_post.status = PostStatus.DELETED
+        target_post.deleted()
         target_post.updated_at = datetime.utcnow()
 
         db.session.flush()

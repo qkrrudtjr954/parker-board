@@ -21,13 +21,19 @@ class Board(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     user = db.relationship("User")
 
-    posts = db.relationship("Post", backref="board", lazy=True)
+    posts = db.relationship("Post", backref="board", lazy='dynamic')
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow)
 
+    def get_posts(self, page, per_page):
+        return self.posts\
+            .filter(~Post.is_deleted)\
+            .order_by(Post.created_at.desc())\
+            .paginate(page=page, per_page=per_page, error_out=False)
+
     def __repr__(self):
-        return "<Board id: %d, title: %s, description: %s, status: %s," \
+        return "<Board title: %s, description: %s, status: %s," \
                " created_at: %s, updated_at: %s>"\
-               % (self.id, self.title, self.description, self.status,
+               % (self.title, self.description, self.status,
                   self.created_at, self.updated_at)

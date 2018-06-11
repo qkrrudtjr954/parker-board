@@ -1,5 +1,7 @@
 from flask import Blueprint
 from webargs.flaskparser import use_args
+
+from app.model.comment import Comment
 from app.schema.comment import comment_schema
 from app.service import comment_service
 from app.schema.resp import resp_schema
@@ -28,7 +30,7 @@ def create(comment, post_id):
 @bp.route('/comments/<int:comment_id>', methods=['DELETE'])
 @login_required
 def delete(comment_id):
-    comment = comment_service.get_comment(comment_id)
+    comment = Comment.query.get(comment_id)
 
     if comment:
         comment_service.delete(comment)
@@ -41,16 +43,16 @@ def delete(comment_id):
 @login_required
 @use_args(comment_schema)
 def update(comment_data, comment_id):
-    target_comment = comment_service.get_comment(comment_id)
+    target_comment = Comment.query.get(comment_id)
 
-    if target_comment:
-        if target_comment.user_id == current_user.id:
-            try:
-                comment_service.update(target_comment, comment_data)
-                return comment_schema.jsonify(target_comment), 200
-            except Exception:
-                return 'Server Error.', 500
-        else:
-            return 'No Authentication.', 401
-    else:
+    if not target_comment:
         return 'No Comment.', 400
+
+    if target_comment.user_id != current_user.id:
+        return 'No Authentication.', 401
+
+    try:
+        comment_service.update(target_comment, comment_data)
+        return comment_schema.jsonify(target_comment), 200
+    except Exception:
+        return 'Server Error.', 500

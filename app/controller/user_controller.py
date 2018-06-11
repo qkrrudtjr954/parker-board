@@ -1,10 +1,10 @@
 from flask import Blueprint, request, jsonify
 from app import login_manager
-from app.error import UserNotExistError
+from app.error import NotFoundError, DuplicateValueError
 from app.model.user import User
 from app.service import user_service
 from webargs.flaskparser import use_args
-from app.schema.user import user_schema, after_register_schema, after_leave_schema, after_login_schema
+from app.schema.user import after_register_schema, after_leave_schema, after_login_schema, before_login_schema, before_register_schema
 from flask_login import login_user, login_required, logout_user, current_user
 
 
@@ -17,22 +17,19 @@ def load_user(user_id):
 
 
 @bp.route('/login', methods=['POST'])
-@use_args(user_schema)
-def login(user):
+@use_args(before_login_schema)
+def login(login_data):
     next = request.args.get('next') if 'next' in request.args else '/'
 
     try:
-        logged_in_user = user_service.login(user.email, user.password)
+        # 로그인한 유저를 반환한다. -> login 의 기능에만 충실하는 코드
+        logged_in_user = user_service.login(login_data.email, login_data.password)
+        login_user(logged_in_user)
 
-        if logged_in_user:
-            login_user(logged_in_user)
-            return jsonify(dict(user=after_login_schema.dump(logged_in_user).data, next=next)), 200
-        else:
-            return 'No User.', 400
+        return jsonify(dict(user=after_login_schema.dump(logged_in_user).data, next=next)), 200
 
-    except UserNotExistError as e:
-        return 'Leaved User.', 400
-
+    except NotFoundError as e:
+        return e.message, 400
 
 
 @bp.route('/logout', methods=['DELETE'])
@@ -43,17 +40,19 @@ def logout():
 
 
 @bp.route('/', methods=['POST'])
-@use_args(user_schema)
-def register(user):
-    if not user_service.is_exists(user):
-        try:
-            user_service.register(user)
-        except Exception:
-            return 'Server Error.', 500
-        else:
-            return after_register_schema.jsonify(user), 200
+@use_args(before_register_schema)
+def register(register_data):
+    try:
+        register_user = user_service.register(register_data)
+
+    except DuplicateValueError as e:
+        return e.message, 400
+
+    except Exception:
+        return 'Server Error.', 500
+
     else:
-        return 'That Email already exists.', 400
+        return after_register_schema.jsonify(register_user), 200
 
 
 @bp.route('/', methods=['DELETE'])

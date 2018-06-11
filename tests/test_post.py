@@ -1,15 +1,11 @@
 import pytest
 import json
 from tests.factories.post import FakePostFactory
-from tests.factories.user import FakeUserFactory
 from tests.factories.board import FakeBoardFactory
-from app.model.user import User
-from app.model.board import Board
 from app.model.post import Post, PostStatus
-from app.schema.post import post_schema
-from app.schema.user import login_schema
-from app.schema.resp import resp_schema
-from flask_login import current_user
+from app.schema.post import post_schema, before_create_post_schema
+from app.schema.user import before_login_schema
+
 
 @pytest.fixture(scope='function')
 def fboard(tsession):
@@ -50,25 +46,21 @@ class TestCreatePost:
         assert resp.status_code == 400
         assert result['message'] == 'Login First.'
 
+    def test_create_post(self, tclient, fpost_build, tsession):
+        tsession.add(fpost_build.user)
+        tsession.add(fpost_build.board)
+        tsession.flush()
 
-    # def test_create_post(self, tclient, fpost_build, tsession):
-    #     assert tsession.query(User).one()
-    #     assert tsession.query(Board).one()
-    #     assert Post.query.count() == 0
-    #
-    #     # login
-    #     login_user = User.query.first()
-    #
-    #     resp = tclient.post('/users/login', data=login_schema.dumps(login_user).data, content_type='application/json')
-    #     result = resp_schema.loads(resp.data.decode()).data
-    #     print(result)
-    #     assert resp.status_code == 200
-    #
-    #     resp = tclient.post('/boards/%d/posts' % fpost_build.board_id, data=post_schema.dumps(fpost_build).data, content_type='application/json')
-    #     result = resp_schema.loads(resp.data.decode()).data
-    #
-    #     assert resp.status_code == 200
-    #     assert Post.query.one()
+        # login
+        login_user = fpost_build.user
+
+        resp = tclient.post('/users/login', data=before_login_schema.dumps(login_user).data, content_type='application/json')
+        assert resp.status_code == 200
+
+        resp = tclient.post('/boards/%d/posts' % fpost_build.board_id, data=before_create_post_schema.dumps(dict(title='helloworld', content='funny world')).data, content_type='application/json')
+        print(resp.data)
+
+        assert resp.status_code == 200
 
 
 class TestUpdatePost:
@@ -85,9 +77,8 @@ class TestUpdatePost:
     def test_update_post(self, tclient, fpost_create, tsession):
         assert tsession.query(Post).one()
 
-        resp = tclient.post('/users/login', data=login_schema.dumps(fpost_create.user).data, content_type='application/json')
+        resp = tclient.post('/users/login', data=before_login_schema.dumps(fpost_create.user).data, content_type='application/json')
         result = json.loads(resp.data)
-        print(result)
 
         assert resp.status_code == 200
         assert result['user']['email'] == fpost_create.user.email
@@ -102,7 +93,7 @@ class TestUpdatePost:
     def test_update_no_auth(self, tclient, fposts):
         login_user = fposts[0].user
 
-        resp = tclient.post('/users/login', data=login_schema.dumps(login_user).data, content_type='application/json')
+        resp = tclient.post('/users/login', data=before_login_schema.dumps(login_user).data, content_type='application/json')
         result = json.loads(resp.data)
 
         assert resp.status_code == 200
@@ -121,7 +112,7 @@ class TestDeletePost:
     def test_delete_post(self, tsession, tclient, fpost_create):
         assert tsession.query(Post).one()
 
-        resp = tclient.post('/users/login', data=login_schema.dumps(fpost_create.user).data, content_type='application/json')
+        resp = tclient.post('/users/login', data=before_login_schema.dumps(fpost_create.user).data, content_type='application/json')
         assert resp.status_code == 200
 
         resp = tclient.delete('/posts/%d' % fpost_create.id, content_type='application/json')
@@ -140,7 +131,7 @@ class TestDeletePost:
     def test_delete_no_auth(self, tsession, tclient, fposts):
         login_user = fposts[0].user
 
-        resp = tclient.post('/users/login', data=login_schema.dumps(login_user).data, content_type='application/json')
+        resp = tclient.post('/users/login', data=before_login_schema.dumps(login_user).data, content_type='application/json')
         result = json.loads(resp.data)
 
         assert resp.status_code == 200
@@ -159,7 +150,7 @@ class TestReadPost:
 
         login_user = fpost_create.user
 
-        resp = tclient.post('/users/login', data=login_schema.dumps(login_user).data, content_type='application/json')
+        resp = tclient.post('/users/login', data=before_login_schema.dumps(login_user).data, content_type='application/json')
 
         assert resp.status_code == 200
 

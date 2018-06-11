@@ -2,23 +2,25 @@ from app.model import db
 from app.model.board import Board, BoardStatus
 from datetime import datetime
 
+from app.model.user import User
+
 
 def pagination_boards(page, per_page):
     boards = Board.query\
         .filter(Board.status != BoardStatus.DELETED)\
         .order_by(Board.created_at.desc())\
-        .paginate(per_page=per_page, error_out=False)
-    boards.page = page
+        .paginate(page=page, per_page=per_page, error_out=False)
 
     return boards
 
 
-def create(board: Board, user):
+def create(user: User, board: Board):
     try:
         board.user_id = user.id
 
         db.session.add(board)
         db.session.flush()
+
     except Exception as e:
         db.session.rollback()
         raise e

@@ -19,8 +19,22 @@ class BoardSchema(ma.ModelSchema):
 boards_schema = BoardSchema(many=True)
 board_schema = BoardSchema()
 
-after_fix_board_schema = BoardSchema(only=['id', 'description', 'title', 'created_at', 'user', 'status'])
+after_fix_board_schema = BoardSchema(only=['id', 'description', 'title', 'created_at', 'user'])
 after_del_board_schema = BoardSchema(only=['id', 'status', 'updated_at'])
 
 main_board_schema = BoardSchema(only=['id', 'title', 'description', 'created_at'], many=True)
 simple_board_schema = BoardSchema(only=['id', 'title'])
+
+
+# Board를 생성하거나 수정할 때 사용하는 스키마
+class BoardFormSchema(ma.ModelSchema):
+    class Meta:
+        strict = True
+        model = Board
+        sqla_session = db.session
+        fields = ['title', 'description']
+
+
+before_create_board_schema = BoardFormSchema()
+before_update_board_schema = BoardFormSchema()
+

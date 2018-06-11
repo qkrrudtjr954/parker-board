@@ -39,7 +39,14 @@ from app.schema.board import simple_board_schema
 #
 #
 
-class PostSchema(ma.ModelSchema):
+class DefaultPostSchema(ma.ModelSchema):
+    class Meta:
+        strict = True
+        model = Post
+        sqla_session = db.session
+
+
+class ExtensionPostSchema(DefaultPostSchema):
     board = fields.Nested(simple_board_schema)
     user = fields.Nested(simple_user_schema)
 
@@ -51,15 +58,40 @@ class PostSchema(ma.ModelSchema):
         comments = [c for c in obj.comments if c.status != CommentStatus.DELETED]
         return len(comments)
 
+
+post_schema = ExtensionPostSchema()
+
+main_posts_schema = ExtensionPostSchema(many=True, only=['id', 'title', 'content', 'comments_count', 'created_at', 'user', 'description'])
+main_post_schema = ExtensionPostSchema(only=['id', 'title', 'content', 'comments_count', 'created_at', 'user', 'description'])
+simple_post_schema = ExtensionPostSchema(only=['id', 'title'])
+
+
+# post list 에서 필요한 스키마
+# id, title, description, created_at, updated_at, comment_count, user
+class PostListSchema(ma.ModelSchema):
+    user = fields.Nested(simple_user_schema)
+    comments_count = fields.Method('get_comments_count')
+
+    def get_comments_count(self, obj):
+        comments = [c for c in obj.comments if c.status != CommentStatus.DELETED]
+        return len(comments)
+
+    class Meta:
+        strict = True
+        model = Post
+        sql_session = db.session
+        exclude = ['content', 'status', 'comments', 'board']
+
+
+post_list_schema = PostListSchema(many=True)
+
+
+
+class PostFormSchema(ma.ModelSchema):
     class Meta:
         strict = True
         model = Post
         sqla_session = db.session
+        fields = ['title', 'content']
 
-
-post_schema = PostSchema()
-
-main_posts_schema = PostSchema(many=True, only=['id', 'title', 'content', 'comments_count', 'created_at', 'user', 'description'])
-main_post_schema = PostSchema(only=['id', 'title', 'content', 'comments_count', 'created_at', 'user', 'description'])
-simple_post_schema = PostSchema(only=['id', 'title'])
-
+before_create_post_schema = PostFormSchema()
