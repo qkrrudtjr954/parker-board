@@ -19,6 +19,7 @@ def load_user(user_id):
 @bp.route('/login', methods=['POST'])
 @use_args(before_login_schema)
 def login(login_data):
+
     next = request.args.get('next') if 'next' in request.args else '/'
 
     try:

@@ -1,7 +1,7 @@
 import pytest
 import json
 from tests.factories.user import FakeUserFactory
-from app.schema.user import user_schema, before_login_schema, before_register_schema
+from app.schema.user import before_login_schema, before_register_schema
 from app.model.user import User, UserStatus
 from marshmallow import ValidationError
 
@@ -34,11 +34,11 @@ def short_password_user(tsession):
 class TestRegister():
     def test_no_email(self, tclient, no_email_user):
         with pytest.raises(ValidationError):
-            resp = tclient.post('/users', data=user_schema.dumps(no_email_user).data, content_type='application/json')
+            resp = tclient.post('/users', data=before_register_schema.dumps(no_email_user).data, content_type='application/json')
             assert resp.statud_code == 422
 
     def test_no_password(self, tclient, no_password_user):
-        resp = tclient.post('/users/', data=user_schema.dumps(no_password_user).data, content_type='application/json')
+        resp = tclient.post('/users/', data=before_register_schema.dumps(no_password_user).data, content_type='application/json')
         result = json.loads(resp.data)
 
         assert resp.status_code == 422
@@ -134,6 +134,7 @@ class TestLeave():
 
         assert resp.status_code == 200
         assert not created_user.is_active()
+
 
 
 
