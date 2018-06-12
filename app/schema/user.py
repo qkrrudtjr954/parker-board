@@ -21,9 +21,6 @@ class UserSchema(ma.ModelSchema):
         model = User
 
 
-user_schema = UserSchema()
-users_schema = UserSchema(many=True)
-
 simple_user_schema = UserSchema(only=['id', 'email'])
 
 after_leave_schema = UserSchema(only=['id', 'email', 'created_at', 'updated_at', 'status'])

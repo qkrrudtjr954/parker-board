@@ -1,7 +1,7 @@
 from tests.factories.board import FakeBoardFactory
 from app.model.board import Board, BoardStatus
 from app.schema.board import board_schema, before_create_board_schema
-from app.schema.user import user_schema
+from app.schema.user import before_login_schema
 from app.model.user import User
 import pytest
 import json
@@ -55,7 +55,7 @@ class TestCreateBoard:
         tsession.add(login_user)
         tsession.flush()
 
-        resp = tclient.post('/users/login', data=user_schema.dumps(login_user).data, content_type='application/json')
+        resp = tclient.post('/users/login', data=before_login_schema.dumps(login_user).data, content_type='application/json')
         assert resp.status_code == 200
 
         resp = tclient.post('/boards', data=before_create_board_schema.dumps(fboard_build).data, content_type='application/json')
@@ -70,7 +70,7 @@ class TestCreateBoard:
         tsession.add(login_user)
         tsession.flush()
 
-        resp = tclient.post('/users/login', data=user_schema.dumps(login_user).data, content_type='application/json')
+        resp = tclient.post('/users/login', data=before_login_schema.dumps(login_user).data, content_type='application/json')
         assert resp.status_code == 200
 
         resp = tclient.post('/boards', data=before_create_board_schema.dumps(no_title_fboard_build).data, content_type='application/json')
@@ -109,7 +109,7 @@ class TestReadBoard:
 
         login_user = many_post_board.user
 
-        resp = tclient.post('/users/login', data=user_schema.dumps(login_user).data, content_type='application/json')
+        resp = tclient.post('/users/login', data=before_login_schema.dumps(login_user).data, content_type='application/json')
         assert resp.status_code == 200
 
         resp = tclient.get('/boards/%d/posts' % many_post_board.id)
@@ -139,7 +139,7 @@ class TestUpdateBoard:
         assert tsession.query(User).one()
         assert tsession.query(Board).one()
 
-        data = user_schema.dumps(fboard.user).data
+        data = before_login_schema.dumps(fboard.user).data
         resp = tclient.post('/users/login', data=data, content_type='application/json')
         assert resp.status_code == 200
 
@@ -163,7 +163,7 @@ class TestUpdateBoard:
     def test_update_no_auth(self, tclient, fboards):
         login_user = fboards[0].user
 
-        resp = tclient.post('/users/login', data=user_schema.dumps(login_user).data, content_type='application/json')
+        resp = tclient.post('/users/login', data=before_login_schema.dumps(login_user).data, content_type='application/json')
         assert resp.status_code == 200
 
         update_board = fboards[1]
@@ -178,7 +178,7 @@ class TestUpdateBoard:
 
 class TestDeleteBoard:
     def test_delete_board(self, tclient, fboard):
-        resp = tclient.post('/users/login', data=user_schema.dumps(fboard.user).data, content_type='application/json')
+        resp = tclient.post('/users/login', data=before_login_schema.dumps(fboard.user).data, content_type='application/json')
         assert resp.status_code == 200
 
         # board delete
@@ -199,7 +199,7 @@ class TestDeleteBoard:
     def test_delete_no_auth(self, tclient, fboards):
         login_user = fboards[0].user
 
-        resp = tclient.post('/users/login', data=user_schema.dumps(login_user).data, content_type='application/json')
+        resp = tclient.post('/users/login', data=before_login_schema.dumps(login_user).data, content_type='application/json')
         assert resp.status_code == 200
 
         delete_board = fboards[1]
