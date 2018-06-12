@@ -26,6 +26,9 @@ class Board(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow)
 
+    def deleted(self):
+        self.status = BoardStatus.DELETED
+
     def get_posts(self, page, per_page):
         return self.posts\
             .filter(~Post.is_deleted)\

@@ -8,6 +8,7 @@ from app.model.comment import Comment, CommentStatus
 def create(post_id, comment: Comment, user: User):
     try:
         target_post = Post.query.get(post_id)
+
         comment.user_id = user.id
         comment.post_id = target_post.id
 
@@ -24,7 +25,8 @@ def get_comment(comment_id):
 
 def delete(comment: Comment):
     try:
-        comment.status = CommentStatus.DELETED
+        comment.deleted()
+        comment.refresh_update_time()
 
         db.session.flush()
     except Exception as e:
