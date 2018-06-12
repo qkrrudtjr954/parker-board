@@ -32,7 +32,6 @@ def create(board: Board):
     try:
         board_service.create(current_user, board)
         return after_create_board_schema.jsonify(board), 200
-        # return redirect('/boards/%d' % board.id)
     except Exception:
         return 'Server Error.', 500
 

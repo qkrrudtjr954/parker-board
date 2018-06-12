@@ -30,6 +30,7 @@ def update(target_board: Board, board_data: Board):
     try:
         target_board.title = board_data.title
         target_board.description = board_data.description
+        target_board.refresh_update_time()
 
         db.session.flush()
     except Exception as e:

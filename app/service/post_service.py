@@ -23,6 +23,7 @@ def update(target_post: Post, post_data: Post):
         target_post.title = post_data.title
         target_post.content = post_data.content
         target_post.description = post_data.description
+        target_post.refresh_update_time()
 
         db.session.flush()
     except Exception as e:

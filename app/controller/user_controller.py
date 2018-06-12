@@ -4,7 +4,8 @@ from app.error import NotFoundError, DuplicateValueError
 from app.model.user import User
 from app.service import user_service
 from webargs.flaskparser import use_args
-from app.schema.user import after_register_schema, after_leave_schema, after_login_schema, before_login_schema, before_register_schema
+from app.schema.user import after_register_schema, after_leave_schema, after_login_schema, \
+    before_login_schema, before_register_schema
 from flask_login import login_user, login_required, logout_user, current_user
 
 

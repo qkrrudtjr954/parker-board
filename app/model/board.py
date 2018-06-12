@@ -32,6 +32,9 @@ class Board(db.Model):
             .order_by(Post.created_at.desc())\
             .paginate(page=page, per_page=per_page, error_out=False)
 
+    def refresh_update_time(self):
+        self.updated_at = datetime.utcnow()
+
     def __repr__(self):
         return "<Board title: %s, description: %s, status: %s," \
                " created_at: %s, updated_at: %s>"\

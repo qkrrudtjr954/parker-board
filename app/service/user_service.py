@@ -4,7 +4,7 @@ from app.model.user import User
 
 
 def register(user):
-    if is_duplicate_email(user.email):
+    if _is_duplicate_email(user.email):
         raise DuplicateValueError('That Email already exists.')
 
     try:
@@ -46,6 +46,6 @@ def _get_user_by_email_and_password(email, password):
     return user
 
 
-def is_duplicate_email(email):
+def _is_duplicate_email(email):
     temp = User.query.filter_by(email=email).one_or_none()
     return temp
