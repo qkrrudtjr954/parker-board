@@ -46,6 +46,21 @@ def many_post_board(tsession):
     return board
 
 
+class Describe_BoardController:
+    class Describe_Main:
+        class Context_when_logged_in:
+            def test_is_expected_response_ok(self):
+                pass
+
+            def test_board_id_returned(self):
+                pass
+
+        class Context_when_not_logged_in:
+            def test_is_expected_response_unauthorized(self):
+                pass
+
+
+
 class TestCreateBoard:
     def test_create_board(self, tclient, tsession, fboard_build):
         login_user = fboard_build.user

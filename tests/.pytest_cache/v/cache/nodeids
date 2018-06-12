@@ -1,3 +1,15 @@
 [
-  "test_boards.py::TestCreateBoard::()::test_create_board"
+  "test_boards.py::Describe_BoardController::()::Describe_Main::()::Context_when_logged_in::()::test_is_expected_response_ok",
+  "test_boards.py::Describe_BoardController::()::Describe_Main::()::Context_when_not_logged_in::()::test_is_expected_response_unauthorized",
+  "test_boards.py::TestCreateBoard::()::test_create_board",
+  "test_boards.py::TestCreateBoard::()::test_no_title_create_board",
+  "test_boards.py::TestReadBoard::()::test_read_board_list",
+  "test_boards.py::TestReadBoard::()::test_read_board_\ud398\uc774\uc9c0_3\uac1c",
+  "test_boards.py::TestReadBoard::()::test_read_board",
+  "test_boards.py::TestUpdateBoard::()::test_update_board",
+  "test_boards.py::TestUpdateBoard::()::test_update_no_login",
+  "test_boards.py::TestUpdateBoard::()::test_update_no_auth",
+  "test_boards.py::TestDeleteBoard::()::test_delete_board",
+  "test_boards.py::TestDeleteBoard::()::test_delete_no_login",
+  "test_boards.py::TestDeleteBoard::()::test_delete_no_auth"
 ]
