@@ -1,6 +1,6 @@
 from tests.factories.board import FakeBoardFactory
 from app.model.board import Board, BoardStatus
-from app.schema.board import before_create_board_schema, before_update_board_schema
+from app.schema.board import board_create_form_schema, board_update_form_schema
 from app.schema.user import before_login_schema
 from app.model.user import User
 import pytest
@@ -56,11 +56,14 @@ class TestCreateBoard:
         resp = tclient.post('/users/login', data=before_login_schema.dumps(login_user).data, content_type='application/json')
         assert resp.status_code == 200
 
-        resp = tclient.post('/boards', data=before_create_board_schema.dumps(fboard_build).data, content_type='application/json')
+        resp = tclient.post('/boards', data=board_create_form_schema.dumps(fboard_build).data, content_type='application/json')
         result = json.loads(resp.data)
-
         assert resp.status_code == 200
-        assert result['user']['email'] == fboard_build.user.email
+
+        board_id = result['id']
+        board = Board.query.get(board_id)
+        assert fboard_build.user.id == board.user.id
+        assert fboard_build.title == board.title
 
     def test_no_title_create_board(self, tclient, tsession, no_title_fboard_build):
         login_user = no_title_fboard_build.user
@@ -71,11 +74,12 @@ class TestCreateBoard:
         resp = tclient.post('/users/login', data=before_login_schema.dumps(login_user).data, content_type='application/json')
         assert resp.status_code == 200
 
-        resp = tclient.post('/boards', data=before_create_board_schema.dumps(no_title_fboard_build).data, content_type='application/json')
+        resp = tclient.post('/boards', data=board_create_form_schema.dumps(no_title_fboard_build).data, content_type='application/json')
 
         assert resp.status_code == 422
 
 
+# FIXME : BoardList
 class TestReadBoard:
     def test_read_board_list(self, tclient, fboards):
         assert len(fboards) == 10
@@ -145,14 +149,14 @@ class TestUpdateBoard:
         # board update
         board = fboard
         update_data = dict(title='changed title')
-        resp = tclient.patch('/boards/%d' % board.id, data=before_update_board_schema.dumps(update_data).data, content_type='application/json')
+        resp = tclient.patch('/boards/%d' % board.id, data=board_update_form_schema.dumps(update_data).data, content_type='application/json')
 
         assert resp.status_code == 200
         assert board.title == 'changed title'
 
     def test_update_no_login(self, tclient, fboard):
         update_data = dict(title='changed title')
-        resp = tclient.patch('/boards/%d' % fboard.id, data=before_update_board_schema.dumps(update_data).data, content_type='application/json')
+        resp = tclient.patch('/boards/%d' % fboard.id, data=board_update_form_schema.dumps(update_data).data, content_type='application/json')
         result = json.loads(resp.data)
 
         assert resp.status_code == 400
@@ -168,7 +172,7 @@ class TestUpdateBoard:
         update_board = fboards[1]
 
         update_data = dict(title='changed title')
-        resp = tclient.patch('/boards/%d' % update_board.id, data=before_update_board_schema.dumps(update_data).data, content_type='application/json')
+        resp = tclient.patch('/boards/%d' % update_board.id, data=board_update_form_schema.dumps(update_data).data, content_type='application/json')
 
         assert resp.status_code == 401
         assert resp.data == b'No Authentication.'

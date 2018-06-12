@@ -4,7 +4,7 @@ from app.service import post_service
 from app.model.board import Board
 from app.model.post import Post
 from app.schema.board import simple_board_schema
-from app.schema.post import main_post_schema, before_create_post_schema, before_update_post_schema, after_create_post_schema, after_update_post_schema, after_delete_post_schema, post_list_schema
+from app.schema.post import main_post_schema, post_create_form_schema, post_update_form_schema, after_create_post_schema, after_update_post_schema, after_delete_post_schema, post_list_schema
 from app.schema.comment import comments_schema
 from app.schema.pagination import pagination_schema
 from flask_login import login_required, current_user
@@ -65,7 +65,7 @@ def detail_view(pagination, post_id):
 # POST /boards/1/posts
 @bp.route('/boards/<int:board_id>/posts', methods=['POST'])
 @login_required
-@use_args(before_create_post_schema)
+@use_args(post_create_form_schema)
 def create(post: Post, board_id):
     try:
         post_service.create(board_id, post, current_user)
@@ -78,7 +78,7 @@ def create(post: Post, board_id):
 # PATCH /posts/1
 @bp.route('/posts/<int:post_id>', methods=['PATCH'])
 @login_required
-@use_args(before_update_post_schema)
+@use_args(post_update_form_schema)
 def update(post_data: Post, post_id):
     target_post = Post.query.get(post_id)
 

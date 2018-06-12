@@ -3,7 +3,7 @@ import json
 from tests.factories.post import FakePostFactory
 from tests.factories.board import FakeBoardFactory
 from app.model.post import Post, PostStatus
-from app.schema.post import before_create_post_schema, before_update_post_schema
+from app.schema.post import post_create_form_schema, post_update_form_schema
 from app.schema.user import before_login_schema
 
 
@@ -40,7 +40,7 @@ class TestCreatePost:
         tsession.add(fpost_build.board)
         tsession.flush()
 
-        resp = tclient.post('/boards/%d/posts' % fpost_build.board.id, data=before_create_post_schema.dumps(fpost_build).data, content_type='application/json')
+        resp = tclient.post('/boards/%d/posts' % fpost_build.board.id, data=post_create_form_schema.dumps(fpost_build).data, content_type='application/json')
         result = json.loads(resp.data)
 
         assert resp.status_code == 400
@@ -57,7 +57,7 @@ class TestCreatePost:
         resp = tclient.post('/users/login', data=before_login_schema.dumps(login_user).data, content_type='application/json')
         assert resp.status_code == 200
 
-        resp = tclient.post('/boards/%d/posts' % fpost_build.board_id, data=before_create_post_schema.dumps(dict(title='helloworld', content='funny world')).data, content_type='application/json')
+        resp = tclient.post('/boards/%d/posts' % fpost_build.board_id, data=post_create_form_schema.dumps(dict(title='helloworld', content='funny world')).data, content_type='application/json')
         print(resp.data)
 
         assert resp.status_code == 200
@@ -68,7 +68,7 @@ class TestUpdatePost:
         assert tsession.query(Post).one()
 
         update_data = dict(title='changed title', content='changed content', comments=[])
-        resp = tclient.patch('/posts/%d' % fpost_create.id, data=before_update_post_schema.dumps(update_data).data, content_type='application/json')
+        resp = tclient.patch('/posts/%d' % fpost_create.id, data=post_update_form_schema.dumps(update_data).data, content_type='application/json')
         result = json.loads(resp.data)
 
         assert resp.status_code == 400
@@ -84,7 +84,7 @@ class TestUpdatePost:
         assert result['user']['email'] == fpost_create.user.email
 
         update_data = dict(title='changed title', content='changed content', comments=[])
-        resp = tclient.patch('/posts/%d' % fpost_create.id, data=before_update_post_schema.dumps(update_data).data, content_type='application/json')
+        resp = tclient.patch('/posts/%d' % fpost_create.id, data=post_update_form_schema.dumps(update_data).data, content_type='application/json')
 
         assert resp.status_code == 200
         assert fpost_create.title == 'changed title'
@@ -102,7 +102,7 @@ class TestUpdatePost:
         update_post = fposts[1]
 
         update_data = dict(title='changed title', content='changed content')
-        resp = tclient.patch('/posts/%d' % update_post.id, data=before_update_post_schema.dumps(update_data).data, content_type='application/json')
+        resp = tclient.patch('/posts/%d' % update_post.id, data=post_update_form_schema.dumps(update_data).data, content_type='application/json')
 
         assert resp.status_code == 401
         assert resp.data == b'No Authentication.'

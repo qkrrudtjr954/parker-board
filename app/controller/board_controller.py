@@ -4,7 +4,7 @@ from webargs.flaskparser import use_args
 
 from app.model.board import Board
 from app.service import board_service
-from app.schema.board import main_board_schema, after_create_board_schema, after_delete_board_schema, before_create_board_schema, before_update_board_schema, after_update_board_schema
+from app.schema.board import main_board_schema, after_create_board_schema, after_delete_board_schema, board_create_form_schema, board_update_form_schema, after_update_board_schema
 from app.schema.pagination import pagination_schema
 
 
@@ -27,7 +27,7 @@ def main(pagination):
 # create board
 @bp.route('/boards', methods=['POST'])
 @login_required
-@use_args(before_create_board_schema)
+@use_args(board_create_form_schema)
 def create(board: Board):
     try:
         board_service.create(current_user, board)
@@ -38,7 +38,7 @@ def create(board: Board):
 
 # update board
 @bp.route('/boards/<int:board_id>', methods=['PATCH'])
-@use_args(before_update_board_schema)
+@use_args(board_update_form_schema)
 @login_required
 def update(board_data, board_id):
     target_board = Board.query.get(board_id)

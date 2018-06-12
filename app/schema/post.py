@@ -52,8 +52,8 @@ class PostFormSchema(ma.ModelSchema):
         fields = ['title', 'content', 'description']
 
 
-before_create_post_schema = PostFormSchema()
-before_update_post_schema = PostFormSchema()
+post_create_form_schema = PostFormSchema()
+post_update_form_schema = PostFormSchema()
 
 
 

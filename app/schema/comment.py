@@ -38,5 +38,5 @@ class CommentFormSchema(ma.ModelSchema):
         fields = ['content']
 
 
-before_create_schema = CommentFormSchema()
-before_update_schema = CommentFormSchema()
+comment_create_form_schema = CommentFormSchema()
+comment_update_form_schema = CommentFormSchema()

@@ -3,7 +3,7 @@ import json
 
 from app.model.comment import CommentStatus
 from app.schema.user import before_login_schema
-from app.schema.comment import before_create_schema, before_update_schema
+from app.schema.comment import comment_create_form_schema, comment_update_form_schema
 from tests.factories.comment import FakeCommentFactory
 from tests.factories.post import FakePostFactory
 
@@ -43,7 +43,7 @@ class TestCreateComment:
         assert resp.status_code == 200
 
         comment = FakeCommentFactory.build()
-        resp = tclient.post('/posts/%d/comments' % fpost.id, data=before_create_schema.dump(comment).data)
+        resp = tclient.post('/posts/%d/comments' % fpost.id, data=comment_create_form_schema.dump(comment).data)
 
         result = json.loads(resp.data)
 
@@ -55,7 +55,7 @@ class TestCreateComment:
         assert resp.status_code == 200
 
         comment = FakeCommentFactory.build(content='asd')
-        resp = tclient.post('/posts/%d/comments' % fpost.id, data=before_create_schema.dump(comment).data)
+        resp = tclient.post('/posts/%d/comments' % fpost.id, data=comment_create_form_schema.dump(comment).data)
         result = json.loads(resp.data)
 
         assert resp.status_code == 422
@@ -68,7 +68,7 @@ class TestUpdateComment:
         assert resp.status_code == 200
 
         update_data = dict(content='changed content')
-        resp = tclient.patch('/comments/%d' % fcomment.id, data=before_update_schema.dump(update_data).data)
+        resp = tclient.patch('/comments/%d' % fcomment.id, data=comment_update_form_schema.dump(update_data).data)
         result = json.loads(resp.data)
 
         assert resp.status_code == 200
@@ -79,7 +79,7 @@ class TestUpdateComment:
         assert resp.status_code == 200
 
         update_data = dict(content='changed content')
-        resp = tclient.patch('/comments/%d' % fcomments[1].id, data=before_update_schema.dump(update_data).data)
+        resp = tclient.patch('/comments/%d' % fcomments[1].id, data=comment_update_form_schema.dump(update_data).data)
 
         assert resp.status_code == 401
         assert resp.data == b'No Authentication.'

@@ -5,7 +5,7 @@ from webargs.flaskparser import use_args
 
 from app.model.comment import Comment
 from app.service import comment_service
-from app.schema.comment import before_create_schema, before_update_schema, after_updated_schema, after_create_schema, after_delete_schema
+from app.schema.comment import comment_create_form_schema, comment_update_form_schema, after_updated_schema, after_create_schema, after_delete_schema
 
 
 bp = Blueprint('comment', __name__)
@@ -18,7 +18,7 @@ bp = Blueprint('comment', __name__)
 
 @bp.route('/posts/<int:post_id>/comments', methods=['POST'])
 @login_required
-@use_args(before_create_schema)
+@use_args(comment_create_form_schema)
 def create(comment, post_id):
     try:
         comment_service.create(post_id, comment, current_user)
@@ -46,7 +46,7 @@ def delete(comment_id):
 
 @bp.route('/comments/<int:comment_id>', methods=['PATCH'])
 @login_required
-@use_args(before_update_schema)
+@use_args(comment_update_form_schema)
 def update(comment_data, comment_id):
     target_comment = Comment.query.get(comment_id)
 
