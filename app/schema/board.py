@@ -25,7 +25,7 @@ class BoardSchema(ma.ModelSchema):
 
 
 main_board_schema = BoardSchema(only=['id', 'title', 'description', 'created_at', 'user'], many=True)
-simple_board_schema = BoardSchema(only=['id', 'title'])
+simple_board_schema = BoardSchema(only=['id', 'title', 'description'])
 
 
 after_delete_board_schema = BoardSchema(only=['id', 'title', 'status'])

@@ -38,6 +38,13 @@ from app.schema.board import simple_board_schema
 #     content = fields.String()
 #
 #
+'''
+스키마는 입력값 정제 vs 나가는값 정제
+
+입력값 정제 : 필요한 스키마 만들어서 사용
+출력값 정제 : 기본 스키마에서 only를 사용
+'''
+
 
 class DefaultPostSchema(ma.ModelSchema):
     class Meta:
@@ -59,32 +66,14 @@ class ExtensionPostSchema(DefaultPostSchema):
         return len(comments)
 
 
-post_schema = ExtensionPostSchema()
-
-main_posts_schema = ExtensionPostSchema(many=True, only=['id', 'title', 'content', 'comments_count', 'created_at', 'user', 'description'])
-main_post_schema = ExtensionPostSchema(only=['id', 'title', 'content', 'comments_count', 'created_at', 'user', 'description'])
 simple_post_schema = ExtensionPostSchema(only=['id', 'title'])
 
+main_post_schema = ExtensionPostSchema(only=['id', 'title', 'content', 'comments_count', 'created_at', 'user', 'description', 'updated_at'])
+post_list_schema = ExtensionPostSchema(only=['id', 'title', 'comments_count', 'created_at', 'user'])
 
-# post list 에서 필요한 스키마
-# id, title, description, created_at, updated_at, comment_count, user
-class PostListSchema(ma.ModelSchema):
-    user = fields.Nested(simple_user_schema)
-    comments_count = fields.Method('get_comments_count')
-
-    def get_comments_count(self, obj):
-        comments = [c for c in obj.comments if c.status != CommentStatus.DELETED]
-        return len(comments)
-
-    class Meta:
-        strict = True
-        model = Post
-        sql_session = db.session
-        exclude = ['content', 'status', 'comments', 'board']
-
-
-post_list_schema = PostListSchema(many=True)
-
+after_create_post_schema = ExtensionPostSchema(only=['id', 'title', 'content', 'description', 'created_at', 'user'])
+after_update_post_schema = ExtensionPostSchema(only=['id', 'title', 'content', 'description', 'created_at', 'user'])
+after_delete_post_schema = ExtensionPostSchema(only=['id', 'title', 'status'])
 
 
 class PostFormSchema(ma.ModelSchema):
@@ -92,6 +81,8 @@ class PostFormSchema(ma.ModelSchema):
         strict = True
         model = Post
         sqla_session = db.session
-        fields = ['title', 'content']
+        fields = ['title', 'content', 'description']
+
 
 before_create_post_schema = PostFormSchema()
+before_update_post_schema = PostFormSchema()

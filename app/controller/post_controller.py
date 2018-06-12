@@ -3,7 +3,8 @@ from webargs.flaskparser import use_args
 from app.service import post_service
 from app.model.board import Board
 from app.model.post import Post
-from app.schema.post import post_schema, main_post_schema, post_list_schema, before_create_post_schema
+from app.schema.board import simple_board_schema
+from app.schema.post import main_post_schema, before_create_post_schema, before_update_post_schema, after_create_post_schema, after_update_post_schema, after_delete_post_schema, post_list_schema
 from app.schema.comment import comments_schema
 from app.schema.pagination import pagination_schema
 from flask_login import login_required, current_user
@@ -23,11 +24,6 @@ bp = Blueprint('post', __name__)
 @use_args(pagination_schema)
 @login_required
 def post_view(pagination, board_id):
-    '''
-    :param pagination:
-    :param board_id:
-    :return: board, post list, pagination obj
-    '''
     board = Board.query.get(board_id)
 
     if not board:
@@ -35,10 +31,11 @@ def post_view(pagination, board_id):
 
     posts = board.get_posts(pagination.page, pagination.per_page)
 
+    board_item = simple_board_schema.dump(board).data
     posts_item = post_list_schema.dump(posts.items).data
     pagination = pagination_schema.dump(posts).data
 
-    result = dict(posts=posts_item, pagination=pagination)
+    result = dict(board=board_item, posts=posts_item, pagination=pagination)
 
     return jsonify(result), 200
 
@@ -72,7 +69,7 @@ def detail_view(pagination, post_id):
 def create(post: Post, board_id):
     try:
         post_service.create(board_id, post, current_user)
-        return post_schema.jsonify(post), 200
+        return after_create_post_schema.jsonify(post), 200
     except Exception as e:
         return str(e), 500
 
@@ -81,7 +78,7 @@ def create(post: Post, board_id):
 # PATCH /posts/1
 @bp.route('/posts/<int:post_id>', methods=['PATCH'])
 @login_required
-@use_args(post_schema)
+@use_args(before_update_post_schema)
 def update(post_data: Post, post_id):
     target_post = Post.query.get(post_id)
 
@@ -93,7 +90,7 @@ def update(post_data: Post, post_id):
 
     try:
         post_service.update(target_post, post_data)
-        return post_schema.jsonify(target_post), 200
+        return after_update_post_schema.jsonify(target_post), 200
     except Exception:
         return 'Server Error.', 500
 
@@ -113,6 +110,6 @@ def delete(post_id):
 
     try:
         post_service.delete(target_post)
-        return post_schema.jsonify(target_post), 200
+        return after_delete_post_schema.jsonify(target_post), 200
     except Exception:
         return 'Server Error.', 500
