@@ -22,7 +22,6 @@ class Comment(db.Model):
     user = db.relationship("User")
 
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
-    post = db.relationship("Post", back_populates='comments')
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow)
@@ -30,6 +29,9 @@ class Comment(db.Model):
     @hybrid_property
     def is_deleted(self):
         return self.status == CommentStatus.DELETED
+
+    def refresh_update_time(self):
+        self.updated_at = datetime.utcnow()
 
     def __repr__(self):
         return "<Comment id: %d, content: %s, status: %s" \

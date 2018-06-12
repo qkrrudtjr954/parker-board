@@ -35,7 +35,7 @@ def delete(comment: Comment):
 def update(target_comment: Comment, comment_data: Comment):
     try:
         target_comment.content = comment_data.content
-        target_comment.updated_at = datetime.utcnow()
+        target_comment.refresh_update_time()
 
         db.session.flush()
     except Exception as e:

@@ -159,6 +159,7 @@ class TestReadPost:
 
         result = json.loads(resp.data)
 
+        print(result)
         assert resp.status_code == 200
         assert result['post']['content'] == fpost_create.content
 

@@ -26,7 +26,7 @@ class Post(db.Model):
 
     board_id = db.Column(db.Integer, db.ForeignKey('board.id'), nullable=False)
 
-    comments = db.relationship("Comment", back_populates='post', lazy='dynamic')
+    comments = db.relationship("Comment", backref='post', lazy='dynamic')
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow)

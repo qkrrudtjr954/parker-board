@@ -1,1 +1,7 @@
-{}
+{
+  "test_comment.py::test_login": true,
+  "test_post.py::TestCreatePost::()": true,
+  "test_post.py::TestDeletePost::()": true,
+  "test_post.py::TestReadPost::()": true,
+  "test_post.py::TestUpdatePost::()": true
+}
