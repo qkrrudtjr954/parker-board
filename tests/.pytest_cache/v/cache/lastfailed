@@ -1,3 +1,5 @@
 {
-  "test_comment.py::test_login": true
+  "test_comment.py::test_login": true,
+  "test_tesing.py::Context_when_describe_to_long::()::Describe_Using_Context2::()": true,
+  "test_tesing.py::Context_when_hero_has_sword": true
 }
