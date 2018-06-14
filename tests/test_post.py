@@ -188,24 +188,3 @@ class TestPostList:
         assert result['message'] == 'Login First.'
 
 
-
-
-
-class Describe_PostController:
-    class Describe_PostList:
-        class Context_when_user_logged_in:
-            class Context_when_board_not_exist:
-                def test_is_expected_404(self, tclient):
-                    pass
-
-            class Context_when_board_exist:
-                def test_is_expected_200(self, tclient):
-                    board = FakeBoardFactory.create(posts=FakePostFactory.create_batch(10))
-
-                    resp = tclient.get('/boards/%d/posts' % board.id)
-                    print(resp.data)
-
-                    assert 200 == resp.status_code
-
-        class Context_when_user_not_logged_in:
-            pass

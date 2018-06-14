@@ -3,7 +3,7 @@ from app.model.board import Board, BoardStatus
 from app.schema import ma
 from app.schema.user import simple_user_schema
 
-from marshmallow import fields
+from marshmallow import fields, validates, ValidationError
 from marshmallow_enum import EnumField
 
 '''
@@ -28,12 +28,16 @@ main_board_schema = BoardSchema(only=['id', 'title', 'description', 'created_at'
 simple_board_schema = BoardSchema(only=['id', 'title', 'description'])
 
 
-# fixme: 테스트코드 때문에 스키마가 바뀌면 안됨.
 board_redirect_schema = BoardSchema(only=['id'])
 
 
 # Board를 생성하거나 수정할 때 사용하는 스키마
 class BoardFormSchema(ma.ModelSchema):
+    @validates('title')
+    def title_length_check(self, title):
+        if len(title) < 10:
+            raise ValidationError('Title length must more than 10.', status_code=422)
+
     class Meta:
         strict = True
         model = Board

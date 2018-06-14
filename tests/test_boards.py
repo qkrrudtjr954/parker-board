@@ -70,18 +70,27 @@ class Describe_BoardController:
             def subject(self, tclient, logged_in_user, board_form):
                 return tclient.post('/boards', data=board_form)
 
-            def test_200이_반환된다(self, subject):
-                assert 200 == subject.status_code
+            @pytest.fixture
+            def no_title_subject(self, tclient, logged_in_user, board_form):
+                board_form['title'] = ''
+                return tclient.post('/boards', data=board_form)
 
-            def test_board가_생성된다(self, subject, logged_in_user, board_form):
-                result = json.loads(subject.data)
-                board_id = result['id']
+            class Context_입력값이_정상인_경우:
+                def test_200이_반환된다(self, subject):
+                    assert 200 == subject.status_code
 
-                db_board = Board.query.get(board_id)
-                assert logged_in_user.id == db_board.user_id
+                def test_board가_생성된다(self, subject, logged_in_user, board_form):
+                    result = json.loads(subject.data)
+                    board_id = result['id']
 
-                print(board_form)
-                assert board_form['title'] == db_board.title
+                    db_board = Board.query.get(board_id)
+                    assert logged_in_user.id == db_board.user_id
+                    assert board_form['title'] == db_board.title
+
+            class Context_제목이_없는_경우:
+                def test_422이_반환된다(self, no_title_subject):
+                    assert 422 == no_title_subject.status_code
+
 
 
 class TestCreateBoard:
