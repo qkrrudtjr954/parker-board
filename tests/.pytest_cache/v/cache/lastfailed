@@ -4,7 +4,6 @@
   "test_post.py::Describe_PostController::()::Describe_PostList::()::Context_when_user_logged_in::()::Context_when_board_exist": true,
   "test_post.py::Describe_PostController::()::Describe_PostList::()::Context_when_user_logged_in::()::Context_when_board_exist::()::test_is_expected_200": true,
   "test_post.py::Describe_PostController::()::Describe_PostList::()::Context_when_user_logged_in::()::Context_when_board_not_exist": true,
-  "test_post.py::TestPostList::()::test_post_list": true,
   "test_tesing.py::Context_when_describe_to_long::()::Describe_Using_Context2::()": true,
   "test_tesing.py::Context_when_hero_has_sword": true
 }

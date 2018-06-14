@@ -7,6 +7,7 @@ import pytest
 import json
 
 from tests.factories.post import FakePostFactory
+from tests.factories.user import FakeUserFactory
 
 
 @pytest.fixture(scope='function')
@@ -46,19 +47,41 @@ def many_post_board(tsession):
     return board
 
 
+
 class Describe_BoardController:
-    class Describe_Main:
-        class Context_when_logged_in:
-            def test_is_expected_response_ok(self):
-                pass
+    class Describe_create:
+        class Context_로그인이_되어있는_경우:
+            @pytest.fixture
+            def logged_in_user(self, tclient, tsession):
+                user = FakeUserFactory.create()
+                tsession.flush()
 
-            def test_board_id_returned(self):
-                pass
+                resp = tclient.post('/users/login', data=before_login_schema.dumps(user).data, content_type='application/json')
+                assert 200 == resp.status_code
 
-        class Context_when_not_logged_in:
-            def test_is_expected_response_unauthorized(self):
-                pass
+                return user
 
+            @pytest.fixture
+            def board_form(self):
+                board = FakeBoardFactory.build()
+                return board_create_form_schema.dump(board).data
+
+            @pytest.fixture
+            def subject(self, tclient, logged_in_user, board_form):
+                return tclient.post('/boards', data=board_form)
+
+            def test_200이_반환된다(self, subject):
+                assert 200 == subject.status_code
+
+            def test_board가_생성된다(self, subject, logged_in_user, board_form):
+                result = json.loads(subject.data)
+                board_id = result['id']
+
+                db_board = Board.query.get(board_id)
+                assert logged_in_user.id == db_board.user_id
+
+                print(board_form)
+                assert board_form['title'] == db_board.title
 
 
 class TestCreateBoard:
