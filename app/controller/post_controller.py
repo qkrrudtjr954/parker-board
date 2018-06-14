@@ -4,7 +4,7 @@ from app.service import post_service
 from app.model.board import Board
 from app.model.post import Post
 from app.schema.board import simple_board_schema
-from app.schema.post import main_post_schema, post_create_form_schema, post_update_form_schema, after_create_post_schema, after_update_post_schema, after_delete_post_schema, post_list_schema
+from app.schema.post import main_post_schema, post_create_form_schema, post_update_form_schema, post_redirect_schema, post_list_schema
 from app.schema.comment import comments_schema
 from app.schema.pagination import pagination_schema
 from flask_login import login_required, current_user
@@ -69,7 +69,7 @@ def detail(pagination, post_id):
 def create(post: Post, board_id):
     try:
         post_service.create(board_id, post, current_user)
-        return after_create_post_schema.jsonify(post), 200
+        return post_redirect_schema.jsonify(post), 200
     except Exception as e:
         return str(e), 500
 
@@ -90,7 +90,7 @@ def update(post_data: Post, post_id):
 
     try:
         post_service.update(target_post, post_data)
-        return after_update_post_schema.jsonify(target_post), 200
+        return post_redirect_schema.jsonify(target_post), 200
     except Exception:
         return 'Server Error.', 500
 
@@ -110,6 +110,6 @@ def delete(post_id):
 
     try:
         post_service.delete(target_post)
-        return after_delete_post_schema.jsonify(target_post), 200
+        return post_redirect_schema.jsonify(target_post), 200
     except Exception:
         return 'Server Error.', 500

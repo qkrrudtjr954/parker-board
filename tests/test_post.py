@@ -9,8 +9,6 @@ from tests.factories.post import FakePostFactory
 from tests.factories.board import FakeBoardFactory
 from tests.factories.user import FakeUserFactory
 
-from flask_login import current_user, login_user
-
 
 @pytest.fixture(scope='function')
 def fboard(tsession):
@@ -167,25 +165,6 @@ def credentials(user):
     return [('Authentication', user.get_auth_token())]
 
 
-# class Describe_PostController:
-#     class Describe_PostList:
-#         class Context_when_user_logged_in:
-#             class Context_when_board_not_exist:
-#                 def test_is_expected_404(self, tclient):
-#                     pass
-#
-#             class Context_when_board_exist:
-#                 def test_is_expected_200(self, tclient):
-#                     board = FakeBoardFactory.create(posts=FakePostFactory.create_batch(10))
-#
-#                     resp = tclient.get('/boards/%d/posts' % board.id)
-#                     print(resp.data)
-#
-#                     assert resp.status_code == 200
-#
-#         class Context_when_user_not_logged_in:
-#             pass
-
 class TestPostList:
     def test_post_list(self, fpost_create, tsession, tclient):
         assert tsession.query(Post).one()
@@ -207,3 +186,26 @@ class TestPostList:
 
         assert resp.status_code == 400
         assert result['message'] == 'Login First.'
+
+
+
+
+
+class Describe_PostController:
+    class Describe_PostList:
+        class Context_when_user_logged_in:
+            class Context_when_board_not_exist:
+                def test_is_expected_404(self, tclient):
+                    pass
+
+            class Context_when_board_exist:
+                def test_is_expected_200(self, tclient):
+                    board = FakeBoardFactory.create(posts=FakePostFactory.create_batch(10))
+
+                    resp = tclient.get('/boards/%d/posts' % board.id)
+                    print(resp.data)
+
+                    assert 200 == resp.status_code
+
+        class Context_when_user_not_logged_in:
+            pass

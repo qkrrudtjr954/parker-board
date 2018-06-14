@@ -39,9 +39,7 @@ simple_post_schema = PostSchema(only=['id', 'title'])
 main_post_schema = PostSchema(only=['id', 'title', 'content', 'comments_count', 'created_at', 'user', 'description', 'updated_at'])
 post_list_schema = PostSchema(only=['id', 'title', 'comments_count', 'created_at', 'user'], many=True)
 
-after_create_post_schema = PostSchema(only=['id', 'title', 'content', 'description', 'created_at', 'user'])
-after_update_post_schema = PostSchema(only=['id', 'title', 'content', 'description', 'created_at', 'user'])
-after_delete_post_schema = PostSchema(only=['id', 'title', 'status'])
+post_redirect_schema = PostSchema(only=['id'])
 
 
 class PostFormSchema(ma.ModelSchema):
