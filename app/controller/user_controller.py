@@ -26,7 +26,7 @@ def login(login_data):
     try:
         # 로그인한 유저를 반환한다. -> login 의 기능에만 충실하는 코드
         logged_in_user = user_service.login(login_data.email, login_data.password)
-        login_user(logged_in_user)
+        testing = login_user(logged_in_user, remember=True)
 
         return jsonify(dict(user=after_login_schema.dump(logged_in_user).data, next=next)), 200
 

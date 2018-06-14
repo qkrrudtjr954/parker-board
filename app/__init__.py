@@ -1,7 +1,5 @@
 from flask import Flask, request, jsonify
 from flask_login import LoginManager
-from app.schema.resp import resp_schema
-
 
 login_manager = LoginManager()
 

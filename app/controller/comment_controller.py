@@ -5,7 +5,7 @@ from webargs.flaskparser import use_args
 
 from app.model.comment import Comment
 from app.service import comment_service
-from app.schema.comment import comment_create_form_schema, comment_update_form_schema, after_updated_schema, after_create_schema, after_delete_schema
+from app.schema.comment import comment_create_form_schema, comment_update_form_schema, after_updated_schema, after_create_schema
 
 
 bp = Blueprint('comment', __name__)
@@ -41,7 +41,7 @@ def delete(comment_id):
 
     comment_service.delete(comment)
 
-    return after_delete_schema.jsonify(comment), 200
+    return 'Comment deleted', 200
 
 
 @bp.route('/comments/<int:comment_id>', methods=['PATCH'])

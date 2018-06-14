@@ -26,6 +26,9 @@ class Board(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow)
 
+    def is_deleted(self):
+        return True if self.status == BoardStatus.DELETED else False
+
     def deleted(self):
         self.status = BoardStatus.DELETED
 

@@ -94,9 +94,8 @@ class TestCreateBoard:
         assert resp.status_code == 422
 
 
-# FIXME : BoardList
-class TestReadBoard:
-    def test_read_board_list(self, tclient, fboards):
+class TestBoardList:
+    def test_board_list(self, tclient, fboards):
         assert len(fboards) == 10
         assert Board.query.count() == 10
         assert User.query.count() == 10
@@ -110,7 +109,7 @@ class TestReadBoard:
         assert len(result['boards']) == 10
         assert result['boards'][0]['user']['email'] == fboards[0].user.email
 
-    def test_read_board_페이지_3개(self, tclient, fboards):
+    def test_board_list_페이지_3개(self, tclient, fboards):
         assert len(fboards) == 10
         assert Board.query.count() == 10
         assert User.query.count() == 10
@@ -201,11 +200,9 @@ class TestDeleteBoard:
 
         # board delete
         resp = tclient.delete('/boards/%d' % fboard.id, content_type='application/json')
-        result = json.loads(resp.data)
 
         assert resp.status_code == 200
-        assert fboard.status == BoardStatus.DELETED
-        assert result['title'] == fboard.title
+        assert fboard.is_deleted()
 
     def test_delete_no_login(self, tclient, fboard):
         resp = tclient.delete('/boards/%d' % fboard.id, content_type='application/json')
@@ -226,4 +223,4 @@ class TestDeleteBoard:
 
         assert resp.status_code == 401
         assert resp.data == b'No Authentication.'
-        assert delete_board.status != BoardStatus.DELETED
+        assert not delete_board.is_deleted()

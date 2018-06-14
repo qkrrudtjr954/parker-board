@@ -4,7 +4,7 @@ from webargs.flaskparser import use_args
 
 from app.model.board import Board
 from app.service import board_service
-from app.schema.board import main_board_schema, after_create_board_schema, after_delete_board_schema, board_create_form_schema, board_update_form_schema, after_update_board_schema
+from app.schema.board import main_board_schema, board_create_form_schema, board_update_form_schema, board_redirect_schema
 from app.schema.pagination import pagination_schema
 
 
@@ -31,7 +31,7 @@ def main(pagination):
 def create(board: Board):
     try:
         board_service.create(current_user, board)
-        return after_create_board_schema.jsonify(board), 200
+        return board_redirect_schema.jsonify(board), 200
     except Exception:
         return 'Server Error.', 500
 
@@ -51,7 +51,7 @@ def update(board_data, board_id):
 
     try:
         board_service.update(target_board, board_data)
-        return after_update_board_schema.jsonify(target_board), 200
+        return board_redirect_schema.jsonify(target_board), 200
     except Exception:
         return 'Server Error.', 500
 
@@ -70,6 +70,6 @@ def delete(board_id):
 
     try:
         board_service.delete(target_board)
-        return after_delete_board_schema.jsonify(target_board), 200
+        return board_redirect_schema.jsonify(target_board), 200
     except Exception:
         return 'Server Error.', 500

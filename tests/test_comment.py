@@ -44,11 +44,7 @@ class TestCreateComment:
 
         comment = FakeCommentFactory.build()
         resp = tclient.post('/posts/%d/comments' % fpost.id, data=comment_create_form_schema.dump(comment).data)
-
-        result = json.loads(resp.data)
-
         assert resp.status_code == 200
-        assert result['content'] == comment.content
 
     def test_create_comment_no_content(self, tclient, fpost):
         resp = login(tclient, fpost.user)
@@ -69,10 +65,8 @@ class TestUpdateComment:
 
         update_data = dict(content='changed content')
         resp = tclient.patch('/comments/%d' % fcomment.id, data=comment_update_form_schema.dump(update_data).data)
-        result = json.loads(resp.data)
 
         assert resp.status_code == 200
-        assert result['content'] == fcomment.content
 
     def test_update_comment_no_auth(self, tclient, fcomments):
         resp = login(tclient, fcomments[0].user)
@@ -91,11 +85,9 @@ class TestDeleteComment:
         assert resp.status_code == 200
 
         resp = tclient.delete('/comments/%d' % fcomment.id)
-        result = json.loads(resp.data)
 
         assert resp.status_code == 200
-        assert result['content'] == fcomment.content
-        assert fcomment.status == CommentStatus.DELETED
+        assert fcomment.is_deleted
 
     def test_delete_comment_no_auth(self, tclient, fcomments):
         user = fcomments[0].user
@@ -108,7 +100,7 @@ class TestDeleteComment:
 
         assert resp.status_code == 401
         assert resp.data == b'No Authentication.'
-        assert fcomments[1].status != CommentStatus.DELETED
+        assert not fcomments[1].is_deleted
 
     def test_delete_comment_no_data(self, tclient, fcomment):
         resp = login(tclient, fcomment.user)

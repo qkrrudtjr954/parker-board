@@ -6,7 +6,6 @@ from tests.factories.board import FakeBoardFactory
 from tests.factories.user import FakeUserFactory
 
 
-
 class FakePostFactory(factory.alchemy.SQLAlchemyModelFactory):
     id = factory.Sequence(lambda n: n+1)
     title = factory.Faker('sentence')

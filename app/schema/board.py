@@ -29,9 +29,7 @@ simple_board_schema = BoardSchema(only=['id', 'title', 'description'])
 
 
 # fixme: 테스트코드 때문에 스키마가 바뀌면 안됨.
-after_delete_board_schema = BoardSchema(only=['id', 'title', 'status'])
-after_update_board_schema = BoardSchema(only=['id', 'title', 'description', 'status', 'updated_at'])
-after_create_board_schema = BoardSchema(only=['id', 'title', 'description', 'status', 'updated_at', 'user'])
+board_redirect_schema = BoardSchema(only=['id'])
 
 
 # Board를 생성하거나 수정할 때 사용하는 스키마
