@@ -50,7 +50,7 @@ def create_app():
         messages = exc.messages if exc else ['Invalid request']
 
         result = dict(errors=messages)
-
+        print(messages)
         return jsonify(result), 422
 
     return app

@@ -49,6 +49,65 @@ def many_post_board(tsession):
 
 
 class Describe_BoardController:
+    class Describe_main:
+        @pytest.fixture
+        def boards(self):
+            boards = FakeBoardFactory.create_batch(25)
+            self.session.flush()
+
+            return boards
+
+
+        @pytest.fixture
+        def json_result(self, subject):
+            return json.loads(subject.data)
+
+        class Context_per_page가_있을_때:
+            @pytest.fixture
+            def subject(self, boards, pagination):
+                resp = self.client.get('/boards/?per_page=%d&page=%d' % (pagination['per_page'], pagination['page']))
+                return resp
+
+            @pytest.fixture
+            def pagination(self):
+                return dict(per_page=5, page=1)
+
+            def test_200을_반환한다(self, subject):
+                assert 200 == subject.status_code
+
+            class Context_page가_1일_때:
+                def test_has_prev는_False다(self, json_result):
+                    assert not json_result['pagination']['has_prev']
+
+                def test_has_next는_True다(self, json_result):
+                    assert json_result['pagination']['has_next']
+
+            class Context_page가_5일_때:
+                @pytest.fixture
+                def pagination(self):
+                    return dict(per_page=5, page=5)
+                def test_has_next는_False다(self, json_result):
+                    assert not json_result['pagination']['has_next']
+
+                def test_has_prev는_True다(self, json_result):
+                    assert json_result['pagination']['has_prev']
+
+        # class Context_page가_없을_때:
+        #     @pytest.fixture
+        #     def subject(self, boards):
+        #         resp = self.client.get('/boards/')
+        #         return resp
+        #
+        #     def test_per_page는_10이다(self, json_result):
+        #         result = json.loads(json_result.data)
+        #         assert 10 == result['pagination']['page']
+        #
+        # class Context_per_page가_5일때:
+        #     class Context_page가_없을_때:
+        #         pass
+        #     class Context_page가_5일_때:
+        #         pass
+
     class Describe_create:
         @pytest.fixture
         def form(self):
@@ -64,29 +123,9 @@ class Describe_BoardController:
             def user(self, logged_in_user):
                 return logged_in_user
 
-            @pytest.fixture
-            def no_title_subject(self, tclient, logged_in_user, board_form):
-                board_form['title'] = ''
-                return tclient.post('/boards', data=board_form)
+            def test_200이_반환된다(self, subject):
+                assert 200 == subject.status_code
 
-            class Context_입력값이_정상인_경우:
-                def test_200이_반환된다(self, subject):
-                    assert 200 == subject.status_code
-
-                def test_board가_생성된다(self, subject, logged_in_user, board_form):
-                    result = json.loads(subject.data)
-                    board_id = result['id']
-
-<<<<<<< HEAD
-                    db_board = Board.query.get(board_id)
-                    assert logged_in_user.id == db_board.user_id
-                    assert board_form['title'] == db_board.title
-
-            class Context_제목이_없는_경우:
-                def test_422이_반환된다(self, no_title_subject):
-                    assert 422 == no_title_subject.status_code
-
-=======
             def test_board가_생성된다(self, subject, logged_in_user, form):
                 result = json.loads(subject.data)
                 board_id = result['id']
@@ -114,7 +153,155 @@ class Describe_BoardController:
 
             def test_401이_반환된다(self, subject):
                 assert 401 == subject.status_code
->>>>>>> 73cf5d403d7e618385c6999ebe82f65b07e23ba8
+
+    class Describe_update:
+        @pytest.fixture
+        def update_data(self):
+            update_data = dict(title='changed title', description='changed description')
+            return board_update_form_schema.dumps(update_data).data
+
+        @pytest.fixture
+        def board_id(self, user):
+            board = FakeBoardFactory(user=user, user_id=user.id)
+            self.session.flush()
+
+            return board.id
+
+        @pytest.fixture
+        def subject(self, board_id, update_data):
+            resp = self.client.patch('/boards/%d' % board_id, data=update_data, content_type='application/json')
+            return resp
+
+        class Context_로그인이_되어있는_경우:
+            @pytest.fixture
+            def user(self):
+                user = FakeUserFactory()
+                self.session.flush()
+
+                resp = self.client.post('/users/login', data=before_login_schema.dumps(user).data, content_type='application/json')
+                assert resp.status_code == 200
+
+                return user
+
+            class Context_board가_존재하지_않을_경우:
+                @pytest.fixture
+                def board_id(self, user):
+                    board = FakeBoardFactory.build(user=user, user_id=user.id)
+                    return board.id
+
+                def test_404를_반환한다(self, subject):
+                    assert 404 == subject.status_code
+
+            class Context_board가_존재하는_경우:
+                class Context_본인_게시글이_아닌_경우:
+                    @pytest.fixture
+                    def board_id(self):
+                        board = FakeBoardFactory()
+                        self.session.flush()
+
+                        return board.id
+
+                    def test_401을_반환한다(self, subject):
+                        assert 401 == subject.status_code
+
+                class Context_본인_게시글인_경우:
+
+                    def test_200을_반환한다(self, subject):
+                        assert 200 == subject.status_code
+
+                    def test_board가_갱신된다(self, subject, board_id):
+                        result = json.loads(subject.data)
+
+                        db_board = Board.query.get(board_id)
+
+                        assert result['id'] == board_id
+                        assert db_board.title == 'changed title'
+                        assert db_board.description == 'changed description'
+
+                    @pytest.mark.parametrize('title', ['', None])
+                    class Context_title이_없는_경우:
+                        @pytest.fixture
+                        def update_data(self, title):
+                            update_data = dict(title=title, description='changed description')
+                            return board_update_form_schema.dumps(update_data).data
+
+                        def test_422를_반환한다(self, subject):
+                            assert 422 == subject.status_code
+
+        class Context_로그인이_되어있지_않은_경우:
+                @pytest.fixture
+                def user(self):
+                    user = FakeUserFactory.create()
+                    self.session.flush()
+
+                    return user
+
+                def test_401을_반환한다(self, subject):
+                    assert 401 == subject.status_code
+
+    class Describe_delete:
+        class Context_로그인이_되어있는_경우:
+            @pytest.fixture
+            def user(self):
+                user = FakeUserFactory()
+                self.session.flush()
+                resp = self.client.post('/users/login', data=before_login_schema.dumps(user).data, content_type='application/json')
+                assert 200 == resp.status_code
+                return user
+
+            @pytest.fixture
+            def subject(self, board_id):
+                resp = self.client.delete('/boards/%d' % board_id)
+                return resp
+
+            class Context_board가_없는_경우:
+                @pytest.fixture
+                def board_id(self, user):
+                    board = FakeBoardFactory(user=user, user_id=user.id)
+                    return board.id
+
+                def test_404를_반환한다(self, subject):
+                    assert 404 == subject.status_code
+
+            class Context_board가_있는_경우:
+                class Context_본인_board_경우:
+                    @pytest.fixture
+                    def board_id(self, user):
+                        board = FakeBoardFactory(user=user, user_id=user.id)
+                        self.session.flush()
+                        return board.id
+
+                    def test_204를_반환한다(self, subject):
+                        assert 204 == subject.status_code
+
+                    def test_board를_삭제한다(self, subject, board_id):
+                        db_board = Board.query.filter_by(id=board_id).one()
+                        assert db_board.is_deleted()
+
+                class Context_본인_board가_아닌_경우:
+                    @pytest.fixture
+                    def board_id(self, user):
+                        board = FakeBoardFactory()
+                        self.session.flush()
+                        return board.id
+
+                    def test_401을_반환한다(self, board_id):
+                        resp = self.client.delete('/boards/%d' % board_id)
+                        assert 401 == resp.status_code
+
+        class Context_로그인이_되어있지_않은_경우:
+            @pytest.fixture
+            def board_id(self):
+                board = FakeBoardFactory()
+                self.session.flush()
+
+                return board.id
+
+            def test_401을_반환한다(self, board_id):
+                resp = self.client.delete('/boards/%d' % board_id)
+                assert 401 == resp.status_code
+
+
 
 
 class TestCreateBoard:
@@ -229,7 +416,7 @@ class TestUpdateBoard:
         resp = tclient.patch('/boards/%d' % fboard.id, data=board_update_form_schema.dumps(update_data).data, content_type='application/json')
         result = json.loads(resp.data)
 
-        assert resp.status_code == 400
+        assert resp.status_code == 401
         assert result['message'] == 'Login First.'
         assert fboard.title != 'changed title'
 
@@ -257,14 +444,14 @@ class TestDeleteBoard:
         # board delete
         resp = tclient.delete('/boards/%d' % fboard.id, content_type='application/json')
 
-        assert resp.status_code == 200
+        assert resp.status_code == 204
         assert fboard.is_deleted()
 
     def test_delete_no_login(self, tclient, fboard):
         resp = tclient.delete('/boards/%d' % fboard.id, content_type='application/json')
         result = json.loads(resp.data)
 
-        assert resp.status_code == 400
+        assert resp.status_code == 401
         assert result['message'] == 'Login First.'
         assert fboard.title != 'changed title'
 

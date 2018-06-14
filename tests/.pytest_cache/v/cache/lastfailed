@@ -1,16 +1,5 @@
 {
-<<<<<<< HEAD
-  "test_boards.py::Describe_BoardController::()::Describe_create::()::Context_\ub85c\uadf8\uc778\uc774_\ub418\uc5b4\uc788\ub294_\uacbd\uc6b0::()::Context_\uc81c\ubaa9\uc774_\uc5c6\ub294_\uacbd\uc6b0::()::test_400\uc774_\ubc18\ud658\ub41c\ub2e4": true,
-=======
-  "test_boards.py::Describe_BoardController::()::Describe_create::()::Context_\ub85c\uadf8\uc778\uc774_\ub418\uc5b4\uc788\ub294_\uacbd\uc6b0::()::Context_title\uc774_\uc5c6\ub294\uacbd\uc6b0::()::test_200\uc774_\ubc18\ud658\ub41c\ub2e4[None]": true,
-  "test_boards.py::Describe_BoardController::()::Describe_create::()::Context_\ub85c\uadf8\uc778\uc774_\ub418\uc5b4\uc788\ub294_\uacbd\uc6b0::()::Context_title\uc774_\uc5c6\ub294\uacbd\uc6b0::()::test_422\uac00_\ubc18\ud658\ub41c\ub2e4": true,
-  "test_boards.py::Describe_BoardController::()::Describe_create::()::Context_\ub85c\uadf8\uc778\uc774_\ub418\uc5b4\uc788\ub294_\uacbd\uc6b0::()::Context_title\uc774_\uc5c6\ub294\uacbd\uc6b0::()::test_422\uac00_\ubc18\ud658\ub41c\ub2e4[]": true,
-  "test_boards.py::TestDeleteBoard::()::test_delete_no_login": true,
-  "test_boards.py::TestUpdateBoard::()::test_update_no_login": true,
->>>>>>> 73cf5d403d7e618385c6999ebe82f65b07e23ba8
-  "test_comment.py::test_login": true,
-  "test_post.py::Describe_PostController::()::Describe_PostList::()::Context_when_board_exist::()::test_is_expected_200": true,
-  "test_post.py::Describe_PostController::()::Describe_PostList::()::Context_when_user_logged_in::()::Context_when_board_exist::()::test_is_expected_200": true,
-  "test_tesing.py::Context_when_describe_to_long::()::Describe_Using_Context2::()": true,
-  "test_tesing.py::Context_when_hero_has_sword": true
+  "test_boards.py::Describe_BoardController::()::Describe_create::()::Context_\ub85c\uadf8\uc778\uc774_\ub418\uc5b4\uc788\ub294_\uacbd\uc6b0::()::Context_\uc785\ub825\uac12\uc774_\uc815\uc0c1\uc778_\uacbd\uc6b0::()::test_board\uac00_\uc0dd\uc131\ub41c\ub2e4": true,
+  "test_boards.py::Describe_BoardController::()::Describe_main::()::Context_page\uac00_\uc5c6\uc744_\ub54c::()::test_per_page\ub294_10\uc774\ub2e4": true,
+  "test_boards.py::Describe_BoardController::()::Describe_update::()::Context_\ub85c\uadf8\uc778\uc774_\ub418\uc5b4\uc788\ub294_\uacbd\uc6b0::()::Context_\ubcf8\uc778_\uac8c\uc2dc\uae00\uc778_\uacbd\uc6b0::()::Context_title\uc774_\uc5c6\ub294_\uacbd\uc6b0::()::test_422\ub97c_\ubc18\ud658\ud55c\ub2e4": true
 }

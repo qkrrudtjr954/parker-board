@@ -7,4 +7,4 @@ class Pagination(object):
         self.has_next = has_next
 
     def __repr__(self):
-        return '<Pagenation per_page: %d, page: %d>' % (self.per_page, self.page)
+        return '<Pagination per_page: %d, page: %d>' % (self.per_page, self.page)

@@ -58,6 +58,8 @@ def logged_in_user(client, tsession):
     return user
 
 
+# autouse를 사용하면 모든 픽스쳐는 해당 함수를 사용한다.
+# client_class를 로드하면 client 객체를 사용할 수 있다. -> tclient는 사용하지 않아도 됨
 @pytest.fixture(autouse=True)
 def init(request, client_class, session):
     if request.cls is not None:

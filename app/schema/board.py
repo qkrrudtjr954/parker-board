@@ -33,6 +33,7 @@ board_redirect_schema = BoardSchema(only=['id'])
 
 # Board를 생성하거나 수정할 때 사용하는 스키마
 class BoardFormSchema(ma.ModelSchema):
+
     @validates('title')
     def title_length_check(self, title):
         if len(title) < 10:

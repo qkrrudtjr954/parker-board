@@ -30,7 +30,7 @@ def update(target_board: Board, board_data: Board):
         if target_board.title != board_data.title:
             target_board.title = board_data.title
 
-        if target_board.description != target_board.description:
+        if target_board.description != board_data.description:
             target_board.description = board_data.description
 
         target_board.refresh_update_time()

@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, logging
 from flask_login import login_required, current_user
 from webargs.flaskparser import use_args
 
@@ -19,7 +19,7 @@ def main(pagination):
     boards_items = main_board_schema.dump(boards.items).data
     pagination = pagination_schema.dump(boards).data
 
-    result = dict(boards=boards_items, pagenation=pagination)
+    result = dict(boards=boards_items, pagination=pagination)
 
     return jsonify(result), 200
 
@@ -44,7 +44,7 @@ def update(board_data, board_id):
     target_board = Board.query.get(board_id)
 
     if not target_board:
-        return 'No Board.', 400
+        return 'No Board.', 404
 
     if not target_board.user_id == current_user.id:
         return 'No Authentication.', 401
@@ -63,13 +63,13 @@ def delete(board_id):
     target_board = Board.query.get(board_id)
 
     if not target_board:
-        return 'No Board.', 400
+        return 'No Board.', 404
 
     if not target_board.user_id == current_user.id:
         return 'No Authentication.', 401
 
     try:
         board_service.delete(target_board)
-        return board_redirect_schema.jsonify(target_board), 200
-    except Exception:
+        return board_redirect_schema.jsonify(target_board), 204
+    except Exception as e:
         return 'Server Error.', 500
