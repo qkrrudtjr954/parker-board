@@ -42,7 +42,7 @@ def create_app():
         next = request.path if request.path else '/'
 
         result = dict(message='Login First.', next=next)
-        return jsonify(result), 400
+        return jsonify(result), 401
 
     @app.errorhandler(422)
     def schema_validation_handler(err):

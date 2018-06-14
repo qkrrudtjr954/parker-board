@@ -1,5 +1,13 @@
 {
+<<<<<<< HEAD
   "test_boards.py::Describe_BoardController::()::Describe_create::()::Context_\ub85c\uadf8\uc778\uc774_\ub418\uc5b4\uc788\ub294_\uacbd\uc6b0::()::Context_\uc81c\ubaa9\uc774_\uc5c6\ub294_\uacbd\uc6b0::()::test_400\uc774_\ubc18\ud658\ub41c\ub2e4": true,
+=======
+  "test_boards.py::Describe_BoardController::()::Describe_create::()::Context_\ub85c\uadf8\uc778\uc774_\ub418\uc5b4\uc788\ub294_\uacbd\uc6b0::()::Context_title\uc774_\uc5c6\ub294\uacbd\uc6b0::()::test_200\uc774_\ubc18\ud658\ub41c\ub2e4[None]": true,
+  "test_boards.py::Describe_BoardController::()::Describe_create::()::Context_\ub85c\uadf8\uc778\uc774_\ub418\uc5b4\uc788\ub294_\uacbd\uc6b0::()::Context_title\uc774_\uc5c6\ub294\uacbd\uc6b0::()::test_422\uac00_\ubc18\ud658\ub41c\ub2e4": true,
+  "test_boards.py::Describe_BoardController::()::Describe_create::()::Context_\ub85c\uadf8\uc778\uc774_\ub418\uc5b4\uc788\ub294_\uacbd\uc6b0::()::Context_title\uc774_\uc5c6\ub294\uacbd\uc6b0::()::test_422\uac00_\ubc18\ud658\ub41c\ub2e4[]": true,
+  "test_boards.py::TestDeleteBoard::()::test_delete_no_login": true,
+  "test_boards.py::TestUpdateBoard::()::test_update_no_login": true,
+>>>>>>> 73cf5d403d7e618385c6999ebe82f65b07e23ba8
   "test_comment.py::test_login": true,
   "test_post.py::Describe_PostController::()::Describe_PostList::()::Context_when_board_exist::()::test_is_expected_200": true,
   "test_post.py::Describe_PostController::()::Describe_PostList::()::Context_when_user_logged_in::()::Context_when_board_exist::()::test_is_expected_200": true,

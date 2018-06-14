@@ -5,12 +5,14 @@ import pytest
 from app import create_app
 
 from app.model import db
+from app.schema.user import before_login_schema
+from tests.factories.user import FakeUserFactory
 
 logging.basicConfig(level=logging.INFO, stream=sys.stdout)
 
 
 @pytest.fixture(scope='session')
-def tapp():
+def app():
     app = create_app()
     app_context = app.app_context()
     app_context.push()
@@ -19,15 +21,15 @@ def tapp():
 
 
 @pytest.fixture(scope='session')
-def tdb(tapp):
+def tdb(app):
 
-    db.init_app(tapp)
+    db.init_app(app)
     return db
 
 
 @pytest.fixture(scope='session')
-def tclient(tapp):
-    client = tapp.test_client()
+def tclient(app):
+    client = app.test_client()
     return client
 
 
@@ -36,3 +38,29 @@ def tsession(tdb):
     session = tdb.session
     yield session
     session.rollback()
+
+
+@pytest.fixture(scope='function')
+def session(tdb):
+    _session = tdb.session
+    yield _session
+    _session.rollback()
+
+
+@pytest.fixture
+def logged_in_user(client, tsession):
+    user = FakeUserFactory.create()
+    tsession.flush()
+
+    resp = client.post('/users/login', data=before_login_schema.dumps(user).data, content_type='application/json')
+    assert 200 == resp.status_code
+
+    return user
+
+
+@pytest.fixture(autouse=True)
+def init(request, client_class, session):
+    if request.cls is not None:
+        request.cls.session = session
+
+
