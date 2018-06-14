@@ -50,38 +50,50 @@ def many_post_board(tsession):
 
 class Describe_BoardController:
     class Describe_create:
+        @pytest.fixture
+        def form(self):
+            board = FakeBoardFactory.build()
+            return board_create_form_schema.dump(board).data
+
+        @pytest.fixture
+        def subject(self, user, form):
+            return self.client.post('/boards', data=json.dumps(form), content_type='application/json')
+
         class Context_로그인이_되어있는_경우:
             @pytest.fixture
-            def logged_in_user(self, tclient, tsession):
-                user = FakeUserFactory.create()
-                tsession.flush()
-
-                resp = tclient.post('/users/login', data=before_login_schema.dumps(user).data, content_type='application/json')
-                assert 200 == resp.status_code
-
-                return user
-
-            @pytest.fixture
-            def board_form(self):
-                board = FakeBoardFactory.build()
-                return board_create_form_schema.dump(board).data
-
-            @pytest.fixture
-            def subject(self, tclient, logged_in_user, board_form):
-                return tclient.post('/boards', data=board_form)
+            def user(self, logged_in_user):
+                return logged_in_user
 
             def test_200이_반환된다(self, subject):
                 assert 200 == subject.status_code
 
-            def test_board가_생성된다(self, subject, logged_in_user, board_form):
+            def test_board가_생성된다(self, subject, logged_in_user, form):
                 result = json.loads(subject.data)
                 board_id = result['id']
 
                 db_board = Board.query.get(board_id)
                 assert logged_in_user.id == db_board.user_id
+                assert form['title'] == db_board.title
 
-                print(board_form)
-                assert board_form['title'] == db_board.title
+            @pytest.mark.parametrize("title", ['', None])
+            class Context_title이_없는경우:
+                @pytest.fixture
+                def form(self, form, title):
+                    form['title'] = title
+                    return form
+
+                def test_422가_반환된다(self, subject):
+                    assert 422 == subject.status_code
+
+        class Context_로그인이_되어있지_않은경우:
+            @pytest.fixture
+            def user(self):
+                user = FakeUserFactory.create()
+                self.session.flush()
+                return user
+
+            def test_401이_반환된다(self, subject):
+                assert 401 == subject.status_code
 
 
 class TestCreateBoard:
