@@ -118,31 +118,30 @@ class Describe_BoardController:
         def subject(self, user, form):
             return self.client.post('/boards', data=json.dumps(form), content_type='application/json')
 
-        class Context_로그인이_되어있는_경우:
+        @pytest.fixture
+        def user(self, logged_in_user):
+            return logged_in_user
+
+        def test_200이_반환된다(self, subject):
+            assert 200 == subject.status_code
+
+        def test_board가_생성된다(self, subject, logged_in_user, form):
+            result = json.loads(subject.data)
+            board_id = result['id']
+
+            db_board = Board.query.get(board_id)
+            assert logged_in_user.id == db_board.user_id
+            assert form['title'] == db_board.title
+
+        @pytest.mark.parametrize("title", ['', None])
+        class Context_title이_없는경우:
             @pytest.fixture
-            def user(self, logged_in_user):
-                return logged_in_user
+            def form(self, form, title):
+                form['title'] = title
+                return form
 
-            def test_200이_반환된다(self, subject):
-                assert 200 == subject.status_code
-
-            def test_board가_생성된다(self, subject, logged_in_user, form):
-                result = json.loads(subject.data)
-                board_id = result['id']
-
-                db_board = Board.query.get(board_id)
-                assert logged_in_user.id == db_board.user_id
-                assert form['title'] == db_board.title
-
-            @pytest.mark.parametrize("title", ['', None])
-            class Context_title이_없는경우:
-                @pytest.fixture
-                def form(self, form, title):
-                    form['title'] = title
-                    return form
-
-                def test_422가_반환된다(self, subject):
-                    assert 422 == subject.status_code
+            def test_422가_반환된다(self, subject):
+                assert 422 == subject.status_code
 
         class Context_로그인이_되어있지_않은경우:
             @pytest.fixture
@@ -168,76 +167,75 @@ class Describe_BoardController:
             return board.id
 
         @pytest.fixture
+        def user(self):
+            user = FakeUserFactory()
+            self.session.flush()
+
+            resp = self.client.post('/users/login', data=before_login_schema.dumps(user).data, content_type='application/json')
+            assert resp.status_code == 200
+
+            return user
+
+        @pytest.fixture
         def subject(self, board_id, update_data):
             resp = self.client.patch('/boards/%d' % board_id, data=update_data, content_type='application/json')
             return resp
 
-        class Context_로그인이_되어있는_경우:
+
+        class Context_로그인이_되어있지_않은_경우:
             @pytest.fixture
             def user(self):
-                user = FakeUserFactory()
+                user = FakeUserFactory.create()
                 self.session.flush()
-
-                resp = self.client.post('/users/login', data=before_login_schema.dumps(user).data, content_type='application/json')
-                assert resp.status_code == 200
 
                 return user
 
-            class Context_board가_존재하지_않을_경우:
-                @pytest.fixture
-                def board_id(self, user):
-                    board = FakeBoardFactory.build(user=user, user_id=user.id)
-                    return board.id
+            def test_401을_반환한다(self, subject):
+                assert 401 == subject.status_code
 
-                def test_404를_반환한다(self, subject):
-                    assert 404 == subject.status_code
+        class Context_board가_존재하지_않을_경우:
+            @pytest.fixture
+            def board_id(self, user):
+                board = FakeBoardFactory.build(user=user, user_id=user.id)
+                return board.id
 
-            class Context_board가_존재하는_경우:
-                class Context_본인_게시글이_아닌_경우:
-                    @pytest.fixture
-                    def board_id(self):
-                        board = FakeBoardFactory()
-                        self.session.flush()
+            def test_404를_반환한다(self, subject):
+                assert 404 == subject.status_code
 
-                        return board.id
+        class Context_본인_게시글이_아닌_경우:
+            @pytest.fixture
+            def board_id(self):
+                board = FakeBoardFactory()
+                self.session.flush()
 
-                    def test_401을_반환한다(self, subject):
-                        assert 401 == subject.status_code
+                return board.id
 
-                class Context_본인_게시글인_경우:
+            def test_401을_반환한다(self, subject):
+                assert 401 == subject.status_code
 
-                    def test_200을_반환한다(self, subject):
-                        assert 200 == subject.status_code
+        class Context_본인_게시글인_경우:
 
-                    def test_board가_갱신된다(self, subject, board_id):
-                        result = json.loads(subject.data)
+            def test_200을_반환한다(self, subject):
+                assert 200 == subject.status_code
 
-                        db_board = Board.query.get(board_id)
+            def test_board가_갱신된다(self, subject, board_id):
+                result = json.loads(subject.data)
 
-                        assert result['id'] == board_id
-                        assert db_board.title == 'changed title'
-                        assert db_board.description == 'changed description'
+                db_board = Board.query.get(board_id)
 
-                    @pytest.mark.parametrize('title', ['', None])
-                    class Context_title이_없는_경우:
-                        @pytest.fixture
-                        def update_data(self, title):
-                            update_data = dict(title=title, description='changed description')
-                            return board_update_form_schema.dumps(update_data).data
+                assert result['id'] == board_id
+                assert db_board.title == 'changed title'
+                assert db_board.description == 'changed description'
 
-                        def test_422를_반환한다(self, subject):
-                            assert 422 == subject.status_code
+        @pytest.mark.parametrize('title', ['', None])
+        class Context_title이_없는_경우:
+            @pytest.fixture
+            def update_data(self, title):
+                update_data = dict(title=title, description='changed description')
+                return board_update_form_schema.dumps(update_data).data
 
-        class Context_로그인이_되어있지_않은_경우:
-                @pytest.fixture
-                def user(self):
-                    user = FakeUserFactory.create()
-                    self.session.flush()
-
-                    return user
-
-                def test_401을_반환한다(self, subject):
-                    assert 401 == subject.status_code
+            def test_422를_반환한다(self, subject):
+                assert 422 == subject.status_code
 
     class Describe_delete:
         class Context_로그인이_되어있는_경우:
