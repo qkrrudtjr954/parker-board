@@ -10,6 +10,98 @@ from tests.factories.board import FakeBoardFactory
 from tests.factories.user import FakeUserFactory
 
 
+class Describe_PostController:
+    class Describe_post_list:
+        @pytest.fixture
+        def user(self, logged_in_user):
+            return logged_in_user
+
+        @pytest.fixture
+        def board(self):
+            board = FakeBoardFactory()
+            board.posts = FakePostFactory.create_batch(20)
+            self.session.flush()
+
+            return board
+
+        @pytest.fixture
+        def pagination(self):
+            return dict(per_page=10, page=1)
+
+        @pytest.fixture
+        def url(self, pagination):
+            url = '?'
+            if 'per_page' in pagination:
+                url += 'per_page=%d&' % pagination['per_page']
+            if 'page' in pagination:
+                url += 'page=%d' % pagination['page']
+            return url
+
+        @pytest.fixture
+        def subject(self, user, board, url):
+            resp = self.client.get('/boards/%d/posts%s' % (board.id, url))
+            return resp
+
+        @pytest.fixture
+        def json_result(self, subject):
+            return json.loads(subject.data)
+
+        def test_200을_반환한다(self, subject):
+            assert 200 == subject.status_code
+
+
+        class Context_board가_존재하지_않을_때:
+            @pytest.fixture
+            def board(self):
+                board = FakeBoardFactory()
+                return board
+
+            def test_404를_반환한다(self, subject):
+                assert 404 == subject.status_code
+
+        class Context_per_page가_없을_때:
+            @pytest.fixture
+            def pagination(self):
+                return dict(page=1)
+
+            def test_per_page는_10이다(self, json_result):
+                assert 10 == json_result['pagination']['per_page']
+
+        class Context_page가_없을_때:
+            @pytest.fixture
+            def pagination(self):
+                return dict(per_page=5)
+
+            def test_page는_1이다(self, json_result):
+                assert 1 == json_result['pagination']['page']
+
+        class Context_로그인_하지_않았을_때:
+            @pytest.fixture
+            def user(self):
+                user = FakeUserFactory()
+                self.session.flush()
+
+                return user
+
+            def test_401을_반환한다(self, subject):
+                assert 401 == subject.status_code
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @pytest.fixture(scope='function')
 def fboard(tsession):
     board = FakeBoardFactory()

@@ -27,7 +27,7 @@ def post_list(pagination, board_id):
     board = Board.query.get(board_id)
 
     if not board:
-        return 'No Board.', 400
+        return 'No Board.', 404
 
     posts = board.get_posts(pagination.page, pagination.per_page)
 
