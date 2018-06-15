@@ -50,7 +50,7 @@ def detail(pagination, post_id):
     post = Post.query.get(post_id)
 
     if not post:
-        return 'No Post.', 400
+        return 'No Post.', 404
 
     comments = post.get_comments(pagination.page, pagination.per_page)
 
@@ -79,11 +79,14 @@ def create(post: Post, board_id):
 @bp.route('/posts/<int:post_id>', methods=['PATCH'])
 @login_required
 @use_args(post_update_form_schema)
-def update(post_data: Post, post_id):
+def update(post_data, post_id):
     target_post = Post.query.get(post_id)
 
+    if target_post.is_same_data(post_data):
+        return 'Same data.', 406
+
     if not target_post:
-        return 'No Post.', 400
+        return 'No Post.', 404
 
     if target_post.user_id != current_user.id:
         return 'No Authentication.', 401
@@ -103,13 +106,13 @@ def delete(post_id):
     target_post = Post.query.get(post_id)
 
     if not target_post:
-        return 'No Post.', 400
+        return 'No Post.', 404
 
     if not target_post.user_id == current_user.id:
         return 'No Authentication.', 401
 
     try:
         post_service.delete(target_post)
-        return post_redirect_schema.jsonify(target_post), 200
+        return post_redirect_schema.jsonify(target_post), 204
     except Exception:
         return 'Server Error.', 500

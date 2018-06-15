@@ -48,12 +48,20 @@ def session(tdb):
 
 
 @pytest.fixture
-def logged_in_user(client, tsession):
+def logged_in_user(client, session):
     user = FakeUserFactory.create()
-    tsession.flush()
+    session.flush()
 
     resp = client.post('/users/login', data=before_login_schema.dumps(user).data, content_type='application/json')
     assert 200 == resp.status_code
+
+    return user
+
+
+@pytest.fixture
+def not_logged_in_user(session):
+    user = FakeUserFactory.create()
+    session.flush()
 
     return user
 

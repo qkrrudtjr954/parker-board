@@ -9,7 +9,7 @@ from tests.factories.user import FakeUserFactory
 class FakePostFactory(factory.alchemy.SQLAlchemyModelFactory):
     id = factory.Sequence(lambda n: n+1)
     title = factory.Faker('sentence')
-    content = factory.Faker('sentence')
+    content = factory.Faker('sentence', nb_words=20)
     description = factory.Faker('sentence')
     status = PostStatus.NORMAL
 

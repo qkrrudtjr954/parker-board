@@ -46,6 +46,18 @@ class Post(db.Model):
     def deleted(self):
         self.status = PostStatus.DELETED
 
+    def is_same_data(self, dict_data):
+        same = True
+
+        if 'title' in dict_data and self.title != dict_data['title']:
+            same = False
+        if 'content' in dict_data and self.content != dict_data['content']:
+            same = False
+        if 'description' in dict_data and self.description != dict_data['description']:
+            same = False
+
+        return same
+
     def __repr__(self):
         return "<Post title: %s, content: %s, description: %s, status: %s," \
                " created_at: %s, updated_at: %s>"\

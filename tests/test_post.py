@@ -3,18 +3,34 @@ import json
 
 from app.model.post import Post
 from app.schema.post import post_create_form_schema, post_update_form_schema
-from app.schema.user import before_login_schema
 
 from tests.factories.post import FakePostFactory
 from tests.factories.board import FakeBoardFactory
-from tests.factories.user import FakeUserFactory
 
 
 class Describe_PostController:
+    @pytest.fixture
+    def user(self, logged_in_user):
+        return logged_in_user
+
+    @pytest.fixture
+    def pagination(self):
+        return dict(per_page=10, page=1)
+
+    @pytest.fixture
+    def json_result(self, subject):
+        return json.loads(subject.data)
+
+    @pytest.fixture
+    def param(self, pagination):
+        param = '?'
+        if 'per_page' in pagination:
+            param += 'per_page=%d&' % pagination['per_page']
+        if 'page' in pagination:
+            param += 'page=%d' % pagination['page']
+        return param
+
     class Describe_post_list:
-        @pytest.fixture
-        def user(self, logged_in_user):
-            return logged_in_user
 
         @pytest.fixture
         def board(self):
@@ -25,30 +41,12 @@ class Describe_PostController:
             return board
 
         @pytest.fixture
-        def pagination(self):
-            return dict(per_page=10, page=1)
-
-        @pytest.fixture
-        def url(self, pagination):
-            url = '?'
-            if 'per_page' in pagination:
-                url += 'per_page=%d&' % pagination['per_page']
-            if 'page' in pagination:
-                url += 'page=%d' % pagination['page']
-            return url
-
-        @pytest.fixture
-        def subject(self, user, board, url):
-            resp = self.client.get('/boards/%d/posts%s' % (board.id, url))
+        def subject(self, user, board, param):
+            resp = self.client.get('/boards/%d/posts%s' % (board.id, param))
             return resp
-
-        @pytest.fixture
-        def json_result(self, subject):
-            return json.loads(subject.data)
 
         def test_200을_반환한다(self, subject):
             assert 200 == subject.status_code
-
 
         class Context_board가_존재하지_않을_때:
             @pytest.fixture
@@ -77,206 +75,271 @@ class Describe_PostController:
 
         class Context_로그인_하지_않았을_때:
             @pytest.fixture
-            def user(self):
-                user = FakeUserFactory()
-                self.session.flush()
-
-                return user
+            def user(self, not_logged_in_user):
+                return not_logged_in_user
 
             def test_401을_반환한다(self, subject):
                 assert 401 == subject.status_code
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-@pytest.fixture(scope='function')
-def fboard(tsession):
-    board = FakeBoardFactory()
-    tsession.flush()
-    return board
-
-
-@pytest.fixture(scope='function')
-def fposts(tsession):
-    posts = FakePostFactory.create_batch(10)
-    tsession.flush()
-    return posts
-
-
-@pytest.fixture(scope='function')
-def fpost_build(tsession):
-    post = FakePostFactory.build()
-    return post
-
-
-@pytest.fixture(scope='function')
-def fpost_create(tsession):
-    post = FakePostFactory()
-    tsession.flush()
-    return post
-
-
-class TestCreatePost:
-    def test_create_no_login(self, tclient, fpost_build, tsession):
-        tsession.add(fpost_build.user)
-        tsession.add(fpost_build.board)
-        tsession.flush()
-
-        resp = tclient.post('/boards/%d/posts' % fpost_build.board.id, data=post_create_form_schema.dumps(fpost_build).data, content_type='application/json')
-        result = json.loads(resp.data)
-
-        assert resp.status_code == 400
-        assert result['message'] == 'Login First.'
-
-    def test_create_post(self, tclient, fpost_build, tsession):
-        tsession.add(fpost_build.user)
-        tsession.add(fpost_build.board)
-        tsession.flush()
-
-        # login
-        login_user = fpost_build.user
-
-        resp = tclient.post('/users/login', data=before_login_schema.dumps(login_user).data, content_type='application/json')
-        assert resp.status_code == 200
-
-        resp = tclient.post('/boards/%d/posts' % fpost_build.board_id, data=post_create_form_schema.dumps(dict(title='helloworld', content='funny world')).data, content_type='application/json')
-        print(resp.data)
-
-        assert resp.status_code == 200
-
-
-class TestUpdatePost:
-    def test_update_no_login(self, tclient, fpost_create, tsession):
-        assert tsession.query(Post).one()
-
-        update_data = dict(title='changed title', content='changed content', comments=[])
-        resp = tclient.patch('/posts/%d' % fpost_create.id, data=post_update_form_schema.dumps(update_data).data, content_type='application/json')
-        result = json.loads(resp.data)
-
-        assert resp.status_code == 400
-        assert result['message'] == 'Login First.'
-
-    def test_update_post(self, tclient, fpost_create, tsession):
-        assert tsession.query(Post).one()
-
-        resp = tclient.post('/users/login', data=before_login_schema.dumps(fpost_create.user).data, content_type='application/json')
-        result = json.loads(resp.data)
-
-        assert resp.status_code == 200
-        assert result['user']['email'] == fpost_create.user.email
-
-        update_data = dict(title='changed title', content='changed content', comments=[])
-        resp = tclient.patch('/posts/%d' % fpost_create.id, data=post_update_form_schema.dumps(update_data).data, content_type='application/json')
-
-        assert resp.status_code == 200
-        assert fpost_create.title == 'changed title'
-        assert fpost_create.content == 'changed content'
-
-    def test_update_no_auth(self, tclient, fposts):
-        login_user = fposts[0].user
-
-        resp = tclient.post('/users/login', data=before_login_schema.dumps(login_user).data, content_type='application/json')
-        result = json.loads(resp.data)
-
-        assert resp.status_code == 200
-        assert result['user']['email'] == login_user.email
-
-        update_post = fposts[1]
-
-        update_data = dict(title='changed title', content='changed content')
-        resp = tclient.patch('/posts/%d' % update_post.id, data=post_update_form_schema.dumps(update_data).data, content_type='application/json')
-
-        assert resp.status_code == 401
-        assert resp.data == b'No Authentication.'
-
-
-class TestDeletePost:
-    def test_delete_post(self, tsession, tclient, fpost_create):
-        assert tsession.query(Post).one()
-
-        resp = tclient.post('/users/login', data=before_login_schema.dumps(fpost_create.user).data, content_type='application/json')
-        assert resp.status_code == 200
-
-        resp = tclient.delete('/posts/%d' % fpost_create.id, content_type='application/json')
-        assert resp.status_code == 200
-        assert fpost_create.is_deleted
-
-    def test_delete_no_login(self, tsession, tclient, fpost_create):
-        assert tsession.query(Post).one()
-
-        resp = tclient.delete('/posts/%d' % fpost_create.id, content_type='application/json')
-        result = json.loads(resp.data)
-
-        assert resp.status_code == 400
-        assert result['message'] == 'Login First.'
-
-    def test_delete_no_auth(self, tsession, tclient, fposts):
-        login_user = fposts[0].user
-
-        resp = tclient.post('/users/login', data=before_login_schema.dumps(login_user).data, content_type='application/json')
-        result = json.loads(resp.data)
-
-        assert resp.status_code == 200
-        assert result['user']['email'] == login_user.email
-
-        delete_post = fposts[1]
-
-        resp = tclient.delete('/posts/%d' % delete_post.id, content_type='application/json')
-        assert resp.status_code == 401
-        assert resp.data == b'No Authentication.'
-
-
-@pytest.fixture
-def user(tclient, tsession):
-    user = FakeUserFactory()
-
-    resp = tclient.post('/users/login', data=before_login_schema.dump(user).data)
-    print(resp.headers)
-    return user
-
-def test_login(user):
-    print(user)
-    pass
-
-
-@pytest.fixture
-def credentials(user):
-    return [('Authentication', user.get_auth_token())]
-
-
-class TestPostList:
-    def test_post_list(self, fpost_create, tsession, tclient):
-        assert tsession.query(Post).one()
-
-        login_user = fpost_create.user
-
-        resp = tclient.post('/users/login', data=before_login_schema.dumps(login_user).data, content_type='application/json')
-
-        assert resp.status_code == 200
-
-        resp = tclient.get('/posts/%d' % fpost_create.id, content_type='application/json')
-        assert resp.status_code == 200
-
-    def test_read_no_login(self, fpost_create, tsession, tclient):
-        assert tsession.query(Post).one()
-
-        resp = tclient.get('/posts/%d' % fpost_create.id, content_type='application/json')
-        result = json.loads(resp.data)
-
-        assert resp.status_code == 400
-        assert result['message'] == 'Login First.'
-
-
+    class Describe_detail:
+        @pytest.fixture
+        def post_id(self):
+            post = FakePostFactory()
+            self.session.flush()
+
+            return post.id
+
+        @pytest.fixture
+        def subject(self, user, post_id, param):
+            resp = self.client.get('/posts/%d%s' % (post_id, param))
+            return resp
+
+        def test_200을_반환한다(self, subject):
+            assert 200 == subject.status_code
+
+        def test_DB에서_post를_가져온다(self, post_id, json_result):
+            db_post = Post.query.get(post_id)
+
+            assert db_post.title == json_result['post']['title']
+            assert db_post.content == json_result['post']['content']
+
+        class Context_post가_존재하지_않을_때:
+            @pytest.fixture
+            def post_id(self):
+                post = FakePostFactory()
+                return post.id
+
+            def test_404를_반환한다(self, subject):
+                assert 404 == subject.status_code
+
+        class Context_로그인_하지_않았을_때:
+            @pytest.fixture
+            def user(self, not_logged_in_user):
+                return not_logged_in_user
+
+            def test_401을_반환한다(self, subject):
+                assert 401 == subject.status_code
+
+    class Describe_create:
+        @pytest.fixture
+        def target_board_id(self):
+            board = FakeBoardFactory()
+            self.session.flush()
+
+            return board.id
+
+        @pytest.fixture
+        def form(self):
+            post = FakePostFactory.build()
+            return post
+
+        @pytest.fixture
+        def subject(self, user, form, target_board_id):
+            resp = self.client.post('/boards/%d/posts' % target_board_id, data=post_create_form_schema.dumps(form).data, content_type='application/json')
+            return resp
+
+        def test_200을_반환한다(self, subject):
+            assert 200 == subject.status_code
+
+        def test_DB에_post를_저장한다(self, user, json_result, form):
+            post_id = json_result['id']
+
+            db_post = Post.query.get(post_id)
+
+            assert db_post.title == form.title
+            assert db_post.content == form.content
+            assert db_post.description == form.description
+            assert db_post.user_id == user.id
+
+        @pytest.mark.parametrize('title', ['', None])
+        class Context_title이_없을_때:
+            @pytest.fixture
+            def form(self, title):
+                post = FakePostFactory.build(title=title)
+                return post
+
+            def test_422를_반환한다(self, subject):
+                assert 422 == subject.status_code
+
+        @pytest.mark.parametrize('content', ['', None])
+        class Context_content가_없을_때:
+            @pytest.fixture
+            def form(self, content):
+                post = FakePostFactory.build(content=content)
+                return post
+
+            def test_422를_반환한다(self, subject):
+                assert 422 == subject.status_code
+
+        @pytest.mark.parametrize('title', ['hello', 'srt', '짧은제목'])
+        class Context_title이_10글자_이하일_때:
+            @pytest.fixture
+            def form(self, title):
+                post = FakePostFactory.build(title=title)
+                return post
+
+            def test_422를_반환한다(self, subject):
+                assert 422 == subject.status_code
+
+        @pytest.mark.parametrize('content', ['1234567890123456789', 'very short content', 'smaller than 20'])
+        class Context_content가_20글자_이하일_때:
+            @pytest.fixture
+            def form(self, content):
+                post = FakePostFactory.build(content=content)
+                return post
+
+            def test_422를_반환한다(self, subject):
+                assert 422 == subject.status_code
+
+        class Context_로그인을_하지_않았을_때:
+            @pytest.fixture
+            def user(self, not_logged_in_user):
+                return not_logged_in_user
+
+
+            def test_401을_반환한다(self, subject):
+                assert 401 == subject.status_code
+
+    class Describe_update:
+        @pytest.fixture
+        def update_data(self):
+            return dict(title='changed title', content='this is changed content. and must longer than 20.', description='changed description')
+
+        @pytest.fixture
+        def target_post(self, user):
+            post = FakePostFactory(user_id=user.id, user=user)
+            self.session.flush()
+            return post
+
+        @pytest.fixture
+        def subject(self, user, update_data, target_post):
+            resp = self.client.patch('/posts/%d' % target_post.id, data=post_update_form_schema.dumps(update_data).data, content_type='application/json')
+            return resp
+
+        def test_200을_반환한다(self, subject):
+            assert 200 == subject.status_code
+
+        def test_DB에_post가_갱신된다(self, json_result, update_data):
+            post_id = json_result['id']
+
+            db_post = Post.query.get(post_id)
+
+            assert db_post.id == post_id
+            assert db_post.title == update_data['title']
+            assert db_post.content == update_data['content']
+            assert db_post.description == update_data['description']
+
+        class Context_데이터가_이전과_같을_때:
+            @pytest.fixture
+            def update_data(self, target_post):
+                return dict(title=target_post.title, content=target_post.content, description=target_post.description)
+
+            def test_406을_반환한다(self, subject):
+                # 406 혀용되지 않는 요청
+                assert 406 == subject.status_code
+
+        class Context_title이_없을_때:
+            @pytest.fixture
+            def update_data(self):
+                return dict(content='this is changed content. and must longer than 20.', description='changed description')
+
+            def test_content_description만_갱신된다(self, json_result, update_data):
+                post_id = json_result['id']
+
+                db_post = Post.query.get(post_id)
+
+                assert db_post.id == post_id
+                assert db_post.title != ''
+                assert db_post.title is not None
+                assert db_post.content == update_data['content']
+                assert db_post.description == update_data['description']
+
+        class Context_content가_없을_때:
+            @pytest.fixture
+            def update_data(self):
+                return dict(title='changed title', description='changed description')
+
+            def test_title_description만_갱신된다(self, json_result, update_data):
+                post_id = json_result['id']
+
+                db_post = Post.query.get(post_id)
+
+                assert db_post.id == post_id
+                assert db_post.title == update_data['title']
+                assert db_post.content != ''
+                assert db_post.content is not None
+                assert db_post.description == update_data['description']
+
+        class Context_description이_없을_때:
+            @pytest.fixture
+            def update_data(self):
+                return dict(title='changed title', content='this is changed content. and must longer than 20.')
+
+            def test_title_content만_갱신된다(self, json_result, update_data):
+                post_id = json_result['id']
+
+                db_post = Post.query.get(post_id)
+
+                assert db_post.id == post_id
+                assert db_post.title == update_data['title']
+                assert db_post.content == update_data['content']
+                assert db_post.description != ''
+                assert db_post.description is not None
+
+        class Context_로그인_하지_않았을_때:
+            @pytest.fixture
+            def user(self, not_logged_in_user):
+                return not_logged_in_user
+
+            def test_401을_반환한다(self, subject):
+                assert 401 == subject.status_code
+
+    class Describe_delete:
+        @pytest.fixture
+        def user(self, logged_in_user):
+            return logged_in_user
+
+        @pytest.fixture
+        def post_id(self, user):
+            post = FakePostFactory(user=user, user_id=user.id)
+            self.session.flush()
+            return post.id
+
+        @pytest.fixture
+        def subject(self, user, post_id):
+            resp = self.client.delete('/posts/%d' % post_id)
+            return resp
+
+        def test_204를_반환한다(self, subject):
+            assert 204 == subject.status_code
+
+        def test_DB에서_상태가_변경된다(self, subject, post_id):
+            db_post = Post.query.get(post_id)
+            assert db_post.is_deleted
+
+        class Context_post가_존재하지_않는_경우:
+            @pytest.fixture
+            def post_id(self):
+                post = FakePostFactory()
+                return post.id
+
+            def test_404를_반환한다(self, subject):
+                assert 404 == subject.status_code
+
+        class Context_본인_게시글이_아닌_경우:
+            @pytest.fixture
+            def post_id(self):
+                post = FakePostFactory()
+                self.session.flush()
+                return post.id
+
+            def test_401을_반환한다(self, subject):
+                assert 401 == subject.status_code
+
+        class Context_로그인_하지_않은_경우:
+            @pytest.fixture
+            def user(self, not_logged_in_user):
+                return not_logged_in_user
+
+            def test_401을_반환한다(self, subject):
+                assert 401 == subject.status_code
