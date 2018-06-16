@@ -1,14 +1,18 @@
 from datetime import datetime
+
+from app.error import NotFoundError, SameDataError
 from app.model import db
 from app.model.user import User
 from app.model.post import Post
-from app.model.comment import Comment, CommentStatus
+from app.model.comment import Comment
 
 
 def create(post_id, comment: Comment, user: User):
-    try:
-        target_post = Post.query.get(post_id)
+    target_post = Post.query.get(post_id)
 
+    if not target_post:
+        raise NotFoundError('No Post.')
+    try:
         comment.user_id = user.id
         comment.post_id = target_post.id
 
@@ -34,7 +38,10 @@ def delete(comment: Comment):
         raise e
 
 
-def update(target_comment: Comment, comment_data: Comment):
+def update(target_comment: Comment, comment_data):
+    if target_comment.content == comment_data.content:
+        raise SameDataError('Nothing Changed. Same data.')
+
     try:
         target_comment.content = comment_data.content
         target_comment.refresh_update_time()

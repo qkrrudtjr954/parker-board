@@ -1,4 +1,6 @@
 from datetime import datetime
+
+from app.error import SameDataError
 from app.model import db
 from app.model.board import Board
 from app.model.post import Post, PostStatus
@@ -19,7 +21,10 @@ def create(board_id, post: Post, user: User):
 
 
 def update(target_post: Post, post_data):
-    print(post_data)
+
+    if target_post.is_same_data(post_data):
+        raise SameDataError('Nothing Changed. Same data.')
+
     try:
         changed = False
 

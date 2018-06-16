@@ -28,6 +28,7 @@ class Comment(db.Model):
 
     def deleted(self):
         self.status = CommentStatus.DELETED
+
     @hybrid_property
     def is_deleted(self):
         return self.status == CommentStatus.DELETED

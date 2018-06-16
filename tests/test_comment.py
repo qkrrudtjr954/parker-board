@@ -1,118 +1,186 @@
 import pytest
 import json
 
-from app.model.comment import CommentStatus
-from app.schema.user import before_login_schema
+from app.model.comment import Comment
 from app.schema.comment import comment_create_form_schema, comment_update_form_schema
+
 from tests.factories.comment import FakeCommentFactory
 from tests.factories.post import FakePostFactory
 
 
-@pytest.fixture(scope='function')
-def fpost(tsession):
-    post = FakePostFactory()
-    tsession.flush()
+class Describe_CommentController:
+    @pytest.fixture
+    def user(self, logged_in_user):
+        return logged_in_user
 
-    return post
+    @pytest.fixture
+    def target_post_id(self, ):
+        post = FakePostFactory()
+        self.session.flush()
+        return post.id
 
+    @pytest.fixture
+    def json_result(self, subject):
+        return json.loads(subject.data)
 
-@pytest.fixture(scope='function')
-def fcomment(tsession):
-    comment = FakeCommentFactory()
-    tsession.flush()
+    class Describe_create:
+        @pytest.fixture
+        def form(self):
+            comment = FakeCommentFactory.build()
+            return comment
 
-    return comment
+        @pytest.fixture
+        def subject(self, target_post_id, form, user):
+            resp = self.client.post('/posts/%d/comments' % target_post_id, data=comment_create_form_schema.dumps(form).data, content_type='application/json')
+            return resp
 
+        def test_200을_반환한다(self, subject):
+            assert 200 == subject.status_code
 
-@pytest.fixture(scope='function')
-def fcomments(tsession):
-    comments = FakeCommentFactory.create_batch(5)
-    tsession.flush()
+        def test_DB에_comment가_저장된다(self, json_result, form, user):
+            comment_id = json_result['id']
+            db_comment = Comment.query.get(comment_id)
+            assert db_comment.content == form.content
+            assert db_comment.user_id == user.id
 
-    return comments
+        class Context_로그인을_하지_않았을_때:
+            @pytest.fixture
+            def user(self, not_logged_in_user):
+                return not_logged_in_user
 
+            def test_401을_반환한다(self, subject):
+                assert 401 == subject.status_code
 
-def login(client, user):
-    resp = client.post('/users/login', data=before_login_schema.dump(user).data)
-    return resp
+        class Context_content가_없을_때:
+            @pytest.fixture
+            def form(self):
+                comment = FakeCommentFactory.build(content='')
+                return comment
 
+            def test_422를_반환한다(self, subject):
+                assert 422 == subject.status_code
 
-class TestCreateComment:
-    def test_create_comment(self, tclient, fpost):
-        resp = login(tclient, fpost.user)
-        assert resp.status_code == 200
+        class Context_post가_없을_때:
+            @pytest.fixture
+            def target_post_id(self):
+                post = FakePostFactory.build()
+                return post.id
 
-        comment = FakeCommentFactory.build()
-        resp = tclient.post('/posts/%d/comments' % fpost.id, data=comment_create_form_schema.dump(comment).data)
-        assert resp.status_code == 200
+            def test_404를_반환한다(self, subject):
+                assert 404 == subject.status_code
 
-    def test_create_comment_no_content(self, tclient, fpost):
-        resp = login(tclient, fpost.user)
-        assert resp.status_code == 200
+    class Describe_delete:
+        @pytest.fixture
+        def target_comment_id(self, user):
+            comment = FakeCommentFactory(user=user, user_id=user.id)
+            self.session.flush()
+            return comment.id
 
-        comment = FakeCommentFactory.build(content='asd')
-        resp = tclient.post('/posts/%d/comments' % fpost.id, data=comment_create_form_schema.dump(comment).data)
-        result = json.loads(resp.data)
+        @pytest.fixture
+        def subject(self, target_comment_id):
+            resp = self.client.delete('/comments/%d' % target_comment_id)
+            return resp
 
-        assert resp.status_code == 422
-        assert result['errors']['content'] == ['Contents length must more than 15.']
+        def test_204를_반환한다(self, subject):
+            assert 204 == subject.status_code
 
+        def test_DB의_comment가_삭제된다(self, subject, target_comment_id):
+            db_comment = Comment.query.get(target_comment_id)
+            assert db_comment.is_deleted
 
-class TestUpdateComment:
-    def test_update_comment(self, tclient, fcomment):
-        resp = login(tclient, fcomment.user)
-        assert resp.status_code == 200
+        class Context_comment가_존재하지_않을_때:
+            @pytest.fixture
+            def target_comment_id(self, user):
+                comment = FakeCommentFactory.build(user=user, user_id=user.id)
+                return comment.id
 
-        update_data = dict(content='changed content')
-        resp = tclient.patch('/comments/%d' % fcomment.id, data=comment_update_form_schema.dump(update_data).data)
+            def test_404를_반환한다(self, subject):
+                assert 404 == subject.status_code
 
-        assert resp.status_code == 200
+        class Context_로그인_하지_않았을_때:
+            @pytest.fixture
+            def user(self, not_logged_in_user):
+                return not_logged_in_user
 
-    def test_update_comment_no_auth(self, tclient, fcomments):
-        resp = login(tclient, fcomments[0].user)
-        assert resp.status_code == 200
+            def test_401를_반환한다(self, subject):
+                assert 401 == subject.status_code
 
-        update_data = dict(content='changed content')
-        resp = tclient.patch('/comments/%d' % fcomments[1].id, data=comment_update_form_schema.dump(update_data).data)
+        class Context_본인_게시글이_아닌_경우:
+            @pytest.fixture
+            def target_comment_id(self):
+                comment = FakeCommentFactory()
+                return comment.id
 
-        assert resp.status_code == 401
-        assert resp.data == b'No Authentication.'
+            def test_401를_반환한다(self, subject):
+                assert 401 == subject.status_code
 
+    class Describe_update:
+        @pytest.fixture
+        def update_data(self):
+            return dict(content='changed content.')
 
-class TestDeleteComment:
-    def test_delete_comment(self, tclient, fcomment):
-        resp = login(tclient, fcomment.user)
-        assert resp.status_code == 200
+        @pytest.fixture
+        def target_comment(self, user):
+            target_comment = FakeCommentFactory(user=user, user_id=user.id)
+            self.session.flush()
+            return target_comment
 
-        resp = tclient.delete('/comments/%d' % fcomment.id)
+        @pytest.fixture
+        def subject(self, update_data, target_comment):
+            resp = self.client.patch('/comments/%d' % target_comment.id, data=comment_update_form_schema.dumps(update_data).data, content_type='application/json')
+            return resp
 
-        assert resp.status_code == 200
-        assert fcomment.is_deleted
+        def test_200을_반환한다(self, subject):
+            assert 200 == subject.status_code
 
-    def test_delete_comment_no_auth(self, tclient, fcomments):
-        user = fcomments[0].user
-        comment = fcomments[1]
+        def test_DB의_comment값이_갱신된다(self, json_result):
+            db_comment = Comment.query.get(json_result['id'])
 
-        resp = login(tclient, user)
-        assert resp.status_code == 200
+            assert db_comment.content == 'changed content.'
 
-        resp = tclient.delete('/comments/%d' % comment.id)
+        class Context_이전과_데이터가_같을_때:
+            @pytest.fixture
+            def update_data(self, target_comment):
+                return dict(content=target_comment.content)
 
-        assert resp.status_code == 401
-        assert resp.data == b'No Authentication.'
-        assert not fcomments[1].is_deleted
+            def test_406을_반환한다(self, subject):
+                assert 406 == subject.status_code
 
-    def test_delete_comment_no_data(self, tclient, fcomment):
-        resp = login(tclient, fcomment.user)
-        assert resp.status_code == 200
+        class Context_본인의_게시글이_아닌_경우:
+            @pytest.fixture
+            def target_comment(self):
+                comment = FakeCommentFactory()
+                self.session.flush()
+                return comment
 
-        resp = tclient.delete('/comments/%d' % 400)
+            def test_401을_반환한다(self, subject):
+                assert 401 == subject.status_code
 
-        assert resp.status_code == 400
-        assert resp.data == b'No Comment.'
+        class Context_로그인_하지_않았을_때:
+            @pytest.fixture
+            def user(self, not_logged_in_user):
+                return not_logged_in_user
 
+            def test_401을_반환한다(self, subject):
+                assert 401 == subject.status_code
 
+        @pytest.mark.parametrize('content', ['', None])
+        class Context_content가_존재하지_않을_때:
+            @pytest.fixture
+            def update_data(self, content):
+                return dict(content=content)
 
+            def test_422를_반환한다(self, subject):
+                assert 422 == subject.status_code
+
+        class Context_comment가_존재하지_않을_때:
+            @pytest.fixture
+            def target_comment(self, user):
+                comment = FakeCommentFactory.build(user=user, user_id=user.id)
+                return comment
+
+            def test_404를_반환한다(self, subject):
+                assert 404 == subject.status_code
 
 
 

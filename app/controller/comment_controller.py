@@ -3,6 +3,7 @@ from flask_login import current_user, login_required
 
 from webargs.flaskparser import use_args
 
+from app.error import NotFoundError, SameDataError
 from app.model.comment import Comment
 from app.service import comment_service
 from app.schema.comment import comment_create_form_schema, comment_update_form_schema, after_updated_schema, after_create_schema
@@ -24,6 +25,8 @@ def create(comment, post_id):
         comment_service.create(post_id, comment, current_user)
 
         return after_create_schema.jsonify(comment), 200
+    except NotFoundError as e:
+        return str(e), 404
     except Exception:
         return 'Server Error.', 500
 
@@ -34,14 +37,16 @@ def delete(comment_id):
     comment = Comment.query.get(comment_id)
 
     if not comment:
-        return 'No Comment.', 400
+        return 'No Comment.', 404
 
     if comment.user_id != current_user.id:
         return 'No Authentication.', 401
 
-    comment_service.delete(comment)
-
-    return 'Comment deleted', 200
+    try:
+        comment_service.delete(comment)
+        return 'Comment deleted', 204
+    except Exception:
+        return 'Server Error.', 500
 
 
 @bp.route('/comments/<int:comment_id>', methods=['PATCH'])
@@ -51,14 +56,15 @@ def update(comment_data, comment_id):
     target_comment = Comment.query.get(comment_id)
 
     if not target_comment:
-        return 'No Comment.', 400
+        return 'No Comment.', 404
 
     if target_comment.user_id != current_user.id:
         return 'No Authentication.', 401
 
     try:
         comment_service.update(target_comment, comment_data)
-
         return after_updated_schema.jsonify(target_comment), 200
-    except Exception as e:
+    except SameDataError as e:
+        return str(e), 406
+    except Exception:
         return 'Server Error.', 500

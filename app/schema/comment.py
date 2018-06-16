@@ -24,11 +24,12 @@ after_updated_schema = CommentSchema(only=['id', 'updated_at'])
 
 
 class CommentFormSchema(ma.ModelSchema):
-
     @validates('content')
-    def content_length_check(self, data):
-        if len(data) < 10:
-            raise ValidationError('Contents length must more than 15.')
+    def content_length_check(self, content):
+        if not content:
+            raise ValidationError('Content can not be null.', status_code=422)
+        if len(content) < 10:
+            raise ValidationError('Content length must more than 10.', status_code=422)
 
     class Meta:
         strict = True

@@ -1,10 +1,12 @@
 from flask import Blueprint, jsonify
 from webargs.flaskparser import use_args
+
+from app.error import SameDataError
 from app.service import post_service
 from app.model.board import Board
 from app.model.post import Post
 from app.schema.board import simple_board_schema
-from app.schema.post import main_post_schema, post_create_form_schema, post_update_form_schema, post_redirect_schema, post_list_schema
+from app.schema.post import main_post_schema, post_create_form_schema, post_update_form_schema, post_id_schema, post_list_schema
 from app.schema.comment import comments_schema
 from app.schema.pagination import pagination_schema
 from flask_login import login_required, current_user
@@ -69,7 +71,7 @@ def detail(pagination, post_id):
 def create(post: Post, board_id):
     try:
         post_service.create(board_id, post, current_user)
-        return post_redirect_schema.jsonify(post), 200
+        return post_id_schema.jsonify(post), 200
     except Exception as e:
         return str(e), 500
 
@@ -82,9 +84,6 @@ def create(post: Post, board_id):
 def update(post_data, post_id):
     target_post = Post.query.get(post_id)
 
-    if target_post.is_same_data(post_data):
-        return 'Same data.', 406
-
     if not target_post:
         return 'No Post.', 404
 
@@ -93,7 +92,9 @@ def update(post_data, post_id):
 
     try:
         post_service.update(target_post, post_data)
-        return post_redirect_schema.jsonify(target_post), 200
+        return post_id_schema.jsonify(target_post), 200
+    except SameDataError as e:
+        return str(e), 406
     except Exception:
         return 'Server Error.', 500
 
@@ -108,11 +109,11 @@ def delete(post_id):
     if not target_post:
         return 'No Post.', 404
 
-    if not target_post.user_id == current_user.id:
+    if target_post.user_id != current_user.id:
         return 'No Authentication.', 401
 
     try:
         post_service.delete(target_post)
-        return post_redirect_schema.jsonify(target_post), 204
+        return post_id_schema.jsonify(target_post), 204
     except Exception:
         return 'Server Error.', 500
