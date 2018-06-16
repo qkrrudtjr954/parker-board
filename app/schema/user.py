@@ -1,7 +1,9 @@
+import re
+
 from app.model import db
 from app.schema import ma
 from app.model.user import User, UserStatus
-from marshmallow import fields, ValidationError, validates
+from marshmallow import fields, ValidationError, validates, validates_schema
 from marshmallow_enum import EnumField
 
 
@@ -33,15 +35,20 @@ after_login_schema = UserSchema(only=['id', 'email'])
 - Validation이 필요함
 '''
 
+EMAIL_REGEX = re.compile(r"[^@]+@[^@]+\.[^@]+")
+
 
 class UserFormSchema(ma.ModelSchema):
-    email = fields.Email()
-    password = fields.String()
-
-    @validates('password')
-    def validate_length_check(self, pwd):
-        if len(pwd) < 5:
-            raise ValidationError('Password too short', status_code=422)
+    @validates_schema
+    def validate_length_check(self, data):
+        if 'password' not in data:
+            raise ValidationError('Password can not be null', status_code=422)
+        if 'email' not in data:
+            raise ValidationError('Email can not be null', status_code=422)
+        if not EMAIL_REGEX.match(data['email']):
+            raise ValidationError('Not a Email structure', status_code=422)
+        if len(data['password']) < 8:
+            raise ValidationError('Password length must more than 8', status_code=422)
 
     class Meta:
         sqla_session = db.session

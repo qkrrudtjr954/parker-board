@@ -15,7 +15,14 @@
   "test_post.py::TestDeletePost::()::test_delete_post": true,
   "test_post.py::TestPostList::()::test_read_no_login": true,
   "test_post.py::TestUpdatePost::()::test_update_no_login": true,
+  "test_users.py::Describe_UserController::()::Describe_login::()::Context_email\uc774_\uc5c6\uc744_\ub54c::()::test_400\uc744_\ubc18\ud658\ud55c\ub2e4[None]": true,
+  "test_users.py::Describe_UserController::()::Describe_login::()::Context_email\uc774_\uc5c6\uc744_\ub54c::()::test_400\uc744_\ubc18\ud658\ud55c\ub2e4[]": true,
+  "test_users.py::Describe_UserController::()::Describe_login::()::Context_password\uac00_\uc9e7\uc744_\ub54c::()::test_422\ub97c_\ubc18\ud658\ud55c\ub2e4[shorftpwd]": true,
+  "test_users.py::Describe_UserController::()::Describe_login::()::Context_password\uac00_\uc9e7\uc744_\ub54c::()::test_422\ub97c_\ubc18\ud658\ud55c\ub2e4[shortpwd]": true,
   "test_users.py::TestLeave::()::test_leave": true,
+  "test_users.py::TestLogin::()::test_no_email": true,
+  "test_users.py::TestLogin::()::test_not_email": true,
   "test_users.py::TestLogin::()::test_short_password": true,
+  "test_users.py::TestRegister::()::test_no_email": true,
   "test_users.py::TestRegister::()::test_no_password": true
 }

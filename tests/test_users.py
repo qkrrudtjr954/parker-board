@@ -6,6 +6,91 @@ from app.model.user import User, UserStatus
 from marshmallow import ValidationError
 
 
+class Describe_UserController:
+    class Describe_login:
+        @pytest.fixture
+        def user(self):
+            user = FakeUserFactory()
+            self.session.flush()
+            return user
+
+        @pytest.fixture
+        def login_data(self, user):
+            return before_login_schema.dumps(user).data
+
+        @pytest.fixture
+        def subject(self, login_data):
+            resp = self.client.post('/users/login', data=login_data, content_type='application/json')
+            return resp
+
+        def test_200을_반환한다(self, subject):
+            assert 200 == subject.status_code
+
+        class Context_password가_틀렸을_때:
+            @pytest.fixture
+            def login_data(self, user):
+                user.password = 'incorrect_password'
+                return before_login_schema.dumps(user).data
+
+            def test_400을_반환한다(self, subject):
+                assert 400 == subject.status_code
+
+        class Context_email이_틀렸을_때:
+            @pytest.fixture
+            def login_data(self, user):
+                user.email = 'incorrect@email.com'
+                return before_login_schema.dumps(user).data
+
+            def test_400을_반환한다(self, subject):
+                assert 400 == subject.status_code
+
+        @pytest.mark.parametrize('email', ['', None])
+        class Context_email이_없을_때:
+            @pytest.fixture
+            def user(self, email):
+                user = FakeUserFactory(email=email)
+                self.session.flush()
+                return user
+
+            def test_422를_반환한다(self, subject):
+                assert 422 == subject.status_code
+
+        @pytest.mark.parametrize('password', ['', None])
+        class Context_password가_없을_때:
+            @pytest.fixture
+            def user(self, password):
+                user = FakeUserFactory(password=password)
+                self.session.flush()
+                return user
+
+            def test_422를_반환한다(self, subject):
+                assert 422 == subject.status_code
+
+        @pytest.mark.parametrize('email', ['asdf@asdf', 'sample.sample.com', 'sample@sample'])
+        class Context_email구조가_아닐_때:
+            @pytest.fixture
+            def user(self, email):
+                user = FakeUserFactory(email=email)
+                self.session.flush()
+                return user
+
+            def test_422를_반환한다(self, subject):
+                assert 422 == subject.status_code
+
+        @pytest.mark.parametrize('password', ['asdf', 'shorpwd', 'seven!!'])
+        class Context_password가_짧을_때:
+            @pytest.fixture
+            def user(self, password):
+                user = FakeUserFactory(password=password)
+                self.session.flush()
+                return user
+
+            def test_422를_반환한다(self, subject):
+                assert 422 == subject.status_code
+
+
+
+
 @pytest.fixture(scope='function')
 def fuser(tsession):
     return FakeUserFactory.build()
