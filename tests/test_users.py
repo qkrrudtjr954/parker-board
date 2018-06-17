@@ -2,11 +2,14 @@ import pytest
 import json
 from tests.factories.user import FakeUserFactory
 from app.schema.user import before_login_schema, before_register_schema
-from app.model.user import User, UserStatus
-from marshmallow import ValidationError
+from app.model.user import User
 
 
 class Describe_UserController:
+    @pytest.fixture
+    def json_result(self, subject):
+        return json.loads(subject.data)
+
     class Describe_login:
         @pytest.fixture
         def user(self):
@@ -47,10 +50,9 @@ class Describe_UserController:
         @pytest.mark.parametrize('email', ['', None])
         class Context_email이_없을_때:
             @pytest.fixture
-            def user(self, email):
-                user = FakeUserFactory(email=email)
-                self.session.flush()
-                return user
+            def login_data(self, user, email):
+                user.email = email
+                return before_login_schema.dumps(user).data
 
             def test_422를_반환한다(self, subject):
                 assert 422 == subject.status_code
@@ -58,10 +60,9 @@ class Describe_UserController:
         @pytest.mark.parametrize('password', ['', None])
         class Context_password가_없을_때:
             @pytest.fixture
-            def user(self, password):
-                user = FakeUserFactory(password=password)
-                self.session.flush()
-                return user
+            def login_data(self, user, password):
+                user.password = password
+                return before_login_schema.dumps(user).data
 
             def test_422를_반환한다(self, subject):
                 assert 422 == subject.status_code
@@ -88,138 +89,98 @@ class Describe_UserController:
             def test_422를_반환한다(self, subject):
                 assert 422 == subject.status_code
 
+    class Describe_register:
+        @pytest.fixture
+        def form(self):
+            user = FakeUserFactory.build()
+            return user
 
+        @pytest.fixture
+        def subject(self, form):
+            resp = self.client.post('/users/', data=before_register_schema.dumps(form).data, content_type='application/json')
+            return resp
 
+        def test_200을_반환한다(self, subject):
+            assert 200 == subject.status_code
 
-@pytest.fixture(scope='function')
-def fuser(tsession):
-    return FakeUserFactory.build()
+        def test_user가_DB에_저장된다(self, form, json_result):
+            user_id = json_result['id']
 
+            db_user = User.query.get(user_id)
 
-@pytest.fixture(scope='function')
-def no_email_user(tsession):
-    return FakeUserFactory.build(email='')
+            assert db_user.email == form.email
+            assert db_user.password == form.password
 
+        class Context_중복_email일_때:
+            @pytest.fixture
+            def form(self):
+                user = FakeUserFactory()
+                self.session.flush()
+                return user
 
-@pytest.fixture(scope='function')
-def no_password_user(tsession):
-    return FakeUserFactory.build(password='')
+            def test_400을_반환한다(self, subject):
+                assert 400 == subject.status_code
 
+        @pytest.mark.parametrize('email', ['', None])
+        class Context_email이_없을_때:
+            @pytest.fixture
+            def form(self, email):
+                user = FakeUserFactory.build(email=email)
+                return user
 
-@pytest.fixture(scope='function')
-def not_email_user(tsession):
-    return FakeUserFactory.build(email='asdfasdf.com')
+            def test_422를_반환한다(self, subject):
+                assert 422 == subject.status_code
 
+        @pytest.mark.parametrize('password', ['', None])
+        class Context_password가_없을_때:
+            @pytest.fixture
+            def form(self, password):
+                user = FakeUserFactory.build(password=password)
+                return user
 
-@pytest.fixture(scope='function')
-def short_password_user(tsession):
-    return FakeUserFactory.build(password='asdf')
+            def test_422를_반환한다(self, subject):
+                assert 422 == subject.status_code
 
+        @pytest.mark.parametrize('email', ['asdf@asdf', 'sample.sample.com', 'sample@sample'])
+        class Context_email구조가_아닐_때:
+            @pytest.fixture
+            def form(self, email):
+                user = FakeUserFactory.build(email=email)
+                return user
 
-class TestRegister():
-    def test_no_email(self, tclient, no_email_user):
-        with pytest.raises(ValidationError):
-            resp = tclient.post('/users', data=before_register_schema.dumps(no_email_user).data, content_type='application/json')
-            assert resp.statud_code == 422
+            def test_422를_반환한다(self, subject):
+                assert 422 == subject.status_code
 
-    def test_no_password(self, tclient, no_password_user):
-        resp = tclient.post('/users/', data=before_register_schema.dumps(no_password_user).data, content_type='application/json')
-        result = json.loads(resp.data)
+        @pytest.mark.parametrize('password', ['asdf', 'shorpwd', 'seven!!'])
+        class Context_password가_짧을_때:
+            @pytest.fixture
+            def form(self, password):
+                user = FakeUserFactory.build(password=password)
+                return user
 
-        assert resp.status_code == 422
-        assert result['errors']['password'] == ['Password too short']
+            def test_422를_반환한다(self, subject):
+                assert 422 == subject.status_code
 
-    def test_register(self, tclient, fuser):
-        resp = tclient.post('/users/', data=before_register_schema.dumps(fuser).data, content_type='application/json')
-        result = json.loads(resp.data)
+    class Describe_leave:
+        @pytest.fixture
+        def user(self, logged_in_user):
+            return logged_in_user
 
-        assert resp.status_code == 200
-        assert result['email'] == fuser.email
+        @pytest.fixture
+        def subject(self, user):
+            resp = self.client.delete('/users/')
+            return resp
 
-        resp = tclient.post('/users/', data=before_register_schema.dumps(fuser).data, content_type='application/json')
+        def test_204를_반환한다(self, subject):
+            assert 204 == subject.status_code
 
-        assert resp.status_code == 400
-        assert resp.data == b'That Email already exists.'
+        def test_user의_상태가_변경된다(self, subject, user):
+            assert not user.is_active()
 
+        class Context_로그인하지_않았을_때:
+            @pytest.fixture
+            def user(self, not_logged_in_user):
+                return not_logged_in_user
 
-@pytest.fixture(scope='function')
-def created_user(tsession):
-    fake_user = FakeUserFactory()
-    tsession.flush()
-
-    return fake_user
-
-
-@pytest.fixture(scope='function')
-def leaved_user(tsession):
-    leaved_user = FakeUserFactory(status=UserStatus.INACTIVE)
-    tsession.flush()
-
-    return leaved_user
-
-
-class TestLogin():
-    def test_no_email(self, tclient, no_email_user):
-        with pytest.raises(ValidationError):
-            resp = tclient.post('/users/login', data=before_login_schema.dumps(no_email_user).data, content_type='application/json')
-            assert resp.status_code == 422
-
-    def test_no_password(self, tclient, no_password_user):
-        resp = tclient.post('/users/login', data=before_login_schema.dumps(no_password_user).data, content_type='application/json')
-        assert resp.status_code == 422
-
-    def test_not_email(self, tclient, not_email_user):
-        with pytest.raises(ValidationError):
-            resp = tclient.post('/users/login', data=before_login_schema.dumps(not_email_user).data, content_type='application/json')
-            assert resp.status_code == 422
-
-    def test_short_password(self, tclient, short_password_user):
-        resp = tclient.post('/users/login', data=before_login_schema.dumps(short_password_user).data, content_type='application/json')
-        result = json.loads(resp.data)
-
-        assert resp.status_code == 422
-        assert result['errors']['password'] == ['Password too short']
-
-    def test_login(self, tclient, created_user, tsession):
-        assert tsession.query(User).one()
-
-        resp = tclient.post('/users/login', data=before_login_schema.dumps(created_user).data, content_type='application/json')
-        result = json.loads(resp.data)
-
-        assert resp.status_code == 200
-        assert result['user']['email'] == created_user.email
-
-    def test_leaved_user_login(self, tclient, leaved_user, tsession):
-        assert tsession.query(User).one()
-
-        resp = tclient.post('/users/login', data=before_login_schema.dumps(leaved_user).data, content_type='application/json')
-
-        assert resp.status_code == 400
-        assert resp.data == b'Leaved User.'
-
-    def test_no_user_login(self, tclient, fuser):
-        resp = tclient.post('/users/login', data=before_login_schema.dumps(fuser).data, content_type='application/json')
-
-        assert resp.status_code == 400
-        assert resp.data == b'No User.'
-
-
-class TestLeave():
-    def test_leave(self, tclient, created_user):
-        resp = tclient.delete('/users/')
-        result = json.loads(resp.data)
-
-        assert resp.status_code == 400
-        assert result['message'] == 'Login First.'
-
-        resp = tclient.post('/users/login', data=before_login_schema.dumps(created_user).data, content_type='application/json')
-        assert resp.status_code == 200
-
-        resp = tclient.delete('/users/')
-
-        assert resp.status_code == 200
-        assert not created_user.is_active()
-
-
-
-
+            def test_401을_반환한다(self, subject):
+                assert 401 == subject.status_code
