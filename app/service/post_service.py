@@ -3,7 +3,7 @@ from datetime import datetime
 from app.error import SameDataError
 from app.model import db
 from app.model.board import Board
-from app.model.post import Post, PostStatus
+from app.model.post import Post
 from app.model.user import User
 
 

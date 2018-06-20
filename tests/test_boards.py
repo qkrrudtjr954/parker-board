@@ -3,7 +3,6 @@ import json
 
 from app.model.board import Board
 from app.schema.board import board_create_form_schema, board_update_form_schema
-from app.schema.user import before_login_schema
 
 from tests.factories.user import FakeUserFactory
 from tests.factories.board import FakeBoardFactory
@@ -48,6 +47,9 @@ class Describe_BoardController:
 
         def test_has_prev는_False이다(self, json_result):
             assert not json_result['pagination']['has_prev']
+
+        def test_total_page를_반환한다(self, json_result):
+            assert 5 == json_result['pagination']['pages']
 
         class Context_page가_마지막_page일_때:
             @pytest.fixture
