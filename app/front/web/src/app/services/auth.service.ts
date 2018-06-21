@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpErrorResponse, HttpHeaders} from '@angular/common/http';
-import {catchError} from "rxjs/operators";
-import {throwError} from "rxjs/internal/observable/throwError";
+import {HttpClient } from '@angular/common/http';
 
 
 @Injectable({
@@ -21,20 +19,10 @@ export class AuthService {
       password: password
     };
 
-    this.http.post(`${this.uri}/users/login`, login_data)
-      .subscribe(data => {
-        console.log(data);
-      }, error1 => {
-        console.log(error1);
-      });
+    return this.http.post(`${this.uri}/users/login`, login_data, this.options);
   }
 
   userLogout() {
-    return this.http.get(`${this.uri}/users/logout`, this.options)
-      .subscribe(data => {
-        console.log(data);
-      }, error => {
-        console.log(error);
-      });
+    return this.http.get(`${this.uri}/users/logout`, this.options);
   }
 }

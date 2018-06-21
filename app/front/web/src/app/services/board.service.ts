@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import {Boards} from "../models/board";
 
 @Injectable({
   providedIn: 'root'
@@ -17,6 +18,6 @@ export class BoardService {
       }
     };
 
-    return this.http.get(`${this.uri}/boards`, pagination_param)
+    return this.http.get<Boards>(`${this.uri}/boards`, pagination_param)
   }
 }

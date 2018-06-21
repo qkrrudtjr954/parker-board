@@ -1,25 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { BoardService } from '../../../services/board.service'
 import {isUndefined} from "util";
-
-interface Board {
-  id: number;
-  title: string;
-  description: string;
-}
-
-interface Pagination {
-  has_next: boolean;
-  has_prev: boolean;
-  page: number;
-  pages: number;
-  per_page: number;
-}
-
-interface Boards {
-  boards: Board[];
-  pagination: Pagination;
-}
+import {Board, Boards} from "../../../models/board";
+import {Pagination} from "../../../models/pagination";
 
 @Component({
   selector: 'app-navbar',
