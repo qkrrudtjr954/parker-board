@@ -47,8 +47,8 @@ class UserFormSchema(ma.ModelSchema):
             raise ValidationError('Email can not be null', status_code=422)
         if not EMAIL_REGEX.match(data['email']):
             raise ValidationError('Not a Email structure', status_code=422)
-        if len(data['password']) < 8:
-            raise ValidationError('Password length must more than 8', status_code=422)
+        if len(data['password']) < 6:
+            raise ValidationError('Password length must more than 6', status_code=422)
 
     class Meta:
         sqla_session = db.session

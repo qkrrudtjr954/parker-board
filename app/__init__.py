@@ -1,5 +1,9 @@
-from flask import Flask, request, jsonify
-from flask_login import LoginManager
+import flask
+import datetime
+
+from flask import Flask, request, jsonify, g
+from flask_login import LoginManager, current_user
+from app.model.user import User
 
 login_manager = LoginManager()
 
@@ -24,6 +28,10 @@ def create_app():
     ma.init_app(app)
 
     login_manager.init_app(app)
+
+    @login_manager.user_loader
+    def load_user(user_id):
+        return User.query.get(user_id)
 
     from app.controller.user_controller import bp as user_bp
     app.register_blueprint(user_bp)
@@ -55,9 +63,10 @@ def create_app():
 
     @app.after_request
     def after_request(response):
-        response.headers.add('Access-Control-Allow-Origin', '*')
+        response.headers.add('Access-Control-Allow-Origin', 'http://localhost:4200')
+        response.headers.add('Access-Control-Allow-Credentials', 'true')
         response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
-        response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
+        response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
         return response
 
     return app

@@ -32,7 +32,7 @@ class Describe_BoardController:
 
         @pytest.fixture
         def subject(self, boards, url):
-            resp = self.client.get('/boards/%s' % url)
+            resp = self.client.get('/boards%s' % url)
             return resp
 
         @pytest.fixture

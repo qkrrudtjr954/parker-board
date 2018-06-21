@@ -78,7 +78,7 @@ class Describe_UserController:
             def test_422를_반환한다(self, subject):
                 assert 422 == subject.status_code
 
-        @pytest.mark.parametrize('password', ['asdf', 'shorpwd', 'seven!!'])
+        @pytest.mark.parametrize('password', ['asdf', 'shord', 'sen!!'])
         class Context_password가_짧을_때:
             @pytest.fixture
             def user(self, password):
@@ -151,7 +151,7 @@ class Describe_UserController:
             def test_422를_반환한다(self, subject):
                 assert 422 == subject.status_code
 
-        @pytest.mark.parametrize('password', ['asdf', 'shorpwd', 'seven!!'])
+        @pytest.mark.parametrize('password', ['asdf', 'showd', 'seve'])
         class Context_password가_짧을_때:
             @pytest.fixture
             def form(self, password):

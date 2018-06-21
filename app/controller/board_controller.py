@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, logging
+from flask import Blueprint, jsonify, request
 from flask_login import login_required, current_user
 from webargs.flaskparser import use_args
 
@@ -11,7 +11,7 @@ from app.schema.pagination import pagination_schema
 bp = Blueprint('board', __name__)
 
 
-@bp.route('/boards/', methods=['GET'])
+@bp.route('/boards', methods=['GET'])
 @use_args(pagination_schema)
 def main(pagination):
     boards = board_service.pagination_boards(pagination.page, pagination.per_page)
@@ -32,7 +32,8 @@ def create(board: Board):
     try:
         board_service.create(current_user, board)
         return board_redirect_schema.jsonify(board), 200
-    except Exception:
+    except Exception as e:
+        print(e)
         return 'Server Error.', 500
 
 
