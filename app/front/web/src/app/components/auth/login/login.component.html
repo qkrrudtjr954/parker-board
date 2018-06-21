@@ -1,0 +1,27 @@
+
+
+<div class="login-container">
+  <h2>Login</h2>
+
+  <div id="output"></div>
+  <div class="avatar"></div>
+  <div class="form-box">
+    <form [formGroup]="loginForm" (submit)="onSubmit()">
+
+      <input name="email" type="email" placeholder="email" formControlName="email">
+      <div *ngIf="loginForm.controls['email'].invalid && (loginForm.controls['email'].dirty || loginForm.controls['email'].touched)">
+        <div *ngIf="loginForm.controls['email'].errors.required">
+          <span class="field-required"> Email is required. </span>
+        </div>
+      </div>
+      <input type="password" placeholder="password" formControlName="password">
+      <div *ngIf="loginForm.controls['password'].invalid && (loginForm.controls['password'].dirty || loginForm.controls['password'].touched)">
+        <div *ngIf="loginForm.controls['password'].errors.required">
+          <span class="field-required"> Password is required. </span>
+        </div>
+      </div>
+
+      <button class="btn btn-info btn-block login" type="submit" [disabled]="loginForm.pristine || loginForm.invalid">Login</button>
+    </form>
+  </div>
+</div>

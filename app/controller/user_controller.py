@@ -29,7 +29,7 @@ def login(login_data):
 @login_required
 def logout():
     logout_user()
-    return 'Log out', 200
+    return jsonify(dict(message='Log out')), 200
 
 
 @bp.route('/', methods=['POST'])
