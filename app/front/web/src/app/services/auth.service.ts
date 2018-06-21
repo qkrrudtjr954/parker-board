@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {HttpClient, HttpErrorResponse, HttpHeaders} from '@angular/common/http';
+import {catchError} from "rxjs/operators";
+import {throwError} from "rxjs/internal/observable/throwError";
 
 
 @Injectable({
@@ -9,13 +11,8 @@ export class AuthService {
   uri = 'http://localhost:5000'
   constructor(private http: HttpClient) { }
 
-  header= new HttpHeaders({
-    'Content-Type': 'application/json'
-  });
-
   options = {
-    withCredentials: true,
-    headers: this.header
+    withCredentials: true
   };
 
   userLogin(email, password) {
@@ -24,11 +21,20 @@ export class AuthService {
       password: password
     };
 
-    return this.http.post(`${this.uri}/users/login`, login_data, this.options);
+    this.http.post(`${this.uri}/users/login`, login_data)
+      .subscribe(data => {
+        console.log(data);
+      }, error1 => {
+        console.log(error1);
+      });
   }
 
   userLogout() {
-    return this.http.delete(`${this.uri}/users/logout`, this.options);
-
+    return this.http.get(`${this.uri}/users/logout`, this.options)
+      .subscribe(data => {
+        console.log(data);
+      }, error => {
+        console.log(error);
+      });
   }
 }

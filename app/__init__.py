@@ -52,14 +52,14 @@ def create_app():
         result = dict(message='Login First.', next=next)
         return jsonify(result), 401
 
-    # @app.errorhandler(422)
-    # def schema_validation_handler(err):
-    #     exc = getattr(err, 'exc')
-    #     messages = exc.messages if exc else ['Invalid request']
-    #
-    #     result = dict(errors=messages)
-    #     print(messages)
-    #     return jsonify(result), 422
+    @app.errorhandler(422)
+    def schema_validation_handler(err):
+        exc = getattr(err, 'exc')
+        messages = exc.messages if exc else ['Invalid request']
+
+        result = dict(errors=messages)
+        print(messages)
+        return jsonify(result), 422
 
     @app.after_request
     def after_request(response):

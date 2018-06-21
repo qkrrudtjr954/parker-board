@@ -25,7 +25,7 @@ def login(login_data):
         return e.message, 400
 
 
-@bp.route('/logout', methods=['DELETE'])
+@bp.route('/logout', methods=['GET'])
 @login_required
 def logout():
     logout_user()
