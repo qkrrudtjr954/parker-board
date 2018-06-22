@@ -1,8 +1,5 @@
-import flask
-import datetime
-
-from flask import Flask, request, jsonify, g
-from flask_login import LoginManager, current_user
+from flask import Flask, request, jsonify
+from flask_login import LoginManager
 from app.model.user import User
 
 login_manager = LoginManager()
