@@ -5,7 +5,9 @@ import { Component, OnInit } from '@angular/core';
   template: `
     <footer class="footer">
       <div class="container">
-        <span class="text-muted">Place sticky footer content here.</span>
+        <div class="d-flex justify-content-end">
+            <span class="text-muted">Place sticky footer content here.</span>
+        </div>
       </div>
     </footer>
   `,

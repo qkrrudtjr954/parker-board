@@ -7,12 +7,13 @@ import { HeaderComponent } from './components/layout/header/header.component';
 import { FooterComponent } from './components/layout/footer/footer.component';
 import { NavbarComponent } from './components/layout/navbar/navbar.component';
 import { LoginComponent } from './components/auth/login/login.component';
+import { MainComponent } from "./components/main/main.component";
+import { LogoutComponent } from './components/auth/logout/logout.component';
 
 import { RouterModule, Routes } from "@angular/router";
 import { ReactiveFormsModule } from '@angular/forms';
+import { CookieService} from "ngx-cookie-service";
 
-import { MainComponent } from './components/layout/main/main.component';
-import { LogoutComponent } from './components/auth/logout/logout.component';
 
 const routes: Routes = [{
   path: 'login',
@@ -35,10 +36,12 @@ const routes: Routes = [{
   imports: [
     BrowserModule,
     HttpClientModule,
+
+
     RouterModule.forRoot(routes),
     ReactiveFormsModule
   ],
-  providers: [],
+  providers: [CookieService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

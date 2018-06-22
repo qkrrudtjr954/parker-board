@@ -16,7 +16,6 @@ export class NavbarComponent implements OnInit {
 
   getBoardList() {
     this.boardservice.getBoardList().subscribe((data: Board[]) => {
-      console.log(data.length)
       this.boardlist = data;
     })
   }

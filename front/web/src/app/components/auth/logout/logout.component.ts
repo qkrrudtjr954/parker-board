@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {AuthService} from "../../../services/auth.service";
 import {AfterLogout} from "../../../models/auth";
+import {CookieService} from "ngx-cookie-service";
 
 @Component({
   selector: 'auth-logout',
@@ -9,11 +10,13 @@ import {AfterLogout} from "../../../models/auth";
   `
 })
 export class LogoutComponent implements OnInit {
-  constructor(private authservice: AuthService) { }
+  constructor(private authservice: AuthService, private cookieservice: CookieService) { }
 
   userLogout() {
     this.authservice.userLogout().subscribe((data: AfterLogout) => {
         console.log(data.message);
+        this.cookieservice.delete('current_user');
+
         alert('로그아웃 되었습니다.');
         location.href = '/';
       }, error => {

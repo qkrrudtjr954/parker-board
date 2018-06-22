@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {FormControl, FormGroup, FormBuilder, Validators} from "@angular/forms";
 import {AuthService} from "../../../services/auth.service";
 import {AfterLogin} from "../../../models/auth";
+import { CookieService } from "ngx-cookie-service";
 
 @Component({
   selector: 'app-login',
@@ -14,7 +15,7 @@ export class LoginComponent implements OnInit {
     password: new FormControl()
   });
 
-  constructor(private fb: FormBuilder, private authservice: AuthService) {
+  constructor(private fb: FormBuilder, private authservice: AuthService, private cookieservice: CookieService) {
     this.createForm()
   }
 
@@ -32,6 +33,8 @@ export class LoginComponent implements OnInit {
     this.authservice.userLogin(email, password)
       .subscribe((data: AfterLogin) => {
         alert(data.user.email + ' 님 환영합니다.');
+        this.cookieservice.set('current_user', data.user.email);
+
         location.href='/';
       }, error1 => {
         if(error1.status == 400){
