@@ -127,7 +127,3 @@
   -webkit-animation-name: fadeInUp;
   animation-name: fadeInUp;
 }
-
-span.field-required {
-  color: orangered;
-}

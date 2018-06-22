@@ -1,0 +1,20 @@
+<div class="offset-md-2 col-md-8">
+  <form [formGroup]="makeForm" (submit)="onSubmit()">
+    <div class="form-group">
+      <label for="_title">Board 제목</label>
+      <input type="text" class="form-control" id="_title" placeholder="제목을 입력해주세요" formControlName="title">
+      <div *ngIf="makeForm.controls['title'].invalid && (makeForm.controls['title'].dirty || makeForm.controls['title'].touched)">
+          <div *ngIf="makeForm.controls['title'].errors.required">
+            <span class="field-required"> Email is required. </span>
+          </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+      <label for="_description">Board 설명</label>
+      <textarea class="form-control" id="_description" rows="3" formControlName="description"></textarea>
+    </div>
+
+    <button class="btn btn-info btn-block" type="submit" [disabled]="makeForm.pristine || makeForm.invalid">Create</button>
+  </form>
+</div>

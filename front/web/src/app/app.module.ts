@@ -13,6 +13,7 @@ import { LogoutComponent } from './components/auth/logout/logout.component';
 import { RouterModule, Routes } from "@angular/router";
 import { ReactiveFormsModule } from '@angular/forms';
 import { CookieService} from "ngx-cookie-service";
+import { CreateComponent } from './components/board/create/create.component';
 
 
 const routes: Routes = [{
@@ -21,6 +22,9 @@ const routes: Routes = [{
 },{
   path: '',
   component: MainComponent
+},{
+  path: 'boards/create',
+  component: CreateComponent
 }];
 
 @NgModule({
@@ -31,13 +35,12 @@ const routes: Routes = [{
     NavbarComponent,
     LoginComponent,
     MainComponent,
-    LogoutComponent
+    LogoutComponent,
+    CreateComponent
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
-
-
     RouterModule.forRoot(routes),
     ReactiveFormsModule
   ],

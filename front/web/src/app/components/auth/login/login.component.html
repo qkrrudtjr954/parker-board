@@ -7,7 +7,6 @@
   <div class="avatar"></div>
   <div class="form-box">
     <form [formGroup]="loginForm" (submit)="onSubmit()">
-
       <input name="email" type="email" placeholder="email" formControlName="email">
       <div *ngIf="loginForm.controls['email'].invalid && (loginForm.controls['email'].dirty || loginForm.controls['email'].touched)">
         <div *ngIf="loginForm.controls['email'].errors.required">
@@ -20,7 +19,6 @@
           <span class="field-required"> Password is required. </span>
         </div>
       </div>
-
       <button class="btn btn-info btn-block login" type="submit" [disabled]="loginForm.pristine || loginForm.invalid">Login</button>
     </form>
   </div>

@@ -26,7 +26,7 @@ export class LoginComponent implements OnInit {
     })
   }
 
-  onSubmit(){
+  onSubmit() {
     let email = this.loginForm.controls['email'].value;
     let password = this.loginForm.controls['password'].value;
 
@@ -34,17 +34,17 @@ export class LoginComponent implements OnInit {
       .subscribe((data: AfterLogin) => {
         alert(data.user.email + ' 님 환영합니다.');
         this.cookieservice.set('current_user', data.user.email);
+        location.href = '/';
 
-        location.href='/';
       }, error1 => {
-        if(error1.status == 400){
+        if (error1.status == 400) {
           alert('회원 정보가 존재하지 않습니다.');
-        } else if(error1.status == 500){
+        } else if (error1.status == 500) {
           alert('서버에 에러가 발생했습니다. 다시 시도해주세요.');
-        } else if(error1.status == 422){
+        } else if (error1.status == 422) {
           alert('정보를 다시 입력해주세요.');
         }
-      })
+      });
   }
 
   ngOnInit() {
