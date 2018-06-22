@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify, request
 from flask_login import login_required, current_user
 from webargs.flaskparser import use_args
 
-from app.model.board import Board
+from app.model.board import Board, BoardStatus
 from app.service import board_service
 from app.schema.board import main_board_schema, board_create_form_schema, board_update_form_schema, board_redirect_schema
 from app.schema.pagination import pagination_schema
@@ -12,16 +12,10 @@ bp = Blueprint('board', __name__)
 
 
 @bp.route('/boards', methods=['GET'])
-@use_args(pagination_schema)
-def main(pagination):
-    boards = board_service.pagination_boards(pagination.page, pagination.per_page)
+def main():
+    boards = Board.query.filter(Board.status != BoardStatus.DELETED).all()
 
-    boards_items = main_board_schema.dump(boards.items).data
-    pagination = pagination_schema.dump(boards).data
-
-    result = dict(boards=boards_items, pagination=pagination)
-
-    return jsonify(result), 200
+    return main_board_schema.jsonify(boards), 200
 
 
 # create board
