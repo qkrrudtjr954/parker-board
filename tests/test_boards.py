@@ -17,22 +17,8 @@ class Describe_BoardController:
             return boards
 
         @pytest.fixture
-        def pagination(self):
-            return dict(per_page=5, page=1)
-
-        @pytest.fixture
-        def url(self, pagination):
-            url = '?'
-            if 'per_page' in pagination:
-                url += 'per_page=%d&' % pagination['per_page']
-            if 'page' in pagination:
-                url += 'page=%d' % pagination['page']
-
-            return url
-
-        @pytest.fixture
-        def subject(self, boards, url):
-            resp = self.client.get('/boards%s' % url)
+        def subject(self, boards):
+            resp = self.client.get('/boards')
             return resp
 
         @pytest.fixture
@@ -42,42 +28,8 @@ class Describe_BoardController:
         def test_200을_반환한다(self, subject):
             assert 200 == subject.status_code
 
-        def test_has_next는_True이다(self, json_result):
-            assert json_result['pagination']['has_next']
-
-        def test_has_prev는_False이다(self, json_result):
-            assert not json_result['pagination']['has_prev']
-
-        def test_total_page를_반환한다(self, json_result):
-            assert 5 == json_result['pagination']['pages']
-
-        class Context_page가_마지막_page일_때:
-            @pytest.fixture
-            def pagination(self):
-                return dict(per_page=5, page=5)
-
-            def test_has_prev는_True이다(self, json_result):
-                assert json_result['pagination']['has_prev']
-
-            def test_has_next는_False이다(self, json_result):
-                assert not json_result['pagination']['has_next']
-
-        class Context_per_page가_없을_때:
-            @pytest.fixture
-            def pagination(self):
-                return dict(page=1)
-
-            def test_per_page는_10이다(self, json_result):
-                assert 10 == json_result['pagination']['per_page']
-
-        class Context_page가_없을_때:
-            @pytest.fixture
-            def pagination(self):
-                return dict(per_page=5)
-
-            def test_page는_1이다(self, json_result):
-                assert 1 == json_result['pagination']['page']
-
+        def test_Board의_길이는_25이다(self, json_result):
+            assert 25 == len(json_result)
 
     class Describe_create:
         @pytest.fixture
