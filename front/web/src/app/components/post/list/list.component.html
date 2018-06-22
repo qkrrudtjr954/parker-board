@@ -1,6 +1,7 @@
 <div class="title-area text-center" *ngIf="board">
   <h1>{{board.title}}</h1>
   <h4>{{board.description}}</h4>
+  <a routerLink="/boards/{{board.id}}/update">update</a>
 </div>
 
 <table class="table">
