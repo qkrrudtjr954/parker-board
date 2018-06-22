@@ -9,6 +9,7 @@ import { Board } from "../../../models/board";
 })
 export class NavbarComponent implements OnInit {
   boardlist: Board[];
+  selectedboard: Board;
 
   constructor(private boardservice: BoardService) {
     this.getBoardList()
@@ -18,6 +19,10 @@ export class NavbarComponent implements OnInit {
     this.boardservice.getBoardList().subscribe((data: Board[]) => {
       this.boardlist = data;
     })
+  }
+
+  onSelected(board: Board) {
+    this.selectedboard = board;
   }
 
   ngOnInit() { }

@@ -24,7 +24,6 @@ bp = Blueprint('post', __name__)
 # GET /boards/1/posts
 @bp.route('/boards/<int:board_id>/posts', methods=['GET'])
 @use_args(pagination_schema)
-@login_required
 def post_list(pagination, board_id):
     board = Board.query.get(board_id)
 

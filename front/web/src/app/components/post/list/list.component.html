@@ -1,0 +1,31 @@
+<div class="title-area text-center" *ngIf="board">
+  <h1>{{board.title}}</h1>
+  <h4>{{board.description}}</h4>
+</div>
+
+<table class="table">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">First</th>
+      <th scope="col">Last</th>
+      <th scope="col">Handle</th>
+    </tr>
+  </thead>
+  <tbody *ngIf="!postlist" >
+    <tr class="text-center">
+        <td colspan="4">
+          등록된 글이 없습니다.
+        </td>
+    </tr>
+  </tbody>
+
+  <tbody *ngIf="postlist">
+    <tr *ngFor="let post of postlist; index as i;">
+      <th scope="row">{{i+1}}</th>
+      <td>{{post.title}} <small class="comment_count">[{{post.comments_count}}]</small></td>
+      <td>{{post.user.email}}</td>
+      <td>{{post.created_at}}</td>
+    </tr>
+  </tbody>
+</table>

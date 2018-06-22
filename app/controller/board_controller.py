@@ -1,11 +1,10 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint
 from flask_login import login_required, current_user
 from webargs.flaskparser import use_args
 
 from app.model.board import Board, BoardStatus
 from app.service import board_service
 from app.schema.board import main_board_schema, board_create_form_schema, board_update_form_schema, board_redirect_schema
-from app.schema.pagination import pagination_schema
 
 
 bp = Blueprint('board', __name__)

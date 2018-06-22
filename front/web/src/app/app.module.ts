@@ -14,6 +14,9 @@ import { RouterModule, Routes } from "@angular/router";
 import { ReactiveFormsModule } from '@angular/forms';
 import { CookieService} from "ngx-cookie-service";
 import { CreateComponent } from './components/board/create/create.component';
+import { ListComponent } from './components/post/list/list.component';
+import {PaginationComponent} from "./components/pagination/pagination.component";
+import { EditComponent } from './components/board/edit/edit.component';
 
 
 const routes: Routes = [{
@@ -25,6 +28,12 @@ const routes: Routes = [{
 },{
   path: 'boards/create',
   component: CreateComponent
+},{
+  path: 'boards/:id/posts',
+  component: ListComponent
+},{
+  path: 'boards/:id/update',
+  component: EditComponent
 }];
 
 @NgModule({
@@ -36,7 +45,10 @@ const routes: Routes = [{
     LoginComponent,
     MainComponent,
     LogoutComponent,
-    CreateComponent
+    CreateComponent,
+    ListComponent,
+    PaginationComponent,
+    EditComponent
   ],
   imports: [
     BrowserModule,

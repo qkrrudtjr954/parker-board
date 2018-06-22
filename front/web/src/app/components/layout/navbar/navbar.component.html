@@ -5,8 +5,8 @@
         <a routerLink="boards/create">Board 생성하기</a>
       </li>
       <li class="nav-item" *ngFor="let board of boardlist">
-        <div class="nav-link active">
-          <span>{{board.title}}</span>
+        <div class="nav-link" [class.active]="board === selectedboard">
+          <a (click)="onSelected(board)" routerLink="/boards/{{board.id}}/posts">{{board.title}}</a>
         </div>
       </li>
     </ul>

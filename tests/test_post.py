@@ -74,12 +74,8 @@ class Describe_PostController:
                 assert 1 == json_result['pagination']['page']
 
         class Context_로그인_하지_않았을_때:
-            @pytest.fixture
-            def user(self, not_logged_in_user):
-                return not_logged_in_user
-
-            def test_401을_반환한다(self, subject):
-                assert 401 == subject.status_code
+            def test_200을_반환한다(self, subject):
+                assert 200 == subject.status_code
 
     class Describe_detail:
         @pytest.fixture
