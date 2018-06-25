@@ -25,4 +25,8 @@ export class AuthService {
   userLogout() {
     return this.http.get(`${this.uri}/users/logout`, this.options);
   }
+
+  canEnter(target_id: number) {
+    return this.http.get(`/boards/${target_id}/authenticate`, this.options)
+  }
 }

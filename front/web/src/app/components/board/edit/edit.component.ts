@@ -19,8 +19,7 @@ export class EditComponent implements OnInit {
   constructor(private fb: FormBuilder,
               private boardservice: BoardService,
               private router: Router,
-              private activerouter: ActivatedRoute,
-              private cookieservice: CookieService) {
+              private activerouter: ActivatedRoute) {
 
     this.createForm()
   }
@@ -59,11 +58,6 @@ export class EditComponent implements OnInit {
         })
     });
   }
-
-  isLoggedIn() {
-
-  }
-
 
   ngOnInit() {
 

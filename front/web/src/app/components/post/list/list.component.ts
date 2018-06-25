@@ -4,6 +4,7 @@ import {PostService} from "../../../services/post.service";
 import {Post, Posts} from "../../../models/post";
 import {Pagination} from "../../../models/pagination";
 import {Board} from "../../../models/board";
+import {AuthService} from "../../../services/auth.service";
 
 @Component({
   selector: 'app-list',
@@ -16,11 +17,14 @@ export class ListComponent implements OnInit {
   pagination: Pagination;
   board: Board;
 
-  constructor(private route: ActivatedRoute, private postservice: PostService) { }
+  canEnter: boolean;
+
+  constructor(private route: ActivatedRoute, private postservice: PostService, private authservice: AuthService) { }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
       let board_id = params['id'];
+      this.authservice.canEnter(board_id).subscribe(data => console.log(data));
 
       this.postservice.getPostList(board_id)
         .subscribe((data: Posts) => {
