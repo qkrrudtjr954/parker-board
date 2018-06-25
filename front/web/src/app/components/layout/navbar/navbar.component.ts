@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BoardService } from '../../../services/board.service'
 import { Board } from "../../../models/board";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-navbar',
@@ -8,23 +9,23 @@ import { Board } from "../../../models/board";
   styleUrls: ['./navbar.component.css']
 })
 export class NavbarComponent implements OnInit {
-  boardlist: Board[];
-  selectedboard: Board;
+  boardList: Board[] = [];
+  selectedBoard: Board;
 
-  constructor(private boardservice: BoardService) {
-    this.getBoardList()
-  }
+  constructor(private boardservice: BoardService, private router: Router) { }
 
   getBoardList() {
-    this.boardservice.getBoardList().subscribe((data: Board[]) => {
-      this.boardlist = data;
-    })
+    this.boardservice.getBoardList()
+      .subscribe((data: Board[]) => {
+        this.boardList = data;
+      })
   }
 
   onSelected(board: Board) {
-    this.selectedboard = board;
+    this.selectedBoard = board;
   }
 
-  ngOnInit() { }
-
+  ngOnInit() {
+    this.getBoardList();
+  }
 }

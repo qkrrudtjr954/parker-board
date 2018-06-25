@@ -4,7 +4,7 @@ from webargs.flaskparser import use_args
 
 from app.model.board import Board, BoardStatus
 from app.service import board_service
-from app.schema.board import main_board_schema, board_create_form_schema, board_update_form_schema, board_redirect_schema
+from app.schema.board import main_board_schema, board_create_form_schema, board_update_form_schema, board_id_schema
 
 
 bp = Blueprint('board', __name__)
@@ -24,7 +24,7 @@ def main():
 def create(board: Board):
     try:
         board_service.create(current_user, board)
-        return board_redirect_schema.jsonify(board), 200
+        return board_id_schema.jsonify(board), 200
     except Exception as e:
         print(e)
         return 'Server Error.', 500
@@ -45,7 +45,7 @@ def update(board_data, board_id):
 
     try:
         board_service.update(target_board, board_data)
-        return board_redirect_schema.jsonify(target_board), 200
+        return board_id_schema.jsonify(target_board), 200
     except Exception:
         return 'Server Error.', 500
 
@@ -64,6 +64,6 @@ def delete(board_id):
 
     try:
         board_service.delete(target_board)
-        return board_redirect_schema.jsonify(target_board), 204
+        return board_id_schema.jsonify(target_board), 204
     except Exception as e:
         return 'Server Error.', 500

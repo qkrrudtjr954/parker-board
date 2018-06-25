@@ -1,32 +1,39 @@
-<div class="title-area text-center" *ngIf="board">
-  <h1>{{board.title}}</h1>
-  <h4>{{board.description}}</h4>
-  <a routerLink="/boards/{{board.id}}/update">update</a>
+<div *ngIf="board">
+  <div class="d-flex justify-content-end">
+    <a routerLink="/boards/{{ board.id }}/update" class="btn btn-success">수정하기</a>
+    <a routerLink="/" class="btn btn-danger">삭제하기</a>
+  </div>
+
+  <div class="title-area text-center">
+    <h1>{{board.title}}</h1>
+    <hr>
+    <h4>{{board.description}}</h4>
+  </div>
+
+  <table class="table">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">No</th>
+        <th scope="col">title</th>
+        <th scope="col">author</th>
+        <th scope="col">created</th>
+      </tr>
+    </thead>
+    <tbody *ngIf="!postlist" >
+      <tr class="text-center">
+          <td colspan="4">
+            등록된 글이 없습니다.
+          </td>
+      </tr>
+    </tbody>
+
+    <tbody *ngIf="postlist">
+      <tr *ngFor="let post of postlist; index as i;">
+        <th scope="row">{{i+1}}</th>
+        <td>{{post.title}} <small class="comment_count">[{{post.comments_count}}]</small></td>
+        <td>{{post.user.email}}</td>
+        <td>{{post.created_at | date:'yyyy년 MM월 dd일 HH시 mm분 ss초'}}</td>
+      </tr>
+    </tbody>
+  </table>
 </div>
-
-<table class="table">
-  <thead class="thead-dark">
-    <tr>
-      <th scope="col">#</th>
-      <th scope="col">First</th>
-      <th scope="col">Last</th>
-      <th scope="col">Handle</th>
-    </tr>
-  </thead>
-  <tbody *ngIf="!postlist" >
-    <tr class="text-center">
-        <td colspan="4">
-          등록된 글이 없습니다.
-        </td>
-    </tr>
-  </tbody>
-
-  <tbody *ngIf="postlist">
-    <tr *ngFor="let post of postlist; index as i;">
-      <th scope="row">{{i+1}}</th>
-      <td>{{post.title}} <small class="comment_count">[{{post.comments_count}}]</small></td>
-      <td>{{post.user.email}}</td>
-      <td>{{post.created_at}}</td>
-    </tr>
-  </tbody>
-</table>

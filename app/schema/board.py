@@ -28,7 +28,7 @@ main_board_schema = BoardSchema(only=['id', 'title', 'description', 'created_at'
 simple_board_schema = BoardSchema(only=['id', 'title', 'description'])
 
 
-board_redirect_schema = BoardSchema(only=['id'])
+board_id_schema = BoardSchema(only=['id'])
 
 
 # Board를 생성하거나 수정할 때 사용하는 스키마

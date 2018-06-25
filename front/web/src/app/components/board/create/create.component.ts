@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {FormControl, FormGroup, FormBuilder, Validators} from "@angular/forms";
 import {BoardService} from "../../../services/board.service";
 import {Router} from "@angular/router";
+import {Board} from "../../../models/board";
 
 
 @Component({
@@ -30,9 +31,10 @@ export class CreateComponent implements OnInit {
     let title = this.makeForm.controls['title'].value;
     let description = this.makeForm.controls['description'].value;
 
-    return this.boardservice.makeBoard(title, description)
-      .subscribe((data) => {
+    return this.boardservice.makeBoard({title, description} as Board)
+      .subscribe((data: Board) => {
         console.log(data);
+        this.router.navigate([`/boards/${data.id}/posts`]);
       }, error1 => {
         console.log(error1)
         if(error1.status == 401){
