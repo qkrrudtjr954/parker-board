@@ -1,4 +1,4 @@
-from flask import Blueprint
+from flask import Blueprint, jsonify
 from flask_login import login_required, current_user
 from webargs.flaskparser import use_args
 
@@ -67,3 +67,11 @@ def delete(board_id):
         return board_id_schema.jsonify(target_board), 204
     except Exception as e:
         return 'Server Error.', 500
+
+
+@bp.route('/boards/<int:board_id>/authenticate', methods=['GET'])
+@login_required
+def hasAuthenticate(board_id):
+    target_board = Board.query.get(board_id)
+    result = dict(result=target_board.user_id == current_user.id)
+    return jsonify(result), 200

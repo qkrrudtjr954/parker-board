@@ -205,3 +205,41 @@ class Describe_BoardController:
             def test_401을_반환한다(self, board_id):
                 resp = self.client.delete('/boards/%d' % board_id)
                 assert 401 == resp.status_code
+
+    class Describe_util:
+        class Describe_유저가_해당_Board에_권한을_가졌는지_확인한다:
+            @pytest.fixture
+            def board_id(self, user):
+                board = FakeBoardFactory(user=user, user_id=user.id)
+                self.session.flush()
+                return board.id
+
+            @pytest.fixture
+            def user(self, logged_in_user):
+                return logged_in_user
+
+            @pytest.fixture
+            def subject(self, board_id):
+                resp = self.client.get('/boards/%d/authenticate' % board_id)
+                return resp
+
+            @pytest.fixture
+            def json_result(self, subject):
+                return json.loads(subject.data)
+
+            def test_200를_반환한다(self, subject):
+                return 200 == subject.status_code
+
+            def test_true를_반환한다(self, json_result):
+                return json_result['result']
+
+            class Context_권한이_없는_Board에_접근했을_때:
+                @pytest.fixture
+                def board_id(self, user):
+                    board = FakeBoardFactory()
+                    self.session.flush()
+                    return board.id
+
+                def test_false를_반환한다(self, json_result):
+                    return not json_result['result']
+
