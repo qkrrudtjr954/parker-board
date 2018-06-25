@@ -6,6 +6,11 @@ import {Pagination} from "../../../models/pagination";
 import {Board} from "../../../models/board";
 import {AuthService} from "../../../services/auth.service";
 
+
+interface Authenticate {
+  result: boolean
+}
+
 @Component({
   selector: 'app-list',
   templateUrl: './list.component.html',
@@ -17,14 +22,17 @@ export class ListComponent implements OnInit {
   pagination: Pagination;
   board: Board;
 
-  canEnter: boolean;
+  isOwner: boolean = false;
 
   constructor(private route: ActivatedRoute, private postservice: PostService, private authservice: AuthService) { }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
       let board_id = params['id'];
-      this.authservice.canEnter(board_id).subscribe(data => console.log(data));
+      this.authservice.isOwner(board_id)
+        .subscribe((data: Authenticate) =>
+          this.isOwner = data.result
+        );
 
       this.postservice.getPostList(board_id)
         .subscribe((data: Posts) => {

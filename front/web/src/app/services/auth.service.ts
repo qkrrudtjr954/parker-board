@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import {HttpClient } from '@angular/common/http';
+import {CookieService} from "ngx-cookie-service";
 
 
 @Injectable({
@@ -7,7 +8,7 @@ import {HttpClient } from '@angular/common/http';
 })
 export class AuthService {
   uri = 'http://localhost:5000';
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private cookie: CookieService) { }
 
   options = {
     withCredentials: true
@@ -26,7 +27,11 @@ export class AuthService {
     return this.http.get(`${this.uri}/users/logout`, this.options);
   }
 
-  canEnter(target_id: number) {
-    return this.http.get(`/boards/${target_id}/authenticate`, this.options)
+  isOwner(target_id: number) {
+    return this.http.get(`${this.uri}/boards/${target_id}/owner`, this.options)
+  }
+
+  isLoggedIn() {
+    return this.http.get(`${this.uri}/users/authenticate`, this.options)
   }
 }

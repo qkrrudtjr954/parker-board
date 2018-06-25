@@ -1,5 +1,5 @@
 <div *ngIf="board">
-  <div class="d-flex justify-content-end">
+  <div class="d-flex justify-content-end" *ngIf="isOwner">
     <a routerLink="/boards/{{ board.id }}/update" class="btn btn-success">수정하기</a>
     <a routerLink="/" class="btn btn-danger">삭제하기</a>
   </div>
