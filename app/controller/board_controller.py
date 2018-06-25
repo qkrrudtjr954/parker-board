@@ -69,7 +69,7 @@ def delete(board_id):
         return 'Server Error.', 500
 
 
-@bp.route('/boards/<int:board_id>/authenticate', methods=['GET'])
+@bp.route('/boards/<int:board_id>/owner', methods=['GET'])
 @login_required
 def hasAuthenticate(board_id):
     target_board = Board.query.get(board_id)

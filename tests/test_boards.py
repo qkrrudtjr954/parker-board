@@ -220,7 +220,7 @@ class Describe_BoardController:
 
             @pytest.fixture
             def subject(self, board_id):
-                resp = self.client.get('/boards/%d/authenticate' % board_id)
+                resp = self.client.get('/boards/%d/owner' % board_id)
                 return resp
 
             @pytest.fixture
