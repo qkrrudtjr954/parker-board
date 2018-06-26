@@ -73,5 +73,5 @@ def delete(board_id):
 @login_required
 def hasAuthenticate(board_id):
     target_board = Board.query.get(board_id)
-    result = dict(result=target_board.user_id == current_user.id)
+    result = dict(result=target_board.is_owner(current_user))
     return jsonify(result), 200

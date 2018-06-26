@@ -168,7 +168,7 @@ class Describe_UserController:
 
         @pytest.fixture
         def subject(self, user):
-            resp = self.client.delete('/users/')
+            resp = self.client.patch('/users/leave')
             return resp
 
         def test_204를_반환한다(self, subject):

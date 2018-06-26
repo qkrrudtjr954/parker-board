@@ -48,7 +48,7 @@ def register(register_data):
         return after_register_schema.jsonify(register_user), 200
 
 
-@bp.route('/', methods=['DELETE'])
+@bp.route('/leave', methods=['PATCH'])
 @login_required
 def leave():
     try:
