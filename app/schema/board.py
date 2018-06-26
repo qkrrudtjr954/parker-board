@@ -36,8 +36,8 @@ class BoardFormSchema(ma.ModelSchema):
 
     @validates('title')
     def title_length_check(self, title):
-        if len(title) < 10:
-            raise ValidationError('Title length must more than 10.', status_code=422)
+        if len(title) < 4:
+            raise ValidationError('Title length must more than 4.', status_code=422)
 
     class Meta:
         strict = True

@@ -9,6 +9,38 @@ from tests.factories.board import FakeBoardFactory
 
 
 class Describe_BoardController:
+    class Describe_get_board:
+        @pytest.fixture
+        def user(self, logged_in_user):
+            return logged_in_user
+
+        @pytest.fixture
+        def board_id(self, user):
+            board = FakeBoardFactory(user_id=user.id, user=user)
+            self.session.flush()
+            return board.id
+
+        @pytest.fixture
+        def subject(self, board_id):
+            resp = self.client.get('/boards/%d' % board_id)
+            return resp
+
+        @pytest.fixture
+        def json_result(self, subject):
+            return json.loads(subject.data)
+
+        def test_200을_반환한다(self, subject):
+            assert 200 == subject.status_code
+
+        class Context_Board가_없을_때:
+            @pytest.fixture
+            def board_id(self, user):
+                board = FakeBoardFactory(user_id=user.id, user=user)
+                return board.id
+
+            def test_404를_반환하다(self, subject):
+                assert 404 == subject.status_code
+
     class Describe_main:
         @pytest.fixture
         def boards(self):
@@ -26,6 +58,7 @@ class Describe_BoardController:
             return json.loads(subject.data)
 
         def test_200을_반환한다(self, subject):
+            print(subject.data)
             assert 200 == subject.status_code
 
         def test_Board의_길이는_25이다(self, json_result):
@@ -205,41 +238,4 @@ class Describe_BoardController:
             def test_401을_반환한다(self, board_id):
                 resp = self.client.delete('/boards/%d' % board_id)
                 assert 401 == resp.status_code
-
-    class Describe_util:
-        class Describe_유저가_해당_Board에_권한을_가졌는지_확인한다:
-            @pytest.fixture
-            def board_id(self, user):
-                board = FakeBoardFactory(user=user, user_id=user.id)
-                self.session.flush()
-                return board.id
-
-            @pytest.fixture
-            def user(self, logged_in_user):
-                return logged_in_user
-
-            @pytest.fixture
-            def subject(self, board_id):
-                resp = self.client.get('/boards/%d/owner' % board_id)
-                return resp
-
-            @pytest.fixture
-            def json_result(self, subject):
-                return json.loads(subject.data)
-
-            def test_200를_반환한다(self, subject):
-                return 200 == subject.status_code
-
-            def test_true를_반환한다(self, json_result):
-                return json_result['result']
-
-            class Context_권한이_없는_Board에_접근했을_때:
-                @pytest.fixture
-                def board_id(self, user):
-                    board = FakeBoardFactory()
-                    self.session.flush()
-                    return board.id
-
-                def test_false를_반환한다(self, json_result):
-                    return not json_result['result']
 

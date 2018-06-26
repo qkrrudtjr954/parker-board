@@ -4,8 +4,8 @@ from webargs.flaskparser import use_args
 
 from app.model.board import Board, BoardStatus
 from app.service import board_service
-from app.schema.board import main_board_schema, board_create_form_schema, board_update_form_schema, board_id_schema
-
+from app.schema.board import main_board_schema, board_create_form_schema, board_update_form_schema, board_id_schema, \
+    simple_board_schema
 
 bp = Blueprint('board', __name__)
 
@@ -68,10 +68,11 @@ def delete(board_id):
     except Exception as e:
         return 'Server Error.', 500
 
-
-@bp.route('/boards/<int:board_id>/owner', methods=['GET'])
-@login_required
-def hasAuthenticate(board_id):
+@bp.route('/boards/<int:board_id>', methods=['GET'])
+def get_board(board_id):
     target_board = Board.query.get(board_id)
-    result = dict(result=target_board.is_owner(current_user))
-    return jsonify(result), 200
+
+    if not target_board:
+        return 'No Board.', 404
+
+    return simple_board_schema.jsonify(target_board), 200

@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify
 from webargs.flaskparser import use_args
 
 from app.error import SameDataError
+from app.schema.user import simple_user_schema
 from app.service import post_service
 from app.model.board import Board
 from app.model.post import Post
@@ -33,10 +34,11 @@ def post_list(pagination, board_id):
     posts = board.get_posts(pagination.page, pagination.per_page)
 
     board_item = simple_board_schema.dump(board).data
+    user = simple_user_schema.dump(board.user).data
     posts_item = post_list_schema.dump(posts.items).data
     pagination = pagination_schema.dump(posts).data
 
-    result = dict(board=board_item, posts=posts_item, pagination=pagination)
+    result = dict(board=board_item, posts=posts_item, pagination=pagination, user=user)
 
     return jsonify(result), 200
 

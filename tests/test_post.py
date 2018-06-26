@@ -48,6 +48,7 @@ class Describe_PostController:
         def test_200을_반환한다(self, subject):
             assert 200 == subject.status_code
 
+
         class Context_board가_존재하지_않을_때:
             @pytest.fixture
             def board(self):

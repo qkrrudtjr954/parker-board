@@ -1,4 +1,6 @@
 [
+  "test_boards.py::Describe_BoardController::()::Describe_get_board::()::test_200\uc744_\ubc18\ud658\ud55c\ub2e4",
+  "test_boards.py::Describe_BoardController::()::Describe_get_board::()::Context_Board\uac00_\uc5c6\uc744_\ub54c::()::test_404\ub97c_\ubc18\ud658\ud558\ub2e4",
   "test_boards.py::Describe_BoardController::()::Describe_main::()::test_200\uc744_\ubc18\ud658\ud55c\ub2e4",
   "test_boards.py::Describe_BoardController::()::Describe_main::()::test_Board\uc758_\uae38\uc774\ub294_25\uc774\ub2e4",
   "test_boards.py::Describe_BoardController::()::Describe_create::()::test_200\uc774_\ubc18\ud658\ub41c\ub2e4",
@@ -17,8 +19,5 @@
   "test_boards.py::Describe_BoardController::()::Describe_delete::()::test_204\ub97c_\ubc18\ud658\ud55c\ub2e4",
   "test_boards.py::Describe_BoardController::()::Describe_delete::()::test_board\ub97c_\uc0ad\uc81c\ud55c\ub2e4",
   "test_boards.py::Describe_BoardController::()::Describe_delete::()::Context_board\uac00_\uc5c6\ub294_\uacbd\uc6b0::()::test_404\ub97c_\ubc18\ud658\ud55c\ub2e4",
-  "test_boards.py::Describe_BoardController::()::Describe_delete::()::Context_\ubcf8\uc778_board\uac00_\uc544\ub2cc_\uacbd\uc6b0::()::test_401\uc744_\ubc18\ud658\ud55c\ub2e4",
-  "test_boards.py::Describe_BoardController::()::Describe_util::()::Describe_\uc720\uc800\uac00_\ud574\ub2f9_Board\uc5d0_\uad8c\ud55c\uc744_\uac00\uc84c\ub294\uc9c0_\ud655\uc778\ud55c\ub2e4::()::test_200\ub97c_\ubc18\ud658\ud55c\ub2e4",
-  "test_boards.py::Describe_BoardController::()::Describe_util::()::Describe_\uc720\uc800\uac00_\ud574\ub2f9_Board\uc5d0_\uad8c\ud55c\uc744_\uac00\uc84c\ub294\uc9c0_\ud655\uc778\ud55c\ub2e4::()::test_true\ub97c_\ubc18\ud658\ud55c\ub2e4",
-  "test_boards.py::Describe_BoardController::()::Describe_util::()::Describe_\uc720\uc800\uac00_\ud574\ub2f9_Board\uc5d0_\uad8c\ud55c\uc744_\uac00\uc84c\ub294\uc9c0_\ud655\uc778\ud55c\ub2e4::()::Context_\uad8c\ud55c\uc774_\uc5c6\ub294_Board\uc5d0_\uc811\uadfc\ud588\uc744_\ub54c::()::test_false\ub97c_\ubc18\ud658\ud55c\ub2e4"
+  "test_boards.py::Describe_BoardController::()::Describe_delete::()::Context_\ubcf8\uc778_board\uac00_\uc544\ub2cc_\uacbd\uc6b0::()::test_401\uc744_\ubc18\ud658\ud55c\ub2e4"
 ]
