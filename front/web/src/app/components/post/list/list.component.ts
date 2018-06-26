@@ -18,7 +18,7 @@ interface Authenticate {
 })
 export class ListComponent implements OnInit {
 
-  postlist: Post[] = [];
+  postList: Post[] = [];
   pagination: Pagination;
   board: Board;
 
@@ -29,6 +29,7 @@ export class ListComponent implements OnInit {
   ngOnInit() {
     this.route.params.subscribe(params => {
       let board_id = params['id'];
+
       this.authservice.isOwner(board_id)
         .subscribe((data: Authenticate) =>
           this.isOwner = data.result
@@ -36,7 +37,7 @@ export class ListComponent implements OnInit {
 
       this.postservice.getPostList(board_id)
         .subscribe((data: Posts) => {
-          this.postlist = data.posts;
+          this.postList = data.posts;
           this.pagination = data.pagination;
           this.board = data.board;
         })
