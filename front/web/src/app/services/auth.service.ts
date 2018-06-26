@@ -30,8 +30,4 @@ export class AuthService {
   isOwner(target_id: number) {
     return this.http.get(`${this.uri}/boards/${target_id}/owner`, this.options)
   }
-
-  isLoggedIn() {
-    return this.http.get(`${this.uri}/users/authenticate`, this.options)
-  }
 }
