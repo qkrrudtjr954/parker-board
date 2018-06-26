@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {PostService} from "../../../services/post.service";
 import {Post, Posts} from "../../../models/post";
 import {Pagination} from "../../../models/pagination";
@@ -24,8 +24,11 @@ export class ListComponent implements OnInit {
 
   isOwner: boolean = false;
 
-  constructor(private route: ActivatedRoute, private postservice: PostService, private authservice: AuthService) { }
+  constructor(private route: ActivatedRoute, private postservice: PostService, private authservice: AuthService, private router: Router) { }
 
+  goPostDetail(post_id: number) {
+    this.router.navigate([`/posts/${post_id}`]);
+  }
   ngOnInit() {
     this.route.params.subscribe(params => {
       let board_id = params['id'];

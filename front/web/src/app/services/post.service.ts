@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {Posts} from "../models/post";
+import {Post, PostDetailData, Posts} from "../models/post";
 
 @Injectable({
   providedIn: 'root'
@@ -15,5 +15,9 @@ export class PostService {
 
   getPostList(board_id: number) {
     return this.http.get<Posts>(`${this.uri}/boards/${board_id}/posts`, this.options)
+  }
+
+  getPost(post_id: number) {
+    return this.http.get<PostDetailData>(`${this.uri}/posts/${post_id}`, this.options)
   }
 }

@@ -1,0 +1,27 @@
+<div  *ngIf="post">
+  <table class="table">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">title</th>
+        <th scope="col">Content</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>{{post.title}}</td>
+        <td>{{post.content}}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="comment-area">
+    <input type="text" #comment class="form-control"/>
+  </div>
+
+  <div>
+    
+    <p>
+
+    </p>
+  </div>
+</div>

@@ -15,8 +15,9 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { CookieService} from "ngx-cookie-service";
 import { CreateComponent } from './components/board/create/create.component';
 import { ListComponent } from './components/post/list/list.component';
-import {PaginationComponent} from "./components/pagination/pagination.component";
+import { PaginationComponent } from "./components/pagination/pagination.component";
 import { EditComponent } from './components/board/edit/edit.component';
+import { DetailComponent } from './components/post/detail/detail.component';
 
 
 const routes: Routes = [{
@@ -34,6 +35,9 @@ const routes: Routes = [{
 },{
   path: 'boards/:id/update',
   component: EditComponent
+},{
+  path: 'posts/:id',
+  component: DetailComponent
 }];
 
 @NgModule({
@@ -48,7 +52,8 @@ const routes: Routes = [{
     CreateComponent,
     ListComponent,
     PaginationComponent,
-    EditComponent
+    EditComponent,
+    DetailComponent
   ],
   imports: [
     BrowserModule,

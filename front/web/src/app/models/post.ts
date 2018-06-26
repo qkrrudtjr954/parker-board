@@ -1,11 +1,18 @@
 import {User} from "./user";
 import {Board} from "./board";
 import {Pagination} from "./pagination";
+import {Comment} from "./comment";
 
 export interface Posts {
   board: Board;
   pagination: Pagination;
   posts: Post[];
+}
+
+export interface PostDetailData {
+  comments: Comment[];
+  pagination: Pagination;
+  post: Post;
 }
 
 export interface Post {
