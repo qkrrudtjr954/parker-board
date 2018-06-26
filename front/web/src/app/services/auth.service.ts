@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {HttpClient } from '@angular/common/http';
 import {CookieService} from "ngx-cookie-service";
-import {RegistUser, User} from "../models/user";
+import {RegistUser} from "../models/user";
 
 
 @Injectable({
@@ -30,5 +30,9 @@ export class AuthService {
 
   userRegister(user: RegistUser) {
     return this.http.post(`${this.uri}/users/`, user, this.options);
+  }
+
+  isLoggedIn() {
+    return this.cookie.check('remember_token');
   }
 }

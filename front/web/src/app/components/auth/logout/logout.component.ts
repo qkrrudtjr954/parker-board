@@ -16,6 +16,7 @@ export class LogoutComponent implements OnInit {
   userLogout() {
     this.authservice.userLogout()
       .subscribe(() => {
+        this.cookieservice.delete('session');
         this.cookieservice.delete('current_user');
         alert('로그아웃 되었습니다.');
         this.router.navigate(['/']);

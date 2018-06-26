@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { BoardService } from '../../../services/board.service'
 import { Board } from "../../../models/board";
 import {Router} from "@angular/router";
+import {AuthService} from "../../../services/auth.service";
 
 @Component({
   selector: 'app-navbar',
@@ -9,13 +10,15 @@ import {Router} from "@angular/router";
   styleUrls: ['./navbar.component.css']
 })
 export class NavbarComponent implements OnInit {
+  isLoggedIn: boolean = false;
   boardList: Board[] = [];
   selectedBoard: Board;
 
-  constructor(private boardservice: BoardService, private router: Router) { }
+  constructor(private boardService: BoardService,
+              private authService: AuthService) { }
 
   getBoardList() {
-    this.boardservice.getBoardList()
+    this.boardService.getBoardList()
       .subscribe((data: Board[]) => {
         this.boardList = data;
       })
@@ -26,6 +29,8 @@ export class NavbarComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.isLoggedIn = this.authService.isLoggedIn();
+
     this.getBoardList();
   }
 }
