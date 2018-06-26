@@ -28,12 +28,11 @@ export class BoardService {
     return this.http.post<Board>(`${this.uri}/boards`, data, this.options);
   }
 
-  updateBoard(board_id: number, title: string, description: string) {
-    let data = {
-      title: title,
-      description: description
-    };
+  updateBoard(updateBoard: Board) {
+    return this.http.patch(`${this.uri}/boards/${updateBoard.id}`, updateBoard, this.options)
+  }
 
-    return this.http.patch(`${this.uri}/boards/${board_id}`, data, this.options)
+  getBoard(boardId: number) {
+    return this.http.get<Board>(`${this.uri}/boards/${boardId}`);
   }
 }

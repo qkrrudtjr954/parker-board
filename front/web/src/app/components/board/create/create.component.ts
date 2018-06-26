@@ -10,20 +10,22 @@ import {Board} from "../../../models/board";
   templateUrl: './create.component.html',
   styleUrls: ['./create.component.css']
 })
-export class CreateComponent implements OnInit {
+export class BoardCreateComponent implements OnInit {
   makeForm = new FormGroup({
     title: new FormControl(),
     description: new FormControl()
   });
 
-  constructor(private fb: FormBuilder, private boardservice: BoardService, private router: Router) {
+  constructor(private fb: FormBuilder,
+              private boardservice: BoardService,
+              private router: Router) {
     this.createForm()
   }
 
   createForm() {
     this.makeForm = this.fb.group({
-      title: ['', Validators.minLength(10)],
-      description: []
+      title: ['', [Validators.required, Validators.minLength(4)]],
+      description: ['']
     })
   }
 

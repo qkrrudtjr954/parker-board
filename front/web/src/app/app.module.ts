@@ -13,31 +13,35 @@ import { LogoutComponent } from './components/auth/logout/logout.component';
 import { RouterModule, Routes } from "@angular/router";
 import { ReactiveFormsModule } from '@angular/forms';
 import { CookieService} from "ngx-cookie-service";
-import { CreateComponent } from './components/board/create/create.component';
-import { ListComponent } from './components/post/list/list.component';
+import { BoardCreateComponent } from './components/board/create/create.component';
 import { PaginationComponent } from "./components/pagination/pagination.component";
 import { EditComponent } from './components/board/edit/edit.component';
-import { DetailComponent } from './components/post/detail/detail.component';
+import { BoardDetailComponent } from './components/board/detail/detail.component';
+import { PostDetailComponent } from './components/post/detail/detail.component';
+import { SignupComponent } from './components/auth/signup/signup.component';
 
 
 const routes: Routes = [{
   path: 'login',
   component: LoginComponent
 },{
+  path: 'signup',
+  component: SignupComponent
+},{
   path: '',
   component: MainComponent
 },{
   path: 'boards/create',
-  component: CreateComponent
+  component: BoardCreateComponent
 },{
   path: 'boards/:id/posts',
-  component: ListComponent
+  component: BoardDetailComponent
 },{
   path: 'boards/:id/update',
   component: EditComponent
 },{
   path: 'posts/:id',
-  component: DetailComponent
+  component: PostDetailComponent
 }];
 
 @NgModule({
@@ -49,11 +53,12 @@ const routes: Routes = [{
     LoginComponent,
     MainComponent,
     LogoutComponent,
-    CreateComponent,
-    ListComponent,
+    BoardCreateComponent,
     PaginationComponent,
     EditComponent,
-    DetailComponent
+    PostDetailComponent,
+    BoardDetailComponent,
+    SignupComponent
   ],
   imports: [
     BrowserModule,

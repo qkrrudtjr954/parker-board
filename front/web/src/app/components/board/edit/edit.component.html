@@ -1,20 +1,29 @@
-<div class="offset-md-2 col-md-8">
-  <form [formGroup]="editForm" (submit)="onSubmit()">
-    <div class="form-group">
-      <label for="_title">Board 제목</label>
-      <input type="text" class="form-control" id="_title" placeholder="제목을 입력해주세요" formControlName="title">
-      <div *ngIf="editForm.controls['title'].invalid && (editForm.controls['title'].dirty || editForm.controls['title'].touched)">
+<div *ngIf="targetBoard">
+  <div class="text-center">
+    <h1>게시판 수정하기</h1>
+  </div>
+  <div class="offset-md-2 col-md-8">
+    <form [formGroup]="editForm" (submit)="onSubmit()">
+      <div class="form-group">
+        <label for="_title">Board 제목</label>
+        <input type="text" class="form-control" id="_title" placeholder="제목을 입력해주세요" formControlName="title" [value]="targetBoard.title">
+        <div *ngIf="editForm.controls['title'].invalid && (editForm.controls['title'].dirty || editForm.controls['title'].touched)">
           <div *ngIf="editForm.controls['title'].errors.required">
-            <span class="field-required"> Email is required. </span>
+            <span class="field-validation-error"> 제목을 입력해주세요. </span>
+          </div>
+          <div *ngIf="editForm.controls['title'].errors.minlength">
+            <span class="field-validation-error"> 제목은 4글자 이상 입력해주세요. </span>
           </div>
         </div>
-    </div>
+      </div>
 
-    <div class="form-group">
-      <label for="_description">Board 설명</label>
-      <textarea class="form-control" id="_description" rows="3" formControlName="description"></textarea>
-    </div>
+      <div class="form-group">
+        <label for="_description">Board 설명</label>
+        <textarea class="form-control" id="_description" rows="3" formControlName="description" [value]="targetBoard.description"></textarea>
+      </div>
 
-    <button class="btn btn-info btn-block" type="submit" [disabled]="editForm.pristine || editForm.invalid">Create</button>
-  </form>
+      <button class="btn btn-info btn-block" type="submit" [disabled]="editForm.pristine || editForm.invalid">수정하기</button>
+      <button class="btn btn-default btn-block" (click)="goBoardDetail()">뒤로가기</button>
+    </form>
+  </div>
 </div>

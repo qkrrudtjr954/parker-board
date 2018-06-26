@@ -7,6 +7,7 @@ export interface Posts {
   board: Board;
   pagination: Pagination;
   posts: Post[];
+  user: User;
 }
 
 export interface PostDetailData {
