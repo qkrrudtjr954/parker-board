@@ -35,9 +35,8 @@ export class LoginComponent implements OnInit {
       .subscribe((data: AfterLogin) => {
         this.cookieservice.set('current_user', email);
         alert(data.user.email + ' 님 환영합니다.');
-        let a = this.router.navigate(['/']);
-        console.log(a);
 
+        let a = this.router.navigate(['/']);
       }, error1 => {
         if (error1.status == 400) {
           alert('회원 정보가 존재하지 않습니다.');

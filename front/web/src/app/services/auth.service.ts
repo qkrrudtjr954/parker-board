@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import {HttpClient } from '@angular/common/http';
 import {CookieService} from "ngx-cookie-service";
+import {RegistUser, User} from "../models/user";
 
 
 @Injectable({
@@ -28,6 +29,10 @@ export class AuthService {
   }
 
   isOwner(target_id: number) {
-    return this.http.get(`${this.uri}/boards/${target_id}/owner`, this.options)
+    return this.http.get(`${this.uri}/boards/${target_id}/owner`, this.options);
+  }
+
+  userRegister(user: RegistUser) {
+    return this.http.post(`${this.uri}/users/`, user, this.options);
   }
 }

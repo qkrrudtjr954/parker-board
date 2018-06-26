@@ -18,11 +18,15 @@ import { ListComponent } from './components/post/list/list.component';
 import { PaginationComponent } from "./components/pagination/pagination.component";
 import { EditComponent } from './components/board/edit/edit.component';
 import { DetailComponent } from './components/post/detail/detail.component';
+import { SignupComponent } from './components/auth/signup/signup.component';
 
 
 const routes: Routes = [{
   path: 'login',
   component: LoginComponent
+},{
+  path: 'signup',
+  component: SignupComponent
 },{
   path: '',
   component: MainComponent
@@ -53,7 +57,8 @@ const routes: Routes = [{
     ListComponent,
     PaginationComponent,
     EditComponent,
-    DetailComponent
+    DetailComponent,
+    SignupComponent
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,48 @@
+<div class="offset-md-3 col-md-6">
+  <div class="text-center">
+    <h1>회원가입</h1>
+  </div>
+
+  <form [formGroup]="signUpForm">
+    <div class="form-group">
+      <label class="col-md-6 control-label" for="_email">Email</label>
+      <input id="_email" placeholder="John@example.com" class="form-control input-md" formControlName="email">
+      <div *ngIf="signUpForm.controls['email'].invalid && (signUpForm.controls['email'].dirty || signUpForm.controls['email'].touched)">
+        <span class="field-validation-error" *ngIf="signUpForm.controls['email'].errors.email">이메일을 형식이 아닙니다.</span>
+        <span class="field-validation-error" *ngIf="signUpForm.controls['email'].errors.required">이메일을 입력해주세요.</span>
+      </div>
+    </div>
+
+
+    <div class="form-group" formGroupName="passwordGroup">
+      <div class="form-group">
+        <label class="col-md-6 control-label" for="_password" >Password</label>
+        <input id="_password" type="password" class="form-control input-md" formControlName="password">
+        <div *ngIf="signUpForm.get('passwordGroup').get('password').invalid && (signUpForm.get('passwordGroup').get('password').dirty || signUpForm.get('passwordGroup').get('password').touched)">
+          <span class="field-validation-error" *ngIf="signUpForm.get('passwordGroup').get('password').errors.minlength">비밀번호를 6자 이상 입력해주세요.</span>
+          <span class="field-validation-error" *ngIf="signUpForm.get('passwordGroup').get('password').errors.required">비밀번호를 입력해주세요.</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-md-8 control-label" for="_confirmPassword" >Confirm Password</label>
+        <input id="_confirmPassword" type="password" class="form-control input-md" formControlName="confirmPassword">
+
+        <div *ngIf="signUpForm.get('passwordGroup').get('confirmPassword').invalid && (signUpForm.get('passwordGroup').get('confirmPassword').dirty || signUpForm.get('passwordGroup').get('confirmPassword').touched)">
+          <span class="field-validation-error" *ngIf="signUpForm.get('passwordGroup').get('confirmPassword').errors.minlength">비밀번호를 6자 이상 입력해주세요.</span><br>
+          <span class="field-validation-error" *ngIf="signUpForm.get('passwordGroup').get('confirmPassword').errors.required">비밀번호를 입력해주세요.</span>
+        </div>
+
+        <span class="field-validation-error" *ngIf="signUpForm.get('passwordGroup').touched && signUpForm.get('passwordGroup').hasError('nomatch')">비밀번호가 일치하지 않습니다.</span>
+      </div>
+    </div>
+
+    <!-- Button (Double) -->
+    <div class="form-group">
+      <div class="d-flex justify-content-center">
+        <button id="save" [disabled]="signUpForm.pristine || signUpForm.invalid || signUpForm.get('passwordGroup').invalid" (click)="onSubmit()" class="btn btn-success">회원가입</button>
+        <button id="clear" (click)="resetForm()" class="btn btn-danger">초기화</button>
+      </div>
+    </div>
+  </form>
+</div>

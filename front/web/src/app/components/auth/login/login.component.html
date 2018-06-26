@@ -9,20 +9,20 @@
       <div *ngIf="loginForm.controls['email'].invalid && (loginForm.controls['email'].dirty || loginForm.controls['email'].touched)">
 
         <div *ngIf="loginForm.controls['email'].errors.email">
-          <span class="field-required"> Email 형식이 아닙니다. </span>
+          <span class="field-validation-error"> Email 형식이 아닙니다. </span>
         </div>
         <div *ngIf="loginForm.controls['email'].errors.required">
-          <span class="field-required"> Email 을 입력해주세요. </span>
+          <span class="field-validation-error"> Email 을 입력해주세요. </span>
         </div>
       </div>
       <input type="password" placeholder="password" formControlName="password" autocomplete="off">
       <div *ngIf="loginForm.controls['password'].invalid && (loginForm.controls['password'].dirty || loginForm.controls['password'].touched)">
 
         <div *ngIf="loginForm.controls['password'].errors.required">
-          <span class="field-required"> Password 를 입력해주세요. </span>
+          <span class="field-validation-error"> Password 를 입력해주세요. </span>
         </div>
         <div *ngIf="loginForm.controls['password'].errors.minlength">
-          <span class="field-required"> Password 는 6글자 이상입니다. </span>
+          <span class="field-validation-error"> Password 는 6글자 이상입니다. </span>
         </div>
       </div>
       <button class="btn btn-info btn-block login" type="submit" [disabled]="loginForm.pristine || loginForm.invalid">Login</button>

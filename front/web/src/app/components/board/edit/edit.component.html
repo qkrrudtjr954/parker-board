@@ -5,7 +5,7 @@
       <input type="text" class="form-control" id="_title" placeholder="제목을 입력해주세요" formControlName="title">
       <div *ngIf="editForm.controls['title'].invalid && (editForm.controls['title'].dirty || editForm.controls['title'].touched)">
           <div *ngIf="editForm.controls['title'].errors.required">
-            <span class="field-required"> Email is required. </span>
+            <span class="field-validation-error"> Email is required. </span>
           </div>
         </div>
     </div>
