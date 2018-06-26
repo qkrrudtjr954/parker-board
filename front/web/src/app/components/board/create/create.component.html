@@ -1,13 +1,19 @@
 <div class="offset-md-2 col-md-8">
+  <div class="text-center">
+    <h1>게시판 만들기</h1>
+  </div>
   <form [formGroup]="makeForm" (submit)="onSubmit()">
     <div class="form-group">
       <label for="_title">Board 제목</label>
       <input type="text" class="form-control" id="_title" placeholder="제목을 입력해주세요" formControlName="title">
       <div *ngIf="makeForm.controls['title'].invalid && (makeForm.controls['title'].dirty || makeForm.controls['title'].touched)">
-          <div *ngIf="makeForm.controls['title'].errors.required">
-            <span class="field-validation-error"> Email is required. </span>
-          </div>
+        <div *ngIf="makeForm.controls['title'].errors.required">
+          <span class="field-validation-error"> 제목을 입력해주세요. </span>
         </div>
+        <div *ngIf="makeForm.controls['title'].errors.minlength">
+          <span class="field-validation-error"> 제목은 4글자 이상 입력해주세요. </span>
+        </div>
+      </div>
     </div>
 
     <div class="form-group">
@@ -15,6 +21,6 @@
       <textarea class="form-control" id="_description" rows="3" formControlName="description"></textarea>
     </div>
 
-    <button class="btn btn-info btn-block" type="submit" [disabled]="makeForm.pristine || makeForm.invalid">Create</button>
+    <button class="btn btn-info btn-block" type="submit" [disabled]="makeForm.pristine || makeForm.invalid">생성하기</button>
   </form>
 </div>

@@ -16,9 +16,10 @@ export class LoginComponent implements OnInit {
     password: new FormControl()
   });
 
-  constructor(private fb: FormBuilder, private authservice: AuthService, private cookieservice: CookieService, private router: Router) {
-    this.createForm()
-  }
+  constructor(private fb: FormBuilder,
+              private authservice: AuthService,
+              private cookieservice: CookieService,
+              private router: Router) { }
 
   createForm() {
     this.loginForm = this.fb.group({
@@ -27,16 +28,19 @@ export class LoginComponent implements OnInit {
     })
   }
 
+
   onSubmit() {
     let email = this.loginForm.controls['email'].value;
     let password = this.loginForm.controls['password'].value;
 
     this.authservice.userLogin(email, password)
       .subscribe((data: AfterLogin) => {
-        this.cookieservice.set('current_user', email);
+        this.cookieservice.set('current_user', data.user.email);
+
         alert(data.user.email + ' 님 환영합니다.');
 
-        let a = this.router.navigate(['/']);
+        this.router.navigate(['/']);
+
       }, error1 => {
         if (error1.status == 400) {
           alert('회원 정보가 존재하지 않습니다.');
@@ -51,6 +55,7 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.createForm()
   }
 
 }

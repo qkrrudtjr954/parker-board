@@ -10,7 +10,7 @@ import {Pagination} from "../../../models/pagination";
   templateUrl: './detail.component.html',
   styleUrls: ['./detail.component.css']
 })
-export class DetailComponent implements OnInit {
+export class PostDetailComponent implements OnInit {
   post: Post;
   comments: Comment[];
   pagination: Pagination;
