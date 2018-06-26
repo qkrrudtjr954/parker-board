@@ -8,14 +8,17 @@ import {User} from "../../../models/user";
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
-  current_user: string;
+  currentUser: string;
 
   constructor(private cookieservice: CookieService) { }
 
-  ngOnInit() {
+  setCurrentUserEamil(){
     let email = this.cookieservice.get('current_user');
+    this.currentUser = email ? email : null;
+  }
 
-    this.current_user = email ? email : null;
+  ngOnInit() {
+    this.setCurrentUserEamil();
   }
 
 }

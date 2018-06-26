@@ -22,8 +22,8 @@ export class LoginComponent implements OnInit {
 
   createForm() {
     this.loginForm = this.fb.group({
-      email: ['', Validators.required],
-      password: ['', Validators.required]
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.minLength(6), Validators.required]]
     })
   }
 
@@ -33,8 +33,11 @@ export class LoginComponent implements OnInit {
 
     this.authservice.userLogin(email, password)
       .subscribe((data: AfterLogin) => {
+        this.cookieservice.set('current_user', email);
         alert(data.user.email + ' 님 환영합니다.');
-        this.cookieservice.set('current_user', data.user.email);
+        let a = this.router.navigate(['/']);
+        console.log(a);
+
       }, error1 => {
         if (error1.status == 400) {
           alert('회원 정보가 존재하지 않습니다.');
@@ -43,6 +46,8 @@ export class LoginComponent implements OnInit {
         } else if (error1.status == 422) {
           alert('정보를 다시 입력해주세요.');
         }
+
+        this.loginForm.controls['password'].setValue('');
       });
   }
 
