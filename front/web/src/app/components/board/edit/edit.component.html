@@ -6,7 +6,7 @@
     <form [formGroup]="editForm" (submit)="onSubmit()">
       <div class="form-group">
         <label for="_title">Board 제목</label>
-        <input type="text" class="form-control" id="_title" placeholder="제목을 입력해주세요" formControlName="title" [value]="targetBoard.title">
+        <input type="text" class="form-control" id="_title" placeholder="제목을 입력해주세요" formControlName="title">
         <div *ngIf="editForm.controls['title'].invalid && (editForm.controls['title'].dirty || editForm.controls['title'].touched)">
           <div *ngIf="editForm.controls['title'].errors.required">
             <span class="field-validation-error"> 제목을 입력해주세요. </span>
@@ -19,7 +19,7 @@
 
       <div class="form-group">
         <label for="_description">Board 설명</label>
-        <textarea class="form-control" id="_description" rows="3" formControlName="description" [value]="targetBoard.description"></textarea>
+        <textarea class="form-control" id="_description" rows="3" formControlName="description"></textarea>
       </div>
 
       <button class="btn btn-info btn-block" type="submit" [disabled]="editForm.pristine || editForm.invalid">수정하기</button>

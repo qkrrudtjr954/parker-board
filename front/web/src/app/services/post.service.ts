@@ -20,4 +20,8 @@ export class PostService {
   getPost(post_id: number) {
     return this.http.get<PostDetailData>(`${this.uri}/posts/${post_id}`, this.options)
   }
+
+  createPost(param) {
+    return this.http.post(`${this.uri}/boards/${param.boardId}/posts`, param, this.options);
+  }
 }

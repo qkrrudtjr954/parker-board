@@ -19,7 +19,8 @@ export class LogoutComponent implements OnInit {
         this.cookieservice.delete('session');
         this.cookieservice.delete('current_user');
         alert('로그아웃 되었습니다.');
-        this.router.navigate(['/']);
+        // this.router.navigate(['/']);
+        location.href='/';
       }, error => {
         if(error.status == 401) {
           alert('로그인 후 가능합니다.');

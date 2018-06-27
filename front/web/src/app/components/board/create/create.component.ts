@@ -17,10 +17,8 @@ export class BoardCreateComponent implements OnInit {
   });
 
   constructor(private fb: FormBuilder,
-              private boardservice: BoardService,
-              private router: Router) {
-    this.createForm()
-  }
+              private boardService: BoardService,
+              private router: Router) { }
 
   createForm() {
     this.makeForm = this.fb.group({
@@ -33,12 +31,10 @@ export class BoardCreateComponent implements OnInit {
     let title = this.makeForm.controls['title'].value;
     let description = this.makeForm.controls['description'].value;
 
-    return this.boardservice.makeBoard({title, description} as Board)
+    return this.boardService.makeBoard({title, description} as Board)
       .subscribe((data: Board) => {
-        console.log(data);
         this.router.navigate([`/boards/${data.id}/posts`]);
       }, error1 => {
-        console.log(error1)
         if(error1.status == 401){
           alert('로그인해주세요.');
           this.router.navigate(['login'])
@@ -52,6 +48,7 @@ export class BoardCreateComponent implements OnInit {
 
 
   ngOnInit() {
+    this.createForm()
   }
 
 }

@@ -4,6 +4,8 @@ import {PostService} from "../../../services/post.service";
 import {ActivatedRoute} from "@angular/router";
 import {Comment} from "../../../models/comment";
 import {Pagination} from "../../../models/pagination";
+import {AuthService} from "../../../services/auth.service";
+import {User} from "../../../models/user";
 
 @Component({
   selector: 'app-detail',
@@ -11,25 +13,30 @@ import {Pagination} from "../../../models/pagination";
   styleUrls: ['./detail.component.css']
 })
 export class PostDetailComponent implements OnInit {
+  isOwner: boolean;
   post: Post;
   comments: Comment[];
   pagination: Pagination;
+  user: User;
 
-  constructor(private route: ActivatedRoute, private postService: PostService) { }
+  constructor(private route: ActivatedRoute,
+              private postService: PostService,
+              private authService: AuthService) { }
 
   getPost(post_id: number) {
     return this.postService.getPost(post_id)
       .subscribe((data: PostDetailData) => {
-        console.log(data);
         this.post = data.post;
         this.comments = data.comments;
         this.pagination = data.pagination;
+        this.user = data.user;
+
+        this.isOwner = this.authService.isOwner(this.user.email);
       })
   }
   ngOnInit() {
     this.route.params.subscribe(params => {
       let post_id = params['id'];
-
       this.getPost(post_id);
     })
   }

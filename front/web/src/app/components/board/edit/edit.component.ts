@@ -10,7 +10,7 @@ import {Board} from "../../../models/board";
   templateUrl: './edit.component.html',
   styleUrls: ['./edit.component.css']
 })
-export class EditComponent implements OnInit {
+export class BoardEditComponent implements OnInit {
   targetBoard: Board;
 
   editForm = new FormGroup({
@@ -19,9 +19,9 @@ export class EditComponent implements OnInit {
   });
 
   constructor(private fb: FormBuilder,
-              private boardservice: BoardService,
+              private boardService: BoardService,
               private router: Router,
-              private activerouter: ActivatedRoute) { }
+              private activeRouter: ActivatedRoute) { }
 
   createForm() {
     this.editForm = this.fb.group({
@@ -36,13 +36,11 @@ export class EditComponent implements OnInit {
     const description = this.editForm.controls['description'].value;
 
 
-    return this.boardservice.updateBoard({id:boardId, title:title, description:description} as Board)
+    return this.boardService.updateBoard({id:boardId, title:title, description:description} as Board)
       .subscribe((data) => {
         alert('수정되었습니다.');
         this.router.navigate([`/boards/${boardId}/posts`]);
       }, error1 => {
-        console.log(error1)
-
         if (error1.status == 401 && error1.error == 'No Authentication.') {
           alert('본인만 수정 가능합니다.');
         }else if (error1. status == 401 && error1.error != 'Login first.'){
@@ -61,10 +59,10 @@ export class EditComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.activerouter.params.subscribe(params => {
+    this.activeRouter.params.subscribe(params => {
       const boardId = params['id'];
 
-      this.boardservice.getBoard(boardId)
+      this.boardService.getBoard(boardId)
         .subscribe((data:Board) => {
           this.targetBoard = data;
           this.createForm()

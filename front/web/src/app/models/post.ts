@@ -14,6 +14,7 @@ export interface PostDetailData {
   comments: Comment[];
   pagination: Pagination;
   post: Post;
+  user: User;
 }
 
 export interface Post {

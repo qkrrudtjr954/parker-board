@@ -39,7 +39,8 @@ export class LoginComponent implements OnInit {
 
         alert(data.user.email + ' 님 환영합니다.');
 
-        this.router.navigate(['/']);
+        // this.router.navigate(['/']);
+        location.href='/';
 
       }, error1 => {
         if (error1.status == 400) {

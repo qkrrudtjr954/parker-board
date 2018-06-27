@@ -23,8 +23,8 @@ export class BoardDetailComponent implements OnInit {
   isOwner: boolean = false;
 
   constructor(private route: ActivatedRoute,
-              private postservice: PostService,
-              private authservice: AuthService,
+              private postService: PostService,
+              private authService: AuthService,
               private router: Router,
               private cookie: CookieService) { }
 
@@ -36,14 +36,14 @@ export class BoardDetailComponent implements OnInit {
     this.route.params.subscribe(params => {
       let board_id = params['id'];
 
-      this.postservice.getPostList(board_id)
+      this.postService.getPostList(board_id)
         .subscribe((data: Posts) => {
           this.board = data.board;
           this.postList = data.posts;
           this.pagination = data.pagination;
           this.user = data.user;
 
-          this.isOwner = this.cookie.get('current_user') === this.user.email;
+          this.isOwner = this.authService.isOwner(this.user.email);
         })
     })
   }

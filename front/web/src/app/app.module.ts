@@ -15,21 +15,22 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { CookieService} from "ngx-cookie-service";
 import { BoardCreateComponent } from './components/board/create/create.component';
 import { PaginationComponent } from "./components/pagination/pagination.component";
-import { EditComponent } from './components/board/edit/edit.component';
+import { BoardEditComponent } from './components/board/edit/edit.component';
 import { BoardDetailComponent } from './components/board/detail/detail.component';
 import { PostDetailComponent } from './components/post/detail/detail.component';
 import { SignupComponent } from './components/auth/signup/signup.component';
+import { PostCreateComponent } from './components/post/create/create.component';
 
 
 const routes: Routes = [{
+  path: '',
+  component: MainComponent
+},{
   path: 'login',
   component: LoginComponent
 },{
   path: 'signup',
   component: SignupComponent
-},{
-  path: '',
-  component: MainComponent
 },{
   path: 'boards/create',
   component: BoardCreateComponent
@@ -38,7 +39,10 @@ const routes: Routes = [{
   component: BoardDetailComponent
 },{
   path: 'boards/:id/update',
-  component: EditComponent
+  component: BoardEditComponent
+},{
+  path: 'boards/:id/posts/create',
+  component: PostCreateComponent
 },{
   path: 'posts/:id',
   component: PostDetailComponent
@@ -50,15 +54,16 @@ const routes: Routes = [{
     HeaderComponent,
     FooterComponent,
     NavbarComponent,
-    LoginComponent,
     MainComponent,
+    SignupComponent,
+    LoginComponent,
     LogoutComponent,
-    BoardCreateComponent,
     PaginationComponent,
-    EditComponent,
-    PostDetailComponent,
+    BoardCreateComponent,
+    BoardEditComponent,
     BoardDetailComponent,
-    SignupComponent
+    PostDetailComponent,
+    PostCreateComponent
   ],
   imports: [
     BrowserModule,

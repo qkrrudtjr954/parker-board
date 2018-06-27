@@ -35,4 +35,8 @@ export class AuthService {
   isLoggedIn() {
     return this.cookie.check('remember_token');
   }
+
+  isOwner(email: string) {
+    return this.cookie.get('current_user') === email;
+  }
 }
