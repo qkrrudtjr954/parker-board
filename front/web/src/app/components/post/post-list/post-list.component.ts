@@ -5,15 +5,14 @@ import {Board} from "../../../models/board";
 import {ActivatedRoute, Router} from "@angular/router";
 import {PostService} from "../../../services/post.service";
 import {AuthService} from "../../../services/auth.service";
-import {CookieService} from "ngx-cookie-service";
 import {User} from "../../../models/user";
 
 @Component({
-  selector: 'app-detail',
-  templateUrl: './detail.component.html',
-  styleUrls: ['./detail.component.css']
+  selector: 'app-post-list',
+  templateUrl: './post-list.component.html',
+  styleUrls: ['./post-list.component.css']
 })
-export class BoardDetailComponent implements OnInit {
+export class PostListComponent implements OnInit {
 
   postList: Post[] = [];
   pagination: Pagination;
@@ -25,8 +24,7 @@ export class BoardDetailComponent implements OnInit {
   constructor(private route: ActivatedRoute,
               private postService: PostService,
               private authService: AuthService,
-              private router: Router,
-              private cookie: CookieService) { }
+              private router: Router) { }
 
   goPostDetail(post_id: number) {
     this.router.navigate([`/posts/${post_id}`]);

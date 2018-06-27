@@ -1,6 +1,8 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
+import { RouterModule, Routes } from "@angular/router";
+import { ReactiveFormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './components/layout/header/header.component';
@@ -9,16 +11,14 @@ import { NavbarComponent } from './components/layout/navbar/navbar.component';
 import { LoginComponent } from './components/auth/login/login.component';
 import { MainComponent } from "./components/main/main.component";
 import { LogoutComponent } from './components/auth/logout/logout.component';
-
-import { RouterModule, Routes } from "@angular/router";
-import { ReactiveFormsModule } from '@angular/forms';
-import { CookieService} from "ngx-cookie-service";
-import { BoardCreateComponent } from './components/board/create/create.component';
-import { PaginationComponent } from "./components/pagination/pagination.component";
-import { BoardEditComponent } from './components/board/edit/edit.component';
-import { BoardDetailComponent } from './components/board/detail/detail.component';
-import { PostDetailComponent } from './components/post/detail/detail.component';
 import { SignupComponent } from './components/auth/signup/signup.component';
+
+import { CookieService} from "ngx-cookie-service";
+import { PaginationComponent } from "./components/pagination/pagination.component";
+import { BoardCreateComponent } from './components/board/create/create.component';
+import { BoardEditComponent } from './components/board/edit/edit.component';
+import { PostListComponent } from './components/post/post-list/post-list.component';
+import { PostDetailComponent } from './components/post/detail/detail.component';
 import { PostCreateComponent } from './components/post/create/create.component';
 import { PostUpdateComponent } from './components/post/post-update/post-update.component';
 
@@ -37,7 +37,7 @@ const routes: Routes = [{
   component: BoardCreateComponent
 },{
   path: 'boards/:id/posts',
-  component: BoardDetailComponent
+  component: PostListComponent
 },{
   path: 'boards/:id/update',
   component: BoardEditComponent
@@ -65,10 +65,10 @@ const routes: Routes = [{
     PaginationComponent,
     BoardCreateComponent,
     BoardEditComponent,
-    BoardDetailComponent,
     PostDetailComponent,
     PostCreateComponent,
-    PostUpdateComponent
+    PostUpdateComponent,
+    PostListComponent
   ],
   imports: [
     BrowserModule,
