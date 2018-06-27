@@ -6,6 +6,10 @@
 
   <div class="title-area text-center">
     <h1>{{post.title}}</h1>
+    <div class="d-flex justify-content-between">
+      <p><b>작성자:</b> {{user.email}}</p>
+      <p>{{post.created_at | date:'yyyy년 MM월 dd일 HH시 mm분 ss초'}}</p>
+    </div>
     <hr>
     <h4>{{post.content}}</h4>
     <hr>
