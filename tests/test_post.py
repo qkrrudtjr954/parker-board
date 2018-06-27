@@ -168,7 +168,7 @@ class Describe_PostController:
             def test_422를_반환한다(self, subject):
                 assert 422 == subject.status_code
 
-        @pytest.mark.parametrize('title', ['hello', 'srt', '짧은제목'])
+        @pytest.mark.parametrize('title', ['helo', 'srt', '짧은제목'])
         class Context_title이_10글자_이하일_때:
             @pytest.fixture
             def form(self, title):

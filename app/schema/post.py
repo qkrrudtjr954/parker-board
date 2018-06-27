@@ -51,8 +51,8 @@ class PostCreateFormSchema(ma.ModelSchema):
         if 'content' not in data:
             raise ValidationError('Post content can not be null.', 'content', status_code=422)
 
-        if len(data['title']) < 10:
-            raise ValidationError('Post title length mush more than 10.', status_code=422)
+        if len(data['title']) < 5:
+            raise ValidationError('Post title length mush more than 5.', status_code=422)
 
         if len(data['content']) < 20:
             raise ValidationError('Post content length mush more than 20.', status_code=422)

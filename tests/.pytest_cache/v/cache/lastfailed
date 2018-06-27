@@ -10,6 +10,7 @@
   "test_comment.py::TestDeleteComment::()::test_delete_comment_no_data": true,
   "test_post.py::Describe_PostController::()::Describe_create::()::Context_content\uac00_\uc5c6\uc744_\ub54c::()::test_\uba54\uc138\uc9c0\ub97c_\ubc18\ud658\ud55c\ub2e4[None]": true,
   "test_post.py::Describe_PostController::()::Describe_create::()::Context_content\uac00_\uc5c6\uc744_\ub54c::()::test_\uba54\uc138\uc9c0\ub97c_\ubc18\ud658\ud55c\ub2e4[]": true,
+  "test_post.py::Describe_PostController::()::Describe_create::()::Context_title\uc774_10\uae00\uc790_\uc774\ud558\uc77c_\ub54c::()::test_422\ub97c_\ubc18\ud658\ud55c\ub2e4[hello]": true,
   "test_post.py::Describe_PostController::()::Describe_post_list::()::test_user\ub97c_\ud3ec\ud568\ud55c\ub2e4": true,
   "test_post.py::Describe_PostController::()::Describe_update::()::Context_title\uc774_\uc5c6\uc744_\ub54c::()::test_content\ub9cc_\uac31\uc2e0\ub41c\ub2e4": true,
   "test_post.py::TestCreatePost::()::test_create_no_login": true,

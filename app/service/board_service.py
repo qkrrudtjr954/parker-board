@@ -36,7 +36,9 @@ def update(target_board: Board, board_data: Board):
         target_board.refresh_update_time()
 
         db.session.flush()
+
     except Exception as e:
+        print(e)
         db.session.rollback()
         raise e
 

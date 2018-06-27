@@ -59,8 +59,9 @@ def detail(pagination, post_id):
 
     comments_item = comments_schema.dump(comments.items).data
     pagination = pagination_schema.dump(comments).data
+    user = simple_user_schema.dump(post.user).data
 
-    result = dict(post=main_post_schema.dump(post).data, comments=comments_item, pagination=pagination)
+    result = dict(post=main_post_schema.dump(post).data, comments=comments_item, pagination=pagination, user=user)
     return jsonify(result), 200
 
 

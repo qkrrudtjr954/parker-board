@@ -8,6 +8,8 @@ db:SQLAlchemy = SQLAlchemy(session_options={'autocommit': auto_commit, 'autoflus
 
 
 def init_app(app):
+    print(os.environ.get('AUTO_COMMIT', 'False'))
+    print('auto commit config : {}'.format(auto_commit))
     print('db initializing')
     db.app = app
     db.init_app(app)
