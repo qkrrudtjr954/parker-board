@@ -20,6 +20,7 @@ import { BoardDetailComponent } from './components/board/detail/detail.component
 import { PostDetailComponent } from './components/post/detail/detail.component';
 import { SignupComponent } from './components/auth/signup/signup.component';
 import { PostCreateComponent } from './components/post/create/create.component';
+import { PostUpdateComponent } from './components/post/post-update/post-update.component';
 
 
 const routes: Routes = [{
@@ -46,6 +47,9 @@ const routes: Routes = [{
 },{
   path: 'posts/:id',
   component: PostDetailComponent
+},{
+  path: 'posts/:id/update',
+  component: PostUpdateComponent
 }];
 
 @NgModule({
@@ -63,7 +67,8 @@ const routes: Routes = [{
     BoardEditComponent,
     BoardDetailComponent,
     PostDetailComponent,
-    PostCreateComponent
+    PostCreateComponent,
+    PostUpdateComponent
   ],
   imports: [
     BrowserModule,

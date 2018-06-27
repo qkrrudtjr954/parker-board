@@ -24,4 +24,8 @@ export class PostService {
   createPost(param) {
     return this.http.post(`${this.uri}/boards/${param.boardId}/posts`, param, this.options);
   }
+
+  updatePost(param: { postId: number; title: string; content: string }) {
+    return this.http.patch(`${this.uri}/posts/${param.postId}`, param, this.options);
+  }
 }

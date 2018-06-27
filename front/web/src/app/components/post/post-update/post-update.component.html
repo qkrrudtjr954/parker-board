@@ -1,0 +1,34 @@
+<div class="offset-md-2 col-md-8">
+  <div class="text-center">
+    <h1>게시글 수정하기</h1>
+  </div>
+  <form [formGroup]="updateForm" (submit)="onSubmit()">
+    <div class="form-group">
+      <label for="_title">Post 제목</label>
+      <input type="text" class="form-control" id="_title" placeholder="제목을 입력해주세요" formControlName="title">
+      <div *ngIf="updateForm.controls['title'].invalid && (updateForm.controls['title'].dirty || updateForm.controls['title'].touched)">
+        <div *ngIf="updateForm.controls['title'].errors.required">
+          <span class="field-validation-error"> 제목을 입력해주세요. </span>
+        </div>
+        <div *ngIf="updateForm.controls['title'].errors.minlength">
+          <span class="field-validation-error"> 제목은 5글자 이상 입력해주세요. </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="_content">Post 설명</label>
+      <textarea class="form-control" id="_content" rows="4" formControlName="content"></textarea>
+      <div *ngIf="updateForm.controls['content'].invalid && (updateForm.controls['content'].dirty || updateForm.controls['content'].touched)">
+        <div *ngIf="updateForm.controls['content'].errors.required">
+          <span class="field-validation-error"> 내용을 입력해주세요. </span>
+        </div>
+        <div *ngIf="updateForm.controls['content'].errors.minlength">
+          <span class="field-validation-error"> 내용은 20글자 이상 입력해주세요. </span>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn btn-info btn-block" type="submit" [disabled]="updateForm.pristine || updateForm.invalid">수정하기</button>
+  </form>
+</div>
