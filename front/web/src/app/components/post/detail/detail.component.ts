@@ -34,7 +34,6 @@ export class PostDetailComponent implements OnInit {
         this.comments = data.comments;
         this.pagination = data.pagination;
         this.user = data.user;
-
         this.isOwner = this.authService.isOwner(this.user.email);
       })
   }

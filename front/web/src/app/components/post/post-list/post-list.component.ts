@@ -40,7 +40,7 @@ export class PostListComponent implements OnInit {
           this.postList = data.posts;
           this.pagination = data.pagination;
           this.user = data.user;
-
+          console.log(data)
           this.isOwner = this.authService.isOwner(this.user.email);
         })
     })

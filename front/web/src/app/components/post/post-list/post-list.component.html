@@ -28,7 +28,7 @@
     </tbody>
 
     <tbody *ngIf="postList">
-      <tr *ngFor="let post of postList; index as i;">
+      <tr *ngFor="let post of postList | paginate: { itemsPerPage: 10, currentPage: p, totalItems: pagination.pages }; index as i;">
         <th scope="row">{{i+1}}</th>
         <td>
           <a (click)="goPostDetail(post.id)">{{post.title}}</a>
@@ -42,4 +42,6 @@
   <div class="d-flex justify-content-end">
     <a routerLink="create" class="btn btn-sm btn-primary">글 작성</a>
   </div>
+  {{postList.length}}
+  <pagination-controls (pageChange)="p = $event"></pagination-controls>
 </div>
