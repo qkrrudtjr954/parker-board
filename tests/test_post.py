@@ -58,23 +58,6 @@ class Describe_PostController:
             def test_404를_반환한다(self, subject):
                 assert 404 == subject.status_code
 
-        class Context_per_page가_없을_때:
-            @pytest.fixture
-            def pagination(self):
-                return dict(page=1)
-
-            def test_total_count는_20이다(self, json_result):
-                print(json_result)
-                assert 10 == json_result['total_count']
-
-        class Context_page가_없을_때:
-            @pytest.fixture
-            def pagination(self):
-                return dict(per_page=5)
-
-            def test_page는_1이다(self, json_result):
-                assert 1 == json_result['pagination']['page']
-
         class Context_로그인_하지_않았을_때:
             def test_200을_반환한다(self, subject):
                 assert 200 == subject.status_code

@@ -52,8 +52,7 @@ def detail(post_id):
     if not post:
         return 'No Post.', 404
 
-    result = dict(post=main_post_schema.dump(post).data)
-    return jsonify(result), 200
+    return main_post_schema.jsonify(post), 200
 
 
 # create post
