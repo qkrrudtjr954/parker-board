@@ -36,7 +36,7 @@ class PostSchema(ma.ModelSchema):
 
 simple_post_schema = PostSchema(only=['id', 'title'])
 
-main_post_schema = PostSchema(only=['id', 'title', 'content', 'comments_count', 'created_at', 'user', 'description', 'updated_at'])
+main_post_schema = PostSchema(only=['id', 'title', 'content', 'user', 'description', 'created_at', 'updated_at'])
 post_list_schema = PostSchema(only=['id', 'title', 'comments_count', 'created_at', 'user'], many=True)
 
 post_id_schema = PostSchema(only=['id'])

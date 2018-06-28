@@ -63,8 +63,9 @@ class Describe_PostController:
             def pagination(self):
                 return dict(page=1)
 
-            def test_per_page는_10이다(self, json_result):
-                assert 10 == json_result['pagination']['per_page']
+            def test_total_count는_20이다(self, json_result):
+                print(json_result)
+                assert 10 == json_result['total_count']
 
         class Context_page가_없을_때:
             @pytest.fixture

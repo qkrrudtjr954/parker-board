@@ -44,22 +44,15 @@ def post_list(pagination, board_id):
 # read post
 # GET /posts/1
 @bp.route('/posts/<int:post_id>', methods=['GET'])
-@use_args(pagination_schema)
 @login_required
-def detail(pagination, post_id):
+def detail(post_id):
 
     post = Post.query.get(post_id)
 
     if not post:
         return 'No Post.', 404
 
-    comments = post.get_comments(pagination.page, pagination.per_page)
-
-    comments_item = comments_schema.dump(comments.items).data
-    pagination = pagination_schema.dump(comments).data
-    user = simple_user_schema.dump(post.user).data
-
-    result = dict(post=main_post_schema.dump(post).data, comments=comments_item, pagination=pagination, user=user)
+    result = dict(post=main_post_schema.dump(post).data)
     return jsonify(result), 200
 
 
