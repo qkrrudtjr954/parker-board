@@ -1,9 +1,10 @@
 
 class Pagination(object):
-    def __init__(self, per_page, page, pages, has_prev, has_next):
+    def __init__(self, per_page, page, pages, total,has_prev, has_next):
         self.per_page = per_page
         self.page = page
         self.pages = pages
+        self.total = total
         self.has_prev = has_prev
         self.has_next = has_next
 
