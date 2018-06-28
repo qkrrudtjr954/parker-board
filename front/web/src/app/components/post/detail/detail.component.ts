@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {Post, PostDetailData, Posts} from "../../../models/post";
+import {Post, PostDetailData } from "../../../models/post";
 import {PostService} from "../../../services/post.service";
 import {ActivatedRoute} from "@angular/router";
 import {Comment} from "../../../models/comment";
@@ -37,7 +37,7 @@ export class PostDetailComponent implements OnInit {
 
 
   getPost(postId: number) {
-    this.postId = postId
+    this.postId = postId;
 
     return this.postService.getPost(postId, this.paginationParam)
       .subscribe((data: PostDetailData) => {
