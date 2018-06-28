@@ -17,7 +17,7 @@ def create(post_id, comment: Comment, user: User):
         comment.post_id = target_post.id
 
         db.session.add(comment)
-        db.session.flush()
+        db.session.commit()
     except Exception as e:
         db.session.rollback()
         raise e
@@ -32,7 +32,7 @@ def delete(comment: Comment):
         comment.deleted()
         comment.refresh_update_time()
 
-        db.session.flush()
+        db.session.commit()
     except Exception as e:
         db.session.rollback()
         raise e
@@ -46,7 +46,7 @@ def update(target_comment: Comment, comment_data):
         target_comment.content = comment_data.content
         target_comment.refresh_update_time()
 
-        db.session.flush()
+        db.session.commit()
     except Exception as e:
         db.session.rollback()
         raise e
