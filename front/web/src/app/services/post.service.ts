@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {Post, PostDetailData, Posts} from "../models/post";
+import {Post, PostDetailData, PostList } from "../models/post";
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +16,7 @@ export class PostService {
   getPostList(board_id: number, paginationParam: {page: number, per_page: number}) {
     let paginationUri = `?page=${paginationParam.page}&per_page=${paginationParam.per_page}`;
 
-    return this.http.get<Posts>(`${this.uri}/boards/${board_id}/posts${paginationUri}`, this.options)
+    return this.http.get<PostList>(`${this.uri}/boards/${board_id}/posts${paginationUri}`, this.options)
   }
 
   getPost(post_id: number, paginationParam: {page: number, per_page: number}) {

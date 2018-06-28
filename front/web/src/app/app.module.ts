@@ -23,6 +23,7 @@ import { PostDetailComponent } from './components/post/detail/detail.component';
 import { PostCreateComponent } from './components/post/create/create.component';
 import { PostUpdateComponent } from './components/post/post-update/post-update.component';
 import { CreateComponent } from './components/comment/create/create.component';
+import { BoardDetailComponent } from './components/board/board-detail/board-detail.component';
 
 
 const routes: Routes = [{
@@ -71,7 +72,8 @@ const routes: Routes = [{
     PostCreateComponent,
     PostUpdateComponent,
     PostListComponent,
-    CreateComponent
+    CreateComponent,
+    BoardDetailComponent
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,12 @@
+<div *ngIf="board">
+  <div class="d-flex justify-content-end" *ngIf="isOwner">
+    <a routerLink="/boards/{{ board.id }}/update" class="btn btn-success">수정하기</a>
+    <a routerLink="/" class="btn btn-danger">삭제하기</a>
+  </div>
+
+  <div class="title-area text-center">
+    <h1>{{board.title}}</h1>
+    <hr>
+    <h4>{{board.description}}</h4>
+  </div>
+</div>
