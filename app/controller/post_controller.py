@@ -34,9 +34,9 @@ def post_list(pagination, board_id):
     posts_data = board.get_posts(pagination.page, pagination.per_page)
 
     posts = post_list_schema.dump(posts_data.items).data
-    pagination = pagination_schema.dump(posts).data
+    total_count = posts_data.total
 
-    result = dict(posts=posts, pagination=pagination)
+    result = dict(posts=posts, total_count=total_count)
 
     return jsonify(result), 200
 
