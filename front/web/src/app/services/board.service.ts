@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Board } from "../models/board";
+import {Board, NavBoard} from "../models/board";
 import {Observable} from "rxjs/internal/Observable";
 
 
@@ -15,8 +15,8 @@ export class BoardService {
 
   constructor(private http: HttpClient) { }
 
-  getBoardList() {
-    return this.http.get<Board[]>(`${this.uri}/boards`);
+  getNavBoardList() {
+    return this.http.get<NavBoard[]>(`${this.uri}/boards`);
   }
 
   makeBoard(board: Board): Observable<Board> {

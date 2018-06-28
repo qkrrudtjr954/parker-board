@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {Post, PostDetailData} from "../../../models/post";
+import {Post, PostDetailData, Posts} from "../../../models/post";
 import {PostService} from "../../../services/post.service";
 import {ActivatedRoute} from "@angular/router";
 import {Comment} from "../../../models/comment";
@@ -7,6 +7,7 @@ import {Pagination} from "../../../models/pagination";
 import {AuthService} from "../../../services/auth.service";
 import {User} from "../../../models/user";
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
+import {CommentService} from "../../../services/comment.service";
 
 @Component({
   selector: 'app-detail',
@@ -14,28 +15,44 @@ import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
   styleUrls: ['./detail.component.css']
 })
 export class PostDetailComponent implements OnInit {
-  isOwner: boolean;
+  postId: number;
+
+  private paginationParam: {page:number, per_page:number} = {
+    page: 1,
+    per_page: 10
+  };
+
   post: Post;
   comments: Comment[];
   pagination: Pagination;
   user: User;
 
+  isOwner: boolean;
 
   constructor(private route: ActivatedRoute,
               private postService: PostService,
+              private commentService: CommentService,
               private authService: AuthService,
               private fb: FormBuilder) { }
 
 
-  getPost(post_id: number) {
-    return this.postService.getPost(post_id)
+  getPost(postId: number) {
+    this.postId = postId
+
+    return this.postService.getPost(postId, this.paginationParam)
       .subscribe((data: PostDetailData) => {
         this.post = data.post;
+        this.user = data.user;
         this.comments = data.comments;
         this.pagination = data.pagination;
-        this.user = data.user;
+
         this.isOwner = this.authService.isOwner(this.user.email);
       })
+  }
+
+  pageChange($event) {
+    this.paginationParam.page = $event;
+    this.getPost(this.postId);
   }
 
   ngOnInit() {

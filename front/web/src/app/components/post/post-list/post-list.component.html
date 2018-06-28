@@ -1,47 +1,51 @@
-<div *ngIf="board">
-  <div class="d-flex justify-content-end" *ngIf="isOwner">
-    <a routerLink="/boards/{{ board.id }}/update" class="btn btn-success">수정하기</a>
-    <a routerLink="/" class="btn btn-danger">삭제하기</a>
-  </div>
 
-  <div class="title-area text-center">
-    <h1>{{board.title}}</h1>
-    <hr>
-    <h4>{{board.description}}</h4>
-  </div>
+<app-board-detail [boardId]="boardId"></app-board-detail>
 
-  <table class="table">
-    <thead class="thead-dark">
-      <tr>
-        <th scope="col">No</th>
-        <th scope="col">title</th>
-        <th scope="col">author</th>
-        <th scope="col">created</th>
-      </tr>
-    </thead>
-    <tbody *ngIf="postList.length == 0" >
-      <tr class="text-center">
-          <td colspan="4">
-            등록된 글이 없습니다.
-          </td>
-      </tr>
-    </tbody>
 
-    <tbody *ngIf="postList">
-      <tr *ngFor="let post of postList | paginate: { itemsPerPage: 10, currentPage: p, totalItems: pagination.pages }; index as i;">
-        <th scope="row">{{i+1}}</th>
-        <td>
-          <a (click)="goPostDetail(post.id)">{{post.title}}</a>
-          <small class="comment_count">[{{post.comments_count}}]</small>
+<div class="text-right">
+
+  <select class="col-md-2 custom-select" (change)="perPageChange($event)">
+    <option selected [value]="10">10개씩 보기</option>
+    <option [value]="25">25개씩 보기</option>
+    <option [value]="50">50개씩 보기</option>
+    <option [value]="100">100개씩 보기</option>
+  </select>
+</div>
+
+<table class="table">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col" width="5%">No</th>
+      <th scope="col" width="45%">title</th>
+      <th scope="col" width="25%">author</th>
+      <th scope="col" width="25%">created</th>
+    </tr>
+  </thead>
+  <tbody *ngIf="postList.length == 0" >
+    <tr class="text-center">
+        <td colspan="4">
+          등록된 글이 없습니다.
         </td>
-        <td>{{post.user.email}}</td>
-        <td>{{post.created_at | date:'yyyy년 MM월 dd일 HH시 mm분 ss초'}}</td>
-      </tr>
-    </tbody>
-  </table>
-  <div class="d-flex justify-content-end">
-    <a routerLink="create" class="btn btn-sm btn-primary">글 작성</a>
-  </div>
-  {{postList.length}}
-  <pagination-controls (pageChange)="p = $event"></pagination-controls>
+    </tr>
+  </tbody>
+
+  <tbody *ngIf="postList">
+    <tr *ngFor="let post of postList | paginate: { itemsPerPage: paginationParam.per_page, currentPage: paginationParam.page, totalItems: totalCount }; index as i;">
+      <th scope="row">{{i+1}}</th>
+      <td>
+        <a (click)="goPostDetail(post.id)">{{post.title}}</a>
+        <small class="comment_count">[{{post.comments_count}}]</small>
+      </td>
+      <td>{{post.user.email}}</td>
+      <td>{{post.created_at | date:'yyyy년 MM월 dd일 HH시 mm분 ss초'}}</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="d-flex justify-content-end">
+  <a routerLink="create" class="btn btn-sm btn-primary">글 작성</a>
+</div>
+
+<div class="d-flex justify-content-center">
+  <pagination-controls (pageChange)="pageChange($event)"></pagination-controls>
 </div>

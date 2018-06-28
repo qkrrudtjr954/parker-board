@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 @Component({
   selector: 'app-footer',
   template: `
-    <footer class="footer">
+    <footer class="custom-footer">
       <div class="container">
         <div class="d-flex justify-content-end">
             <span class="text-muted">Place sticky footer content here.</span>
@@ -11,7 +11,7 @@ import { Component, OnInit } from '@angular/core';
       </div>
     </footer>
   `,
-  styles: []
+  styleUrls: ['./footer.component.css']
 })
 export class FooterComponent implements OnInit {
 

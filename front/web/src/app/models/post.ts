@@ -1,19 +1,17 @@
 import {User} from "./user";
-import {Board} from "./board";
 import {Pagination} from "./pagination";
 import {Comment} from "./comment";
 
-export interface Posts {
-  board: Board;
-  pagination: Pagination;
-  posts: Post[];
-  user: User;
+export interface PostList {
+  total_count: number;
+  posts: PostListItem[];
 }
 
-export interface PostDetailData {
-  comments: Comment[];
-  pagination: Pagination;
-  post: Post;
+export interface PostListItem {
+  id: number;
+  title: string;
+  comments_count: number;
+  created_at: string;
   user: User;
 }
 
@@ -26,3 +24,11 @@ export interface Post {
   comments_count: number;
   user: User;
 }
+
+export interface PostDetailData {
+  comments: Comment[];
+  pagination: Pagination;
+  post: Post;
+  user: User;
+}
+
