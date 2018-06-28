@@ -36,7 +36,7 @@ class Describe_PostController:
         def board(self):
             board = FakeBoardFactory()
             board.posts = FakePostFactory.create_batch(20)
-            self.session.flush()
+            self.session.commit()
 
             return board
 
@@ -52,7 +52,7 @@ class Describe_PostController:
         class Context_board가_존재하지_않을_때:
             @pytest.fixture
             def board(self):
-                board = FakeBoardFactory()
+                board = FakeBoardFactory.build()
                 return board
 
             def test_404를_반환한다(self, subject):
@@ -82,7 +82,7 @@ class Describe_PostController:
         @pytest.fixture
         def post_id(self):
             post = FakePostFactory()
-            self.session.flush()
+            self.session.commit()
 
             return post.id
 
@@ -103,7 +103,7 @@ class Describe_PostController:
         class Context_post가_존재하지_않을_때:
             @pytest.fixture
             def post_id(self):
-                post = FakePostFactory()
+                post = FakePostFactory.build()
                 return post.id
 
             def test_404를_반환한다(self, subject):
@@ -121,7 +121,7 @@ class Describe_PostController:
         @pytest.fixture
         def target_board_id(self):
             board = FakeBoardFactory()
-            self.session.flush()
+            self.session.commit()
 
             return board.id
 
@@ -205,7 +205,7 @@ class Describe_PostController:
         @pytest.fixture
         def target_post(self, user):
             post = FakePostFactory(user_id=user.id, user=user)
-            self.session.flush()
+            self.session.commit()
             return post
 
         @pytest.fixture
@@ -299,7 +299,7 @@ class Describe_PostController:
         @pytest.fixture
         def post_id(self, user):
             post = FakePostFactory(user=user, user_id=user.id)
-            self.session.flush()
+            self.session.commit()
             return post.id
 
         @pytest.fixture
@@ -317,7 +317,7 @@ class Describe_PostController:
         class Context_post가_존재하지_않는_경우:
             @pytest.fixture
             def post_id(self):
-                post = FakePostFactory()
+                post = FakePostFactory.build()
                 return post.id
 
             def test_404를_반환한다(self, subject):
@@ -327,7 +327,7 @@ class Describe_PostController:
             @pytest.fixture
             def post_id(self):
                 post = FakePostFactory()
-                self.session.flush()
+                self.session.commit()
                 return post.id
 
             def test_401을_반환한다(self, subject):

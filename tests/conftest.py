@@ -22,35 +22,23 @@ def app():
 
 @pytest.fixture(scope='session')
 def tdb(app):
-
     db.init_app(app)
     return db
 
 
-@pytest.fixture(scope='session')
-def tclient(app):
-    client = app.test_client()
-    return client
-
-
-@pytest.fixture(scope='function')
-def tsession(tdb):
-    session = tdb.session
-    yield session
-    session.rollback()
-
-
 @pytest.fixture(scope='function')
 def session(tdb):
+    tdb.create_all()
     _session = tdb.session
     yield _session
-    _session.rollback()
+    _session.remove()
+    tdb.drop_all()
 
 
 @pytest.fixture
 def logged_in_user(client, session):
     user = FakeUserFactory.create()
-    session.flush()
+    session.commit()
 
     resp = client.post('/users/login', data=before_login_schema.dumps(user).data, content_type='application/json')
     assert 200 == resp.status_code
@@ -61,7 +49,7 @@ def logged_in_user(client, session):
 @pytest.fixture
 def not_logged_in_user(session):
     user = FakeUserFactory.create()
-    session.flush()
+    session.commit()
 
     return user
 

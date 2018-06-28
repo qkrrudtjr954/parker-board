@@ -9,7 +9,7 @@ def register(user):
 
     try:
         db.session.add(user)
-        db.session.flush()
+        db.session.commit()
 
         return user
 
@@ -22,7 +22,7 @@ def leave(user):
     try:
         # 상태는 객체 스스로 변경할 수 있다.
         user.leaved()
-        db.session.flush()
+        db.session.commit()
 
     except Exception as e:
         db.session.rollback()

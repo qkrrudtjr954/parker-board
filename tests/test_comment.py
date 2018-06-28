@@ -16,7 +16,7 @@ class Describe_CommentController:
     @pytest.fixture
     def target_post_id(self, ):
         post = FakePostFactory()
-        self.session.flush()
+        self.session.commit()
         return post.id
 
     @pytest.fixture
@@ -73,7 +73,7 @@ class Describe_CommentController:
         @pytest.fixture
         def target_comment_id(self, user):
             comment = FakeCommentFactory(user=user, user_id=user.id)
-            self.session.flush()
+            self.session.commit()
             return comment.id
 
         @pytest.fixture
@@ -122,7 +122,7 @@ class Describe_CommentController:
         @pytest.fixture
         def target_comment(self, user):
             target_comment = FakeCommentFactory(user=user, user_id=user.id)
-            self.session.flush()
+            self.session.commit()
             return target_comment
 
         @pytest.fixture
@@ -150,7 +150,7 @@ class Describe_CommentController:
             @pytest.fixture
             def target_comment(self):
                 comment = FakeCommentFactory()
-                self.session.flush()
+                self.session.commit()
                 return comment
 
             def test_401을_반환한다(self, subject):

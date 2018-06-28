@@ -14,7 +14,7 @@ def create(board_id, post: Post, user: User):
         post.user_id = user.id
 
         db.session.add(post)
-        db.session.flush()
+        db.session.commit()
     except Exception as e:
         db.session.rollback()
         raise e
@@ -43,7 +43,7 @@ def update(target_post: Post, post_data):
         if changed:
             target_post.refresh_update_time()
 
-        db.session.flush()
+        db.session.commit()
     except Exception as e:
         db.session.rollback()
         raise e
@@ -54,7 +54,7 @@ def delete(target_post: Post):
         target_post.deleted()
         target_post.updated_at = datetime.utcnow()
 
-        db.session.flush()
+        db.session.commit()
     except Exception as e:
         db.session.rollback()
         raise e

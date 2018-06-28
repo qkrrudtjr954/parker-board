@@ -17,7 +17,7 @@ class Describe_BoardController:
         @pytest.fixture
         def board_id(self, user):
             board = FakeBoardFactory(user_id=user.id, user=user)
-            self.session.flush()
+            self.session.commit()
             return board.id
 
         @pytest.fixture
@@ -35,7 +35,7 @@ class Describe_BoardController:
         class Context_Board가_없을_때:
             @pytest.fixture
             def board_id(self, user):
-                board = FakeBoardFactory(user_id=user.id, user=user)
+                board = FakeBoardFactory.build(user_id=user.id, user=user)
                 return board.id
 
             def test_404를_반환하다(self, subject):
@@ -45,7 +45,7 @@ class Describe_BoardController:
         @pytest.fixture
         def boards(self):
             boards = FakeBoardFactory.create_batch(25)
-            self.session.flush()
+            self.session.commit()
             return boards
 
         @pytest.fixture
@@ -103,7 +103,7 @@ class Describe_BoardController:
             @pytest.fixture
             def user(self):
                 user = FakeUserFactory.create()
-                self.session.flush()
+                self.session.commit()
                 return user
 
             def test_401이_반환된다(self, subject):
@@ -118,7 +118,7 @@ class Describe_BoardController:
         @pytest.fixture
         def board_id(self, user):
             board = FakeBoardFactory(user=user, user_id=user.id)
-            self.session.flush()
+            self.session.commit()
 
             return board.id
 
@@ -147,7 +147,7 @@ class Describe_BoardController:
             @pytest.fixture
             def user(self):
                 user = FakeUserFactory.create()
-                self.session.flush()
+                self.session.commit()
 
                 return user
 
@@ -167,7 +167,7 @@ class Describe_BoardController:
             @pytest.fixture
             def board_id(self):
                 board = FakeBoardFactory()
-                self.session.flush()
+                self.session.commit()
 
                 return board.id
 
@@ -193,7 +193,7 @@ class Describe_BoardController:
         @pytest.fixture
         def board_id(self, user):
             board = FakeBoardFactory(user=user, user_id=user.id)
-            self.session.flush()
+            self.session.commit()
             return board.id
 
         @pytest.fixture
@@ -210,7 +210,7 @@ class Describe_BoardController:
         class Context_board가_없는_경우:
             @pytest.fixture
             def board_id(self, user):
-                board = FakeBoardFactory(user=user, user_id=user.id)
+                board = FakeBoardFactory.build(user=user, user_id=user.id)
                 return board.id
 
             def test_404를_반환한다(self, subject):
@@ -220,7 +220,7 @@ class Describe_BoardController:
             @pytest.fixture
             def board_id(self, user):
                 board = FakeBoardFactory()
-                self.session.flush()
+                self.session.commit()
                 return board.id
 
             def test_401을_반환한다(self, board_id):
@@ -231,7 +231,7 @@ class Describe_BoardController:
             @pytest.fixture
             def user(self):
                 user = FakeUserFactory()
-                self.session.flush()
+                self.session.commit()
 
                 return user
 

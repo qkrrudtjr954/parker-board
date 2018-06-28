@@ -14,7 +14,7 @@ class Describe_UserController:
         @pytest.fixture
         def user(self):
             user = FakeUserFactory()
-            self.session.flush()
+            self.session.commit()
             return user
 
         @pytest.fixture
@@ -32,8 +32,8 @@ class Describe_UserController:
         class Context_password가_틀렸을_때:
             @pytest.fixture
             def login_data(self, user):
-                user.password = 'incorrect_password'
-                return before_login_schema.dumps(user).data
+                wrong_user_data = dict(email=user.email, password='incorrect_password')
+                return before_login_schema.dumps(wrong_user_data).data
 
             def test_400을_반환한다(self, subject):
                 assert 400 == subject.status_code
@@ -72,7 +72,7 @@ class Describe_UserController:
             @pytest.fixture
             def user(self, email):
                 user = FakeUserFactory(email=email)
-                self.session.flush()
+                self.session.commit()
                 return user
 
             def test_422를_반환한다(self, subject):
@@ -83,7 +83,7 @@ class Describe_UserController:
             @pytest.fixture
             def user(self, password):
                 user = FakeUserFactory(password=password)
-                self.session.flush()
+                self.session.commit()
                 return user
 
             def test_422를_반환한다(self, subject):
@@ -115,7 +115,7 @@ class Describe_UserController:
             @pytest.fixture
             def form(self):
                 user = FakeUserFactory()
-                self.session.flush()
+                self.session.commit()
                 return user
 
             def test_400을_반환한다(self, subject):

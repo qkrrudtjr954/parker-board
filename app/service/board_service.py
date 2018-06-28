@@ -18,7 +18,7 @@ def create(user: User, board: Board):
         board.user_id = user.id
 
         db.session.add(board)
-        db.session.flush()
+        db.session.commit()
 
     except Exception as e:
         db.session.rollback()
@@ -35,7 +35,7 @@ def update(target_board: Board, board_data: Board):
 
         target_board.refresh_update_time()
 
-        db.session.flush()
+        db.session.commit()
 
     except Exception as e:
         print(e)
@@ -48,7 +48,7 @@ def delete(board: Board):
         board.deleted()
         board.refresh_update_time()
 
-        db.session.flush()
+        db.session.commit()
     except Exception as e:
         db.session.rollback()
         raise e

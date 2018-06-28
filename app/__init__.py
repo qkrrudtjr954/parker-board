@@ -13,7 +13,6 @@ def create_app():
         os.environ['APP_SETTING'] = 'config/dev.cfg'
 
     app.config.from_envvar('APP_SETTING', silent=True)
-    os.environ['AUTO_COMMIT'] = str(app.config['SQLALCHEMY_AUTO_COMMIT'])
 
     from app import model as db
     db.init_app(app)
