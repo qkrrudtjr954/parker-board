@@ -15,7 +15,8 @@ export class NavbarComponent implements OnInit {
   selectedBoard: NavBoard;
 
   constructor(private boardService: BoardService,
-              private authService: AuthService) { }
+              private authService: AuthService,
+              private router: Router) { }
 
   getNavBoardList() {
     this.boardService.getNavBoardList()
@@ -26,6 +27,7 @@ export class NavbarComponent implements OnInit {
 
   onSelected(board: Board) {
     this.selectedBoard = board;
+    this.router.navigate([`/boards/${board.id}/posts`])
   }
 
   ngOnInit() {

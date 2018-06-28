@@ -25,17 +25,18 @@ export class PostListComponent implements OnInit {
               private router: Router) { }
 
 
+  getPostList() {
+    console.log(this.boardId)
+    this.postService.getPostList(this.boardId, this.paginationParam)
+        .subscribe((data: PostList) => {
+          this.postList = data.post_list;
+          this.totalCount = data.total_count;
+        });
+  }
+
   pageChange($event) {
     this.paginationParam.page = $event;
     this.getPostList();
-  }
-
-  getPostList() {
-    this.postService.getPostList(this.boardId, this.paginationParam)
-        .subscribe((data: PostList) => {
-          this.postList = data.posts;
-          this.totalCount = data.total_count;
-        })
   }
 
   perPageChange(event) {
@@ -48,6 +49,7 @@ export class PostListComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log('init')
     this.route.params.subscribe(params => {
       this.boardId = params['id'];
       this.getPostList();

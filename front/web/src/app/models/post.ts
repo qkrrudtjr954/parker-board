@@ -4,7 +4,7 @@ import {Comment} from "./comment";
 
 export interface PostList {
   total_count: number;
-  posts: PostListItem[];
+  post_list: PostListItem[];
 }
 
 export interface PostListItem {

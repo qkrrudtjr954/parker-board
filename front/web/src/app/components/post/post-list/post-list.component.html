@@ -21,7 +21,7 @@
       <th scope="col" width="25%">created</th>
     </tr>
   </thead>
-  <tbody *ngIf="postList.length == 0" >
+  <tbody *ngIf="!postList">
     <tr class="text-center">
         <td colspan="4">
           등록된 글이 없습니다.

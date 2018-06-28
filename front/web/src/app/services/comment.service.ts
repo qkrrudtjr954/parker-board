@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
+import {CommentList} from "../models/comment";
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +17,8 @@ export class CommentService {
 
   }
 
-  getCommentList(postId: number) {
-    return this.http.get(`/posts/${postId}/comments`, this.options)
+  getCommentList(postId: number, paginationParam: {page: number, per_page: number}) {
+    let paginationUri = `?page=${paginationParam.page}&per_page=${paginationParam.per_page}`;
+    return this.http.get<CommentList>(`${this.uri}/posts/${postId}/comments${paginationUri}`, this.options)
   }
 }

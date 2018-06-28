@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {CommentService} from "../../../services/comment.service";
-import {Comment} from "../../../models/comment";
+import {Comment, CommentList} from "../../../models/comment";
 
 @Component({
   selector: 'app-comment-list',
@@ -16,19 +16,32 @@ export class CommentListComponent implements OnInit {
   };
 
   commentList: Comment[] = [];
+  totalCount: number = 0;
 
   constructor(private commentService: CommentService) { }
 
   ngOnInit() {
-    this.commentService.getCommentList(this.postId)
-      .subscribe((data: Comment[]) => {
-        console.log('comment list')
+    this.getCommentList();
+  }
+
+  getCommentList() {
+    this.commentService.getCommentList(this.postId, this.paginationParam)
+      .subscribe((data: CommentList) => {
+        this.commentList = data.comment_list;
+        this.totalCount = data.total_count;
+        console.log(data);
       })
   }
 
   pageChange($event) {
     this.paginationParam.page = $event;
+    this.getCommentList();
+  }
 
+  perPageChange(event) {
+    this.paginationParam.per_page = event.target.value;
+    console.log(this.paginationParam)
+    this.getCommentList();
   }
 
 }

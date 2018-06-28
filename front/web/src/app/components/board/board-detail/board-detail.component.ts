@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {Input} from "@angular/core";
 import {BoardService} from "../../../services/board.service";
 import {Board} from "../../../models/board";
@@ -9,7 +9,7 @@ import {AuthService} from "../../../services/auth.service";
   templateUrl: './board-detail.component.html',
   styleUrls: ['./board-detail.component.css']
 })
-export class BoardDetailComponent implements OnInit {
+export class BoardDetailComponent implements OnInit, OnChanges {
   @Input() boardId: number;
   board: Board;
   isOwner: boolean = false;
@@ -17,9 +17,12 @@ export class BoardDetailComponent implements OnInit {
   constructor(private boardService: BoardService,
               private authService: AuthService) { }
 
-  ngOnInit() {
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log('hello')
     this.getBoard();
   }
+
+  ngOnInit() { }
 
   getBoard(){
     this.boardService.getBoard(this.boardId)
