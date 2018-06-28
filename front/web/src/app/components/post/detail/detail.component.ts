@@ -6,6 +6,7 @@ import {Comment} from "../../../models/comment";
 import {Pagination} from "../../../models/pagination";
 import {AuthService} from "../../../services/auth.service";
 import {User} from "../../../models/user";
+import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 
 @Component({
   selector: 'app-detail',
@@ -19,9 +20,12 @@ export class PostDetailComponent implements OnInit {
   pagination: Pagination;
   user: User;
 
+
   constructor(private route: ActivatedRoute,
               private postService: PostService,
-              private authService: AuthService) { }
+              private authService: AuthService,
+              private fb: FormBuilder) { }
+
 
   getPost(post_id: number) {
     return this.postService.getPost(post_id)
@@ -34,6 +38,7 @@ export class PostDetailComponent implements OnInit {
         this.isOwner = this.authService.isOwner(this.user.email);
       })
   }
+
   ngOnInit() {
     this.route.params.subscribe(params => {
       let post_id = params['id'];

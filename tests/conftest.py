@@ -29,9 +29,11 @@ def tdb(app):
 @pytest.fixture(scope='function')
 def session(tdb):
     tdb.create_all()
+
     _session = tdb.session
     yield _session
     _session.remove()
+
     tdb.drop_all()
 
 

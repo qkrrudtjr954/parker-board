@@ -11,8 +11,6 @@
   "test_post.py::Describe_PostController::()::Describe_create::()::Context_content\uac00_\uc5c6\uc744_\ub54c::()::test_\uba54\uc138\uc9c0\ub97c_\ubc18\ud658\ud55c\ub2e4[None]": true,
   "test_post.py::Describe_PostController::()::Describe_create::()::Context_content\uac00_\uc5c6\uc744_\ub54c::()::test_\uba54\uc138\uc9c0\ub97c_\ubc18\ud658\ud55c\ub2e4[]": true,
   "test_post.py::Describe_PostController::()::Describe_create::()::Context_title\uc774_10\uae00\uc790_\uc774\ud558\uc77c_\ub54c::()::test_422\ub97c_\ubc18\ud658\ud55c\ub2e4[hello]": true,
-  "test_post.py::Describe_PostController::()::Describe_delete::()::Context_post\uac00_\uc874\uc7ac\ud558\uc9c0_\uc54a\ub294_\uacbd\uc6b0::()::test_404\ub97c_\ubc18\ud658\ud55c\ub2e4": true,
-  "test_post.py::Describe_PostController::()::Describe_detail::()::Context_post\uac00_\uc874\uc7ac\ud558\uc9c0_\uc54a\uc744_\ub54c::()::test_404\ub97c_\ubc18\ud658\ud55c\ub2e4": true,
   "test_post.py::Describe_PostController::()::Describe_post_list::()::test_user\ub97c_\ud3ec\ud568\ud55c\ub2e4": true,
   "test_post.py::Describe_PostController::()::Describe_update::()::Context_title\uc774_\uc5c6\uc744_\ub54c::()::test_content\ub9cc_\uac31\uc2e0\ub41c\ub2e4": true,
   "test_post.py::TestCreatePost::()::test_create_no_login": true,

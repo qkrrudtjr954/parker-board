@@ -11,39 +11,35 @@
       <p>{{post.created_at | date:'yyyy년 MM월 dd일 HH시 mm분 ss초'}}</p>
     </div>
     <hr>
-    <h4>{{post.content}}</h4>
+    <p>{{post.content}}</p>
     <hr>
   </div>
-  <div class="title-area text-center">
-    <h5>Comments</h5>
-  </div>
+
   <table class="table">
     <thead class="thead-dark">
       <tr>
         <th scope="col">No</th>
-        <th scope="col">title</th>
-        <th scope="col">author</th>
-        <th scope="col">created</th>
+        <th scope="col">Comments</th>
+        <th scope="col">Created</th>
       </tr>
     </thead>
-    <!--<tbody *ngIf="postList.length == 0" >-->
-      <!--<tr class="text-center">-->
-          <!--<td colspan="4">-->
-            <!--등록된 글이 없습니다.-->
-          <!--</td>-->
-      <!--</tr>-->
-    <!--</tbody>-->
 
-    <!--<tbody *ngIf="postList">-->
-      <!--<tr *ngFor="let post of postList; index as i;">-->
-        <!--<th scope="row">{{i+1}}</th>-->
-        <!--<td>-->
-          <!--<a (click)="goPostDetail(post.id)">{{post.title}}</a>-->
-          <!--<small class="comment_count">[{{post.comments_count}}]</small>-->
-        <!--</td>-->
-        <!--<td>{{post.user.email}}</td>-->
-        <!--<td>{{post.created_at | date:'yyyy년 MM월 dd일 HH시 mm분 ss초'}}</td>-->
-      <!--</tr>-->
-    <!--</tbody>-->
+    <tbody *ngIf="comments.length == 0" >
+      <tr class="text-center">
+          <td colspan="3">
+            등록된 댓글이 없습니다.
+          </td>
+      </tr>
+    </tbody>
+
+    <tbody *ngIf="comments">
+      <tr *ngFor="let comment of comments; index as i;">
+        <th scope="row">{{i+1}}</th>
+        <td>
+          <small>{{comment.content}}</small>
+        </td>
+        <td>{{comment.created_at | date:'yyyy년 MM월 dd일 HH시 mm분 ss초'}}</td>
+      </tr>
+    </tbody>
   </table>
 </div>
