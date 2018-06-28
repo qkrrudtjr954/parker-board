@@ -24,7 +24,8 @@ class BoardSchema(ma.ModelSchema):
         sqla_session = db.session
 
 
-main_board_schema = BoardSchema(only=['id', 'title', 'description', 'created_at', 'user'], many=True)
+main_board_schema = BoardSchema(only=['id', 'title'], many=True)
+concrete_board_schema = BoardSchema(only=['id', 'title', 'description', 'created_at', 'user'])
 simple_board_schema = BoardSchema(only=['id', 'title', 'description'])
 
 

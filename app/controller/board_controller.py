@@ -2,19 +2,28 @@ from flask import Blueprint, jsonify
 from flask_login import login_required, current_user
 from webargs.flaskparser import use_args
 
-from app.model.board import Board, BoardStatus
+from app.model.board import Board
 from app.service import board_service
 from app.schema.board import main_board_schema, board_create_form_schema, board_update_form_schema, board_id_schema, \
-    simple_board_schema
+    simple_board_schema, concrete_board_schema
 
 bp = Blueprint('board', __name__)
 
 
 @bp.route('/boards', methods=['GET'])
 def main():
-    boards = Board.query.filter(Board.status != BoardStatus.DELETED).all()
-
+    boards = Board.query.filter(~Board.is_deleted).all()
     return main_board_schema.jsonify(boards), 200
+
+
+@bp.route('/boards/<int:board_id>', methods=['GET'])
+def get_board(board_id):
+    target_board = Board.query.get(board_id)
+
+    if not target_board:
+        return 'No Board.', 404
+
+    return concrete_board_schema.jsonify(target_board), 200
 
 
 # create board
@@ -68,11 +77,3 @@ def delete(board_id):
     except Exception as e:
         return 'Server Error.', 500
 
-@bp.route('/boards/<int:board_id>', methods=['GET'])
-def get_board(board_id):
-    target_board = Board.query.get(board_id)
-
-    if not target_board:
-        return 'No Board.', 404
-
-    return simple_board_schema.jsonify(target_board), 200

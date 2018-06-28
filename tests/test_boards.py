@@ -45,7 +45,6 @@ class Describe_BoardController:
         @pytest.fixture
         def boards(self):
             boards = FakeBoardFactory.create_batch(25)
-            self.session.commit()
             return boards
 
         @pytest.fixture
@@ -58,7 +57,6 @@ class Describe_BoardController:
             return json.loads(subject.data)
 
         def test_200을_반환한다(self, subject):
-            print(subject.data)
             assert 200 == subject.status_code
 
         def test_Board의_길이는_25이다(self, json_result):
@@ -205,7 +203,7 @@ class Describe_BoardController:
 
         def test_board를_삭제한다(self, subject, board_id):
             db_board = Board.query.filter_by(id=board_id).one()
-            assert db_board.is_deleted()
+            assert db_board.is_deleted
 
         class Context_board가_없는_경우:
             @pytest.fixture

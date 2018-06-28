@@ -1,5 +1,7 @@
 import enum
 from datetime import datetime
+
+from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy_utils import ChoiceType
 
 from app.model import db
@@ -26,8 +28,9 @@ class Board(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow)
 
+    @hybrid_property
     def is_deleted(self):
-        return True if self.status == BoardStatus.DELETED else False
+        return self.status == BoardStatus.DELETED
 
     def deleted(self):
         self.status = BoardStatus.DELETED

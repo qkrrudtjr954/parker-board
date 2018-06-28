@@ -31,14 +31,12 @@ def post_list(pagination, board_id):
     if not board:
         return 'No Board.', 404
 
-    posts = board.get_posts(pagination.page, pagination.per_page)
+    posts_data = board.get_posts(pagination.page, pagination.per_page)
 
-    board_item = simple_board_schema.dump(board).data
-    user = simple_user_schema.dump(board.user).data
-    posts_item = post_list_schema.dump(posts.items).data
+    posts = post_list_schema.dump(posts_data.items).data
     pagination = pagination_schema.dump(posts).data
 
-    result = dict(board=board_item, posts=posts_item, pagination=pagination, user=user)
+    result = dict(posts=posts, pagination=pagination)
 
     return jsonify(result), 200
 
