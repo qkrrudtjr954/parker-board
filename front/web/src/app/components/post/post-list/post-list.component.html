@@ -13,10 +13,10 @@
   <table class="table">
     <thead class="thead-dark">
       <tr>
-        <th scope="col">No</th>
-        <th scope="col">title</th>
-        <th scope="col">author</th>
-        <th scope="col">created</th>
+        <th scope="col" width="5%">No</th>
+        <th scope="col" width="45%">title</th>
+        <th scope="col" width="25%">author</th>
+        <th scope="col" width="25%">created</th>
       </tr>
     </thead>
     <tbody *ngIf="postList.length == 0" >
@@ -28,7 +28,7 @@
     </tbody>
 
     <tbody *ngIf="postList">
-      <tr *ngFor="let post of postList | paginate: { itemsPerPage: 10, currentPage: p, totalItems: pagination.pages }; index as i;">
+      <tr *ngFor="let post of postList | paginate: { itemsPerPage: 10, currentPage: paginationParam.page, totalItems: pagination.total }; index as i;">
         <th scope="row">{{i+1}}</th>
         <td>
           <a (click)="goPostDetail(post.id)">{{post.title}}</a>
@@ -42,6 +42,8 @@
   <div class="d-flex justify-content-end">
     <a routerLink="create" class="btn btn-sm btn-primary">글 작성</a>
   </div>
-  {{postList.length}}
-  <pagination-controls (pageChange)="p = $event"></pagination-controls>
+
+  <div class="d-flex justify-content-center">
+    <pagination-controls (pageChange)="pageChange($event)"></pagination-controls>
+  </div>
 </div>

@@ -13,7 +13,11 @@ import {User} from "../../../models/user";
   styleUrls: ['./post-list.component.css']
 })
 export class PostListComponent implements OnInit {
-
+  private paginationParam: {page:number, per_page:number} = {
+    page: 1,
+    per_page: 10
+  };
+  private boardId:number;
   postList: Post[] = [];
   pagination: Pagination;
   board: Board;
@@ -30,11 +34,20 @@ export class PostListComponent implements OnInit {
     this.router.navigate([`/posts/${post_id}`]);
   }
 
+  pageChange($event) {
+    this.paginationParam.page = $event;
+
+    this.postService.getPostList(this.boardId, this.paginationParam)
+      .subscribe((data: Posts) => {
+        this.postList = data.posts;
+      })
+  }
+
   ngOnInit() {
     this.route.params.subscribe(params => {
-      let board_id = params['id'];
+      this.boardId = params['id'];
 
-      this.postService.getPostList(board_id)
+      this.postService.getPostList(this.boardId, this.paginationParam)
         .subscribe((data: Posts) => {
           this.board = data.board;
           this.postList = data.posts;
