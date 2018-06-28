@@ -19,9 +19,8 @@ export class PostService {
     return this.http.get<PostList>(`${this.uri}/boards/${board_id}/posts${paginationUri}`, this.options)
   }
 
-  getPost(post_id: number, paginationParam: {page: number, per_page: number}) {
-    let paginationUri = `?page=${paginationParam.page}&per_page=${paginationParam.per_page}`;
-    return this.http.get<PostDetailData>(`${this.uri}/posts/${post_id}${paginationUri}`, this.options)
+  getPost(post_id: number) {
+    return this.http.get<Post>(`${this.uri}/posts/${post_id}`, this.options)
   }
 
   createPost(param) {

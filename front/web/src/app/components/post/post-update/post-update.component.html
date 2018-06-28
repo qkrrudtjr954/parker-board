@@ -17,7 +17,7 @@
     </div>
 
     <div class="form-group">
-      <label for="_content">Post 설명</label>
+      <label for="_content">Post 내용</label>
       <textarea class="form-control" id="_content" rows="4" formControlName="content"></textarea>
       <div *ngIf="updateForm.controls['content'].invalid && (updateForm.controls['content'].dirty || updateForm.controls['content'].touched)">
         <div *ngIf="updateForm.controls['content'].errors.required">
