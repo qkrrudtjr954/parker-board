@@ -15,4 +15,8 @@ export class CommentService {
   createComment(content: string) {
 
   }
+
+  getCommentList(postId: number) {
+    return this.http.get(`/posts/${postId}/comments`, this.options)
+  }
 }
