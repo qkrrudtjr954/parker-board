@@ -14,14 +14,49 @@ class Describe_CommentController:
         return logged_in_user
 
     @pytest.fixture
-    def target_post_id(self, ):
+    def target_post_id(self):
         post = FakePostFactory()
-        self.session.commit()
         return post.id
 
     @pytest.fixture
     def json_result(self, subject):
         return json.loads(subject.data)
+
+    class Describe_comment_list:
+        @pytest.fixture
+        def target_post(self):
+            post = FakePostFactory()
+            post.comments = FakeCommentFactory.create_batch(20)
+            return post
+
+        @pytest.fixture
+        def subject(self, target_post, user):
+            resp = self.client.get('/posts/%d/comments' % target_post.id)
+            return resp
+
+        def test_200을_반환한다(self, subject):
+            assert 200 == subject.status_code
+
+        def test_댓글_수는_20개이다(self, subject):
+            assert 20 == Comment.query.count()
+
+        class Context_댓글이_없을_때:
+            @pytest.fixture
+            def target_post(self):
+                post = FakePostFactory()
+                return post
+
+            def test_댓글이_없다면_빈매열을_반환한다(self, json_result):
+                assert [] == json_result['comment_list']
+
+        class Context_post가_없을_때:
+            @pytest.fixture
+            def target_post(self):
+                post = FakePostFactory.build()
+                return post
+
+            def test_404를_반환한다(self, subject):
+                assert 404 == subject.status_code
 
     class Describe_create:
         @pytest.fixture

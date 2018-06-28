@@ -81,8 +81,8 @@ class Describe_PostController:
         def test_DB에서_post를_가져온다(self, post_id, json_result):
             db_post = Post.query.get(post_id)
 
-            assert db_post.title == json_result['post']['title']
-            assert db_post.content == json_result['post']['content']
+            assert db_post.title == json_result['title']
+            assert db_post.content == json_result['content']
 
         class Context_post가_존재하지_않을_때:
             @pytest.fixture
