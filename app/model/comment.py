@@ -26,7 +26,7 @@ class Comment(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-    def deleted(self):
+    def delete(self):
         self.status = CommentStatus.DELETED
 
     @hybrid_property

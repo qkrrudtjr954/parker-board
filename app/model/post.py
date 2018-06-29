@@ -5,6 +5,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy_utils import ChoiceType
 
 from app.model import db
+from app.model.like import Like
 from app.model.user import User
 from app.model.comment import Comment
 
@@ -27,6 +28,7 @@ class Post(db.Model):
     board_id = db.Column(db.Integer, db.ForeignKey('board.id'), nullable=False)
 
     comments = db.relationship("Comment", backref='post', lazy='dynamic')
+    likes = db.relationship("Like", lazy=True)
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow)
@@ -43,7 +45,11 @@ class Post(db.Model):
     def is_deleted(self):
         return self.status == PostStatus.DELETED
 
-    def deleted(self):
+    @hybrid_property
+    def like_count(self):
+        return Like.query.filter(Like.post_id == self.id).count()
+
+    def delete(self):
         self.status = PostStatus.DELETED
 
     def is_same_data(self, dict_data):
@@ -57,6 +63,15 @@ class Post(db.Model):
             same = False
 
         return same
+
+    def like(self, user: User):
+        liked = Like.query.filter(Like.user_id == user.id, Like.post_id == self.id).first()
+
+        if not liked:
+            like = Like(user_id=user.id, post_id=self.id)
+            db.session.add(like)
+            db.session.commit()
+
 
     def __repr__(self):
         return "<Post title: %s, content: %s, description: %s, status: %s," \

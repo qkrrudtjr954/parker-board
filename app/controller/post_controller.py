@@ -109,3 +109,16 @@ def delete(post_id):
         return post_id_schema.jsonify(target_post), 204
     except Exception:
         return 'Server Error.', 500
+
+
+@bp.route('/posts/<int:post_id>/like', methods=['POST'])
+@login_required
+def like(post_id):
+    target_post = Post.query.get(post_id)
+
+    if not target_post:
+        return 'No Post.', 404
+    
+    target_post.like(current_user)
+
+    return 'liked', 200
