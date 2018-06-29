@@ -8,13 +8,13 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 export class PostLikeComponent implements OnInit {
   @Input() likeCount: number;
   @Output() likePost = new EventEmitter();
+
   constructor() { }
 
   ngOnInit() {
   }
 
-  sendLike() {
-    this.likePost.emit()
+  sendLike($event) {
+    this.likePost.emit($event)
   }
-
 }

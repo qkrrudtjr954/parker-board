@@ -36,11 +36,18 @@ export class PostDetailComponent implements OnInit {
       })
   }
 
-  likePost() {
-    this.likeService.likePost(this.postId)
-      .subscribe((data: {like_count: number}) => {
-        this.post.like_count = data.like_count;
-      })
+  likePost($event) {
+    if($event) {
+      this.likeService.likePost(this.postId)
+        .subscribe((data: {like_count: number}) => {
+          this.post.like_count = data.like_count;
+        })
+    } else {
+      this.likeService.unlikePost(this.postId)
+        .subscribe((data: {like_count: number}) => {
+          this.post.like_count = data.like_count;
+        })
+    }
   }
 
   ngOnInit() {
