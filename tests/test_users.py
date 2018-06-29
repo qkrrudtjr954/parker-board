@@ -41,8 +41,8 @@ class Describe_UserController:
         class Context_email이_틀렸을_때:
             @pytest.fixture
             def login_data(self, user):
-                user.email = 'incorrect@email.com'
-                return before_login_schema.dumps(user).data
+                wrong_user_data = dict(email='incorrect@email.com', password=user.password)
+                return before_login_schema.dumps(wrong_user_data).data
 
             def test_400을_반환한다(self, subject):
                 assert 400 == subject.status_code
