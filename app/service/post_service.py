@@ -3,6 +3,7 @@ from datetime import datetime
 from app.error import SameDataError
 from app.model import db
 from app.model.board import Board
+from app.model.like import Like
 from app.model.post import Post
 from app.model.user import User
 
@@ -51,7 +52,7 @@ def update(target_post: Post, post_data):
 
 def delete(target_post: Post):
     try:
-        target_post.deleted()
+        target_post.delete()
         target_post.updated_at = datetime.utcnow()
 
         db.session.commit()

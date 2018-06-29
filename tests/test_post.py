@@ -1,8 +1,10 @@
 import pytest
 import json
 
+from app.model.like import Like
 from app.model.post import Post
 from app.schema.post import post_create_form_schema, post_update_form_schema
+from tests.factories.like import FakeLikeFactory
 
 from tests.factories.post import FakePostFactory
 from tests.factories.board import FakeBoardFactory
@@ -71,8 +73,8 @@ class Describe_PostController:
             return post.id
 
         @pytest.fixture
-        def subject(self, user, post_id, param):
-            resp = self.client.get('/posts/%d%s' % (post_id, param))
+        def subject(self, user, post_id):
+            resp = self.client.get('/posts/%d' % post_id)
             return resp
 
         def test_200을_반환한다(self, subject):
@@ -100,6 +102,16 @@ class Describe_PostController:
 
             def test_401을_반환한다(self, subject):
                 assert 401 == subject.status_code
+
+        class Context_15개_좋아요를_받았을때:
+            @pytest.fixture
+            def post_id(self):
+                post = FakePostFactory()
+                post.likes = FakeLikeFactory.create_batch(15)
+                return post.id
+
+            def test_post의_like_count는_15이다(self, json_result):
+                assert 15 == json_result['like_count']
 
     class Describe_create:
         @pytest.fixture
@@ -324,3 +336,22 @@ class Describe_PostController:
 
             def test_401을_반환한다(self, subject):
                 assert 401 == subject.status_code
+
+    class Describe_like:
+        @pytest.fixture
+        def target_post(self):
+            post = FakePostFactory()
+            return post
+
+        @pytest.fixture
+        def subject(self, target_post, user):
+            resp = self.client.post('/posts/%d/like' % target_post.id)
+            return resp
+
+        def test_200을_반환한다(self, subject):
+            return 200 == subject.status_code
+
+        def test_like_table에_좋아요가_추가된다(self, subject, target_post, user):
+            assert Like.query.filter(Like.post_id == target_post.id, Like.user_id == user.id).one_or_none()
+
+

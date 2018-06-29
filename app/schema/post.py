@@ -1,9 +1,8 @@
-from marshmallow import fields, validates, ValidationError, validates_schema
-from marshmallow_enum import EnumField
+from marshmallow import fields, ValidationError, validates_schema
 from app.model import db
 from app.model.comment import CommentStatus
 from app.schema import ma
-from app.model.post import Post, PostStatus
+from app.model.post import Post
 from app.schema.user import simple_user_schema
 from app.schema.board import simple_board_schema
 
@@ -22,8 +21,6 @@ class PostSchema(ma.ModelSchema):
 
     comments_count = fields.Method('get_comments_count')
 
-    status = EnumField(PostStatus)
-
     def get_comments_count(self, obj):
         comments = [c for c in obj.comments if c.status != CommentStatus.DELETED]
         return len(comments)
@@ -36,7 +33,7 @@ class PostSchema(ma.ModelSchema):
 
 simple_post_schema = PostSchema(only=['id', 'title'])
 
-main_post_schema = PostSchema(only=['id', 'title', 'content', 'user', 'description', 'created_at', 'updated_at'])
+main_post_schema = PostSchema(only=['id', 'title', 'content', 'user', 'description', 'like_count', 'created_at', 'updated_at'])
 post_list_schema = PostSchema(only=['id', 'title', 'comments_count', 'created_at', 'user'], many=True)
 
 post_id_schema = PostSchema(only=['id'])
