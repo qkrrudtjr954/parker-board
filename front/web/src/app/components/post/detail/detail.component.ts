@@ -5,6 +5,7 @@ import {ActivatedRoute} from "@angular/router";
 import {AuthService} from "../../../services/auth.service";
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {CommentService} from "../../../services/comment.service";
+import {LikeService} from "../../../services/like.service";
 
 @Component({
   selector: 'app-detail',
@@ -14,9 +15,6 @@ import {CommentService} from "../../../services/comment.service";
 
 export class PostDetailComponent implements OnInit {
   postId: number;
-
-
-
   post: Post;
 
   isOwner: boolean;
@@ -24,7 +22,8 @@ export class PostDetailComponent implements OnInit {
   constructor(private route: ActivatedRoute,
               private postService: PostService,
               private commentService: CommentService,
-              private authService: AuthService) { }
+              private authService: AuthService,
+              private likeService: LikeService) { }
 
 
   getPost(postId: number) {
@@ -37,7 +36,12 @@ export class PostDetailComponent implements OnInit {
       })
   }
 
-
+  likePost() {
+    this.likeService.likePost(this.postId)
+      .subscribe((data: {like_count: number}) => {
+        this.post.like_count = data.like_count;
+      })
+  }
 
   ngOnInit() {
     this.route.params.subscribe(params => {

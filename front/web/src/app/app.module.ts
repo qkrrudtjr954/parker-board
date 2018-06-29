@@ -25,6 +25,7 @@ import { PostUpdateComponent } from './components/post/post-update/post-update.c
 import { CreateComponent } from './components/comment/create/create.component';
 import { BoardDetailComponent } from './components/board/board-detail/board-detail.component';
 import { CommentListComponent } from './components/comment/comment-list/comment-list.component';
+import { PostLikeComponent } from './components/post/post-like/post-like.component';
 
 
 const routes: Routes = [{
@@ -75,7 +76,8 @@ const routes: Routes = [{
     PostListComponent,
     CreateComponent,
     BoardDetailComponent,
-    CommentListComponent
+    CommentListComponent,
+    PostLikeComponent
   ],
   imports: [
     BrowserModule,
