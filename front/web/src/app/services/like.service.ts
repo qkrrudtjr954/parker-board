@@ -15,4 +15,8 @@ export class LikeService {
   likePost(postId: number) {
     return this.http.post(`${this.uri}/posts/${postId}/like`, {}, this.options);
   }
+
+  unlikePost(postId: number) {
+    return this.http.post(`${this.uri}/posts/${postId}/unlike`, {}, this.options);
+  }
 }

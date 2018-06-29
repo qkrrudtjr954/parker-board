@@ -18,6 +18,7 @@ export class PostDetailComponent implements OnInit {
   post: Post;
 
   isOwner: boolean;
+  isLiked: boolean = false;
 
   constructor(private route: ActivatedRoute,
               private postService: PostService,
@@ -36,11 +37,20 @@ export class PostDetailComponent implements OnInit {
       })
   }
 
-  likePost() {
-    this.likeService.likePost(this.postId)
-      .subscribe((data: {like_count: number}) => {
-        this.post.like_count = data.like_count;
-      })
+  likePost($event) {
+    if($event) {
+      this.likeService.likePost(this.postId)
+        .subscribe((data: {like_count: number, is_liked: boolean}) => {
+          this.post.like_count = data.like_count;
+          this.isLiked = data.is_liked;
+        })
+    } else {
+      this.likeService.unlikePost(this.postId)
+        .subscribe((data: {like_count: number, is_liked: boolean}) => {
+          this.post.like_count = data.like_count;
+          this.isLiked = data.is_liked;
+        })
+    }
   }
 
   ngOnInit() {
