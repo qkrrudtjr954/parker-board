@@ -19,6 +19,7 @@ export interface Post {
   id: number;
   title: string;
   content: string;
+  like_count: number;
   created_at: string;
   updated_at: string;
   comments_count: number;

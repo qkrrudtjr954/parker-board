@@ -3,12 +3,16 @@
     <div class="text-left">
       <h5>댓글</h5>
     </div>
-    <select class="col-md-2 custom-select" (change)="perPageChange($event)">
-      <option selected [value]="10">10개씩 보기</option>
-      <option [value]="25">25개씩 보기</option>
-      <option [value]="50">50개씩 보기</option>
-      <option [value]="100">100개씩 보기</option>
-    </select>
+
+    <div class="d-flex justify-content-end">
+      <select class="col-md-2 custom-select" (change)="perPageChange($event)">
+        <option selected [value]="10">10개씩 보기</option>
+        <option [value]="25">25개씩 보기</option>
+        <option [value]="50">50개씩 보기</option>
+        <option [value]="100">100개씩 보기</option>
+      </select>
+    </div>
+
     <table class="table">
       <tbody  *ngIf="commentList.length == 0">
         <tr class="text-center">
@@ -18,7 +22,7 @@
         </tr>
       </tbody>
       <tbody  *ngIf="commentList">
-        <tr *ngFor="let comment of commentList | paginate: { itemsPerPage: 10, currentPage: paginationParam.page, totalItems: totalCount}; index as i;">
+        <tr *ngFor="let comment of commentList | paginate: { itemsPerPage: paginationParam.per_page, currentPage: paginationParam.page, totalItems: totalCount}; index as i;">
           <div class="d-flex justify-content-between">
             <p>{{comment.content}}</p>
             <p>{{comment.created_at | date:'yyyy년 MM월 dd일 HH시 mm분 ss초'}}</p>
@@ -26,6 +30,7 @@
         </tr>
       </tbody>
     </table>
+
   </div>
 </div>
 <div class="d-flex justify-content-center">

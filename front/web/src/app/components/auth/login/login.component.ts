@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import {FormControl, FormGroup, FormBuilder, Validators} from "@angular/forms";
 import {AuthService} from "../../../services/auth.service";
 import {AfterLogin} from "../../../models/auth";
@@ -17,8 +17,8 @@ export class LoginComponent implements OnInit {
   });
 
   constructor(private fb: FormBuilder,
-              private authservice: AuthService,
-              private cookieservice: CookieService,
+              private authService: AuthService,
+              private cookieService: CookieService,
               private router: Router) { }
 
   createForm() {
@@ -33,9 +33,9 @@ export class LoginComponent implements OnInit {
     let email = this.loginForm.controls['email'].value;
     let password = this.loginForm.controls['password'].value;
 
-    this.authservice.userLogin(email, password)
+    this.authService.userLogin(email, password)
       .subscribe((data: AfterLogin) => {
-        this.cookieservice.set('current_user', data.user.email);
+        this.cookieService.set('current_user', data.user.email);
 
         alert(data.user.email + ' 님 환영합니다.');
 
