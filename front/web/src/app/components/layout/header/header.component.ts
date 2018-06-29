@@ -1,6 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import { CookieService } from "ngx-cookie-service";
-import {User} from "../../../models/user";
 
 @Component({
   selector: 'app-header',
@@ -10,10 +9,10 @@ import {User} from "../../../models/user";
 export class HeaderComponent implements OnInit {
   currentUser: string;
 
-  constructor(private cookieservice: CookieService) { }
+  constructor(private cookieService: CookieService) { }
 
   setCurrentUserEamil(){
-    let email = this.cookieservice.get('current_user');
+    let email = this.cookieService.get('current_user');
     this.currentUser = email ? email : null;
   }
 

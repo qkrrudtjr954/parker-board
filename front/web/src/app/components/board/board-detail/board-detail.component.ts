@@ -18,7 +18,6 @@ export class BoardDetailComponent implements OnInit, OnChanges {
               private authService: AuthService) { }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log('hello')
     this.getBoard();
   }
 

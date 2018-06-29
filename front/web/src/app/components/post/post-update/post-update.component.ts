@@ -25,9 +25,9 @@ export class PostUpdateComponent implements OnInit {
     this.activatedRoute.params.subscribe(params => {
       const postId = params['id'];
       this.postService.getPost(postId)
-        .subscribe((data: PostDetailData) => {
+        .subscribe((data: Post) => {
           console.log(data);
-          this.targetPost = data.post;
+          this.targetPost = data;
           this.createForm();
         })
     })

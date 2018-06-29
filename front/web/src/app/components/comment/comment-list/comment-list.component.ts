@@ -29,7 +29,6 @@ export class CommentListComponent implements OnInit {
       .subscribe((data: CommentList) => {
         this.commentList = data.comment_list;
         this.totalCount = data.total_count;
-        console.log(data);
       })
   }
 
@@ -38,9 +37,8 @@ export class CommentListComponent implements OnInit {
     this.getCommentList();
   }
 
-  perPageChange(event) {
-    this.paginationParam.per_page = event.target.value;
-    console.log(this.paginationParam)
+  perPageChange($event) {
+    this.paginationParam.per_page = $event.target.value;
     this.getCommentList();
   }
 

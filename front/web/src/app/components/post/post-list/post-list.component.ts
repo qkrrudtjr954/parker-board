@@ -15,6 +15,7 @@ export class PostListComponent implements OnInit {
     per_page: 10
   };
 
+
   boardId:number;
   postList: PostListItem[] = [];
   totalCount: number = 0;
@@ -26,7 +27,6 @@ export class PostListComponent implements OnInit {
 
 
   getPostList() {
-    console.log(this.boardId)
     this.postService.getPostList(this.boardId, this.paginationParam)
         .subscribe((data: PostList) => {
           this.postList = data.post_list;
@@ -39,8 +39,8 @@ export class PostListComponent implements OnInit {
     this.getPostList();
   }
 
-  perPageChange(event) {
-    this.paginationParam.per_page = event.target.value;
+  perPageChange($event) {
+    this.paginationParam.per_page = $event.target.value;
     this.getPostList();
   }
 
@@ -49,7 +49,6 @@ export class PostListComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log('init')
     this.route.params.subscribe(params => {
       this.boardId = params['id'];
       this.getPostList();
