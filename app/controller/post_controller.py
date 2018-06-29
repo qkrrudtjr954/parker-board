@@ -120,6 +120,20 @@ def like(post_id):
         return 'No Post.', 404
     
     target_post.like(current_user)
-    result = dict(like_count=target_post.like_count)
+    result = dict(like_count=target_post.like_count, is_liked=True)
+
+    return jsonify(result), 200
+
+
+@bp.route('/posts/<int:post_id>/unlike', methods=['POST'])
+@login_required
+def unlike(post_id):
+    target_post = Post.query.get(post_id)
+
+    if not target_post:
+        return 'No Post.', 404
+
+    target_post.unlike(current_user)
+    result = dict(like_count=target_post.like_count, is_liked=False)
 
     return jsonify(result), 200

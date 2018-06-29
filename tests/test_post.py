@@ -68,8 +68,6 @@ class Describe_PostController:
         @pytest.fixture
         def post_id(self):
             post = FakePostFactory()
-            self.session.commit()
-
             return post.id
 
         @pytest.fixture
@@ -109,6 +107,10 @@ class Describe_PostController:
                 post = FakePostFactory()
                 post.likes = FakeLikeFactory.create_batch(15)
                 return post.id
+
+            @pytest.fixture
+            def json_result(self, subject):
+                return json.loads(subject.data)
 
             def test_post의_like_count는_15이다(self, json_result):
                 assert 15 == json_result['like_count']
@@ -353,5 +355,25 @@ class Describe_PostController:
 
         def test_like_table에_좋아요가_추가된다(self, subject, target_post, user):
             assert Like.query.filter(Like.post_id == target_post.id, Like.user_id == user.id).one_or_none()
+
+
+    class Describe_unlike:
+        @pytest.fixture
+        def target_post(self, user):
+            post = FakePostFactory()
+            FakeLikeFactory(post_id=post.id, user_id=user.id)
+            print(Like.query.all())
+            return post
+
+        @pytest.fixture
+        def subject(self, target_post):
+            resp = self.client.post('/posts/%d/unlike' % target_post.id)
+            return resp
+
+        def test_200을_반환한다(self, subject):
+            assert 200 == subject.status_code
+
+        def test_like_table에서_row가_삭제된다(self, subject, target_post, user):
+            assert not Like.query.filter(Like.post_id == target_post.id, Like.user_id == user.id).one_or_none()
 
 
