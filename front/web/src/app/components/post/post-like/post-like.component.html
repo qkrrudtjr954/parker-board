@@ -1,5 +1,6 @@
 <p>
-  ❤️{{likeCount}}
+  ❤️좋아요 {{likeCount}}
 </p>
 
-<button (click)="sendLike(true)">Like</button>
+<button *ngIf="!isLiked" (click)="sendLike(true)">Like</button>
+<button *ngIf="isLiked" (click)="sendLike(false)">Unlike</button>
