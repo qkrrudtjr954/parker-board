@@ -51,7 +51,7 @@ def detail(post_id):
 
     if not post:
         return 'No Post.', 404
-
+    post.read()
     return main_post_schema.jsonify(post), 200
 
 

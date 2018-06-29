@@ -56,6 +56,7 @@ class Post(db.Model):
 
     def read(self):
         self.readcount += 1
+        # db.session.commit()
 
     def is_same_data(self, dict_data):
         same = True
