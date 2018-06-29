@@ -53,10 +53,18 @@ export class PostDetailComponent implements OnInit {
     }
   }
 
+  setIsLiked() {
+    this.likeService.isLiked(this.postId)
+      .subscribe((data: {is_liked: boolean}) => {
+        this.isLiked = data.is_liked;
+      })
+  }
+
   ngOnInit() {
     this.route.params.subscribe(params => {
       let post_id = params['id'];
       this.getPost(post_id);
+      this.setIsLiked();
     })
   }
 

@@ -19,4 +19,9 @@ export class LikeService {
   unlikePost(postId: number) {
     return this.http.post(`${this.uri}/posts/${postId}/unlike`, {}, this.options);
   }
+
+  isLiked(postId: number) {
+    return this.http.get(`${this.uri}/posts/${postId}/is-liked`, this.options)
+
+  }
 }
