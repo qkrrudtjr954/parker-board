@@ -6,6 +6,8 @@ from app.model import db
 from flask_login import UserMixin
 from datetime import datetime
 
+from app.model.like import Like
+
 
 class UserStatus(enum.Enum):
     ACTIVE = 0
@@ -35,6 +37,11 @@ class User(UserMixin, db.Model):
             return True
         else:
             return False
+
+    def is_liked(self, post_id):
+        if Like.query.filter(Like.post_id == post_id, Like.user_id == self.id).one_or_none():
+            return True
+        return False
 
     def __repr__(self):
         return "<User email: %s, password: %s, created_at: %s, updated_at: %s>" \

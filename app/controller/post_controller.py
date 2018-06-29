@@ -137,3 +137,10 @@ def unlike(post_id):
     result = dict(like_count=target_post.like_count, is_liked=False)
 
     return jsonify(result), 200
+
+
+@bp.route('/posts/<int:post_id>/is-liked', methods=['GET'])
+@login_required
+def is_liked(post_id):
+    result = dict(is_liked=current_user.is_liked(post_id))
+    return jsonify(result), 200

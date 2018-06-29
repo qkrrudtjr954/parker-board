@@ -8,6 +8,7 @@ from tests.factories.like import FakeLikeFactory
 
 from tests.factories.post import FakePostFactory
 from tests.factories.board import FakeBoardFactory
+from tests.factories.user import FakeUserFactory
 
 
 class Describe_PostController:
@@ -377,3 +378,37 @@ class Describe_PostController:
             assert not Like.query.filter(Like.post_id == target_post.id, Like.user_id == user.id).one_or_none()
 
 
+    class Describe_is_liked:
+        @pytest.fixture
+        def post_id(self, user):
+            post = FakePostFactory()
+            FakeLikeFactory(post_id=post.id, user_id=user.id)
+            return post.id
+
+        @pytest.fixture
+        def subject(self, post_id):
+            resp = self.client.get('/posts/%d/is-liked' % post_id)
+            return resp
+
+        @pytest.fixture
+        def json_result(self, subject):
+            return json.loads(subject.data)
+
+        def test_200을_반환한다(self, subject):
+            assert 200 == subject.status_code
+
+        def test_is_liked는_True를_반환한다(self, json_result):
+            assert json_result['is_liked']
+
+        class Context_좋아요를_누르지_않은_게시글인_경우:
+            @pytest.fixture
+            def post_id(self, user):
+                another_user = FakeUserFactory()
+
+                post = FakePostFactory()
+                FakeLikeFactory(post_id=post.id, user_id=another_user.id)
+
+                return post.id
+
+            def test_is_liked는_False를_반환한다(self, json_result):
+                assert not json_result['is_liked']
