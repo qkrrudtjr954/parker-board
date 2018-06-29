@@ -28,6 +28,7 @@ class Post(db.Model):
     board_id = db.Column(db.Integer, db.ForeignKey('board.id'), nullable=False)
 
     comments = db.relationship("Comment", backref='post', lazy='dynamic')
+
     likes = db.relationship("Like", lazy=True)
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
@@ -72,6 +73,12 @@ class Post(db.Model):
             db.session.add(like)
             db.session.commit()
 
+    def unlike(self, user: User):
+        liked = Like.query.filter(Like.user_id == user.id, Like.post_id == self.id).first()
+
+        if liked:
+            db.session.delete(liked)
+            db.session.commit()
 
     def __repr__(self):
         return "<Post title: %s, content: %s, description: %s, status: %s," \

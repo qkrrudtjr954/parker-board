@@ -29,7 +29,7 @@ def get_comment(comment_id):
 
 def delete(comment: Comment):
     try:
-        comment.deleted()
+        comment.delete()
         comment.refresh_update_time()
 
         db.session.commit()
