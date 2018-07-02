@@ -20,7 +20,7 @@ class Post(db.Model):
     title = db.Column(db.String(200), nullable=False)
     content = db.Column(db.String(2000), nullable=False)
     description = db.Column(db.String(200), nullable=True)
-    readcount = db.Column(db.Integer, default=0)
+    readcount = db.Column(db.Integer, nullable=False, default=0)
     status = db.Column(ChoiceType(PostStatus, impl=db.Integer()), default=PostStatus.NORMAL)
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
@@ -30,7 +30,7 @@ class Post(db.Model):
 
     comments = db.relationship("Comment", backref='post', lazy='dynamic')
 
-    likes = db.relationship("Like", lazy=True)
+    likes = db.relationship("Like", lazy='dynamic')
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow)
@@ -47,7 +47,7 @@ class Post(db.Model):
     def is_deleted(self):
         return self.status == PostStatus.DELETED
 
-    @hybrid_property
+    @property
     def like_count(self):
         return Like.query.filter(Like.post_id == self.id).count()
 
@@ -56,6 +56,8 @@ class Post(db.Model):
 
     def read(self):
         self.readcount = self.readcount+1
+        # self.readcount = Post.readcount + 1
+
         db.session.commit()
 
     def is_same_data(self, dict_data):
@@ -71,15 +73,17 @@ class Post(db.Model):
         return same
 
     def like(self, user: User):
-        liked = Like.query.filter(Like.user_id == user.id, Like.post_id == self.id).first()
+        liked = self.likes.filter(Like.user_id == user.id).first()
+        # liked = Like.query.filter(Like.user_id == user.id, Like.post_id == self.id).first()
 
         if not liked:
             like = Like(user_id=user.id, post_id=self.id)
+            # self.likes.add(like)
             db.session.add(like)
             db.session.commit()
 
     def unlike(self, user: User):
-        liked = Like.query.filter(Like.user_id == user.id, Like.post_id == self.id).first()
+        liked = self.likes.filter(Like.user_id == user.id).first()
 
         if liked:
             db.session.delete(liked)

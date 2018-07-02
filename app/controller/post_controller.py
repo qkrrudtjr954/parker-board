@@ -31,6 +31,10 @@ def post_list(pagination, board_id):
     if not board:
         return 'No Board.', 404
 
+    # board.posts\
+    #         .filter(~Post.is_deleted)\
+    #         .order_by(Post.created_at.desc())\
+    #         .paginate(page=page, per_page=per_page, error_out=False)
     posts_data = board.get_posts(pagination.page, pagination.per_page)
 
     post_list = post_list_schema.dump(posts_data.items).data
@@ -46,7 +50,6 @@ def post_list(pagination, board_id):
 @bp.route('/posts/<int:post_id>', methods=['GET'])
 @login_required
 def detail(post_id):
-
     post = Post.query.get(post_id)
 
     if not post:
