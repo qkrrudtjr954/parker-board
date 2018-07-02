@@ -32,6 +32,10 @@ export class AuthService {
     return this.http.post(`${this.uri}/users/`, user, this.options);
   }
 
+  getCurrentUserInfo() {
+    return this.http.get(`${this.uri}/users/user-info`, this.options)
+  }
+
   isLoggedIn() {
     return this.cookie.check('remember_token');
   }

@@ -9,7 +9,7 @@ from app.model.post import Post
 from app.schema.pagination import pagination_schema
 from app.service import comment_service
 from app.schema.comment import comment_create_form_schema, comment_update_form_schema, after_updated_schema, \
-    after_create_schema, comment_schema, comments_schema
+    after_create_schema, comments_schema
 
 bp = Blueprint('comment', __name__)
 

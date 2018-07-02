@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {FormControl, FormGroup, FormBuilder, Validators} from "@angular/forms";
 import {AuthService} from "../../../services/auth.service";
 import {AfterLogin} from "../../../models/auth";
@@ -36,12 +36,9 @@ export class LoginComponent implements OnInit {
     this.authService.userLogin(email, password)
       .subscribe((data: AfterLogin) => {
         this.cookieService.set('current_user', data.user.email);
-
         alert(data.user.email + ' 님 환영합니다.');
-
         // this.router.navigate(['/']);
         location.href='/';
-
       }, error1 => {
         if (error1.status == 400) {
           alert('회원 정보가 존재하지 않습니다.');

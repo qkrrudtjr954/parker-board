@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import { CookieService } from "ngx-cookie-service";
+import {AuthService} from "../../../services/auth.service";
 
 @Component({
   selector: 'app-header',
@@ -8,16 +8,24 @@ import { CookieService } from "ngx-cookie-service";
 })
 export class HeaderComponent implements OnInit {
   currentUser: string;
+  isLoggedIn: boolean = false;
 
-  constructor(private cookieService: CookieService) { }
+  constructor(private authService: AuthService) { }
 
-  setCurrentUserEamil(){
-    let email = this.cookieService.get('current_user');
-    this.currentUser = email ? email : null;
+  setCurrentUserEmail(){
+    this.authService.getCurrentUserInfo()
+      .subscribe((data: {email:string}) => {
+        this.currentUser = data.email;
+      }, error1 => {
+        console.log('error')
+      })
   }
 
   ngOnInit() {
-    this.setCurrentUserEamil();
+    this.isLoggedIn = this.authService.isLoggedIn();
+    if (this.isLoggedIn){
+      this.setCurrentUserEmail();
+    }
   }
 
 }

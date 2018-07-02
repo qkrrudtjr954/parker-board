@@ -20,7 +20,9 @@ class Post(db.Model):
     title = db.Column(db.String(200), nullable=False)
     content = db.Column(db.String(2000), nullable=False)
     description = db.Column(db.String(200), nullable=True)
-    readcount = db.Column(db.Integer, nullable=False, default=0)
+    read_count = db.Column(db.Integer, nullable=False, default=0)
+    comment_count = db.Column(db.Integer, nullable=False, default=0)
+
     status = db.Column(ChoiceType(PostStatus, impl=db.Integer()), default=PostStatus.NORMAL)
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
@@ -55,9 +57,7 @@ class Post(db.Model):
         self.status = PostStatus.DELETED
 
     def read(self):
-        self.readcount = self.readcount+1
-        # self.readcount = Post.readcount + 1
-
+        self.read_count = Post.read_count + 1
         db.session.commit()
 
     def is_same_data(self, dict_data):

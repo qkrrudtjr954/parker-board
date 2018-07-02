@@ -86,7 +86,7 @@ class Describe_PostController:
             assert db_post.content == json_result['content']
 
         def test_readcount는_1이다(self, json_result):
-            assert 1 == json_result['readcount']
+            assert 1 == json_result['read_count']
 
         class Context_post가_존재하지_않을_때:
             @pytest.fixture
