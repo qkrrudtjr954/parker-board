@@ -1,6 +1,5 @@
 from marshmallow import fields, ValidationError, validates_schema
 from app.model import db
-from app.model.comment import CommentStatus
 from app.schema import ma
 from app.model.post import Post
 from app.schema.user import simple_user_schema
@@ -19,12 +18,6 @@ class PostSchema(ma.ModelSchema):
     board = fields.Nested(simple_board_schema)
     user = fields.Nested(simple_user_schema)
 
-    comments_count = fields.Method('get_comments_count')
-
-    def get_comments_count(self, obj):
-        comments = [c for c in obj.comments if c.status != CommentStatus.DELETED]
-        return len(comments)
-
     class Meta:
         strict = True
         model = Post
@@ -33,7 +26,7 @@ class PostSchema(ma.ModelSchema):
 
 simple_post_schema = PostSchema(only=['id', 'title'])
 
-main_post_schema = PostSchema(only=['id', 'title', 'content', 'user', 'description', 'like_count', 'created_at', 'updated_at', 'read_count'])
+main_post_schema = PostSchema(only=['id', 'title', 'content', 'user', 'description', 'like_count', 'created_at', 'updated_at', 'read_count', 'comments_count'])
 post_list_schema = PostSchema(only=['id', 'title', 'comments_count', 'created_at', 'user'], many=True)
 
 post_id_schema = PostSchema(only=['id'])

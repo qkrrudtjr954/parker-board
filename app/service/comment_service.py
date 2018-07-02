@@ -12,7 +12,10 @@ def create(post_id, comment: Comment, user: User):
 
     if not target_post:
         raise NotFoundError('No Post.')
+
     try:
+        target_post.comments_count = target_post.comments_count + 1
+
         comment.user_id = user.id
         comment.post_id = target_post.id
 
@@ -29,8 +32,8 @@ def get_comment(comment_id):
 
 def delete(comment: Comment):
     try:
+        comment.post.comments_count = comment.post.comments_count - 1
         comment.delete()
-        comment.refresh_update_time()
 
         db.session.commit()
     except Exception as e:
@@ -44,7 +47,6 @@ def update(target_comment: Comment, comment_data):
 
     try:
         target_comment.content = comment_data.content
-        target_comment.refresh_update_time()
 
         db.session.commit()
     except Exception as e:

@@ -21,7 +21,7 @@ class Post(db.Model):
     content = db.Column(db.String(2000), nullable=False)
     description = db.Column(db.String(200), nullable=True)
     read_count = db.Column(db.Integer, nullable=False, default=0)
-    comment_count = db.Column(db.Integer, nullable=False, default=0)
+    comments_count = db.Column(db.Integer, nullable=False, default=0)
 
     status = db.Column(ChoiceType(PostStatus, impl=db.Integer()), default=PostStatus.NORMAL)
 
