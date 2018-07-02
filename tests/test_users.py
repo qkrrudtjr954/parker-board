@@ -184,3 +184,29 @@ class Describe_UserController:
 
             def test_401을_반환한다(self, subject):
                 assert 401 == subject.status_code
+
+    class Describe_get_current_user_info:
+        @pytest.fixture
+        def user(self, logged_in_user):
+            return logged_in_user
+
+        @pytest.fixture
+        def subject(self, user):
+            resp = self.client.get('/users/user-info')
+            return resp
+
+        def test_200을_반환한다(self, subject):
+            print(subject.data)
+            assert 200 == subject.status_code
+
+        def test_user의_email을_반환한다(self, json_result, user):
+            assert json_result['email'] == user.email
+
+
+        class Context_로그인_안됐을_때:
+            @pytest.fixture
+            def user(self, not_logged_in_user):
+                return not_logged_in_user
+
+            def test_401을_반환한다(self, subject):
+                assert 401 == subject.status_code

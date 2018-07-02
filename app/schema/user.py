@@ -24,6 +24,7 @@ class UserSchema(ma.ModelSchema):
 
 
 simple_user_schema = UserSchema(only=['id', 'email'])
+user_info_schema = UserSchema(only=['email'])
 
 after_leave_schema = UserSchema(only=['id', 'email', 'created_at', 'updated_at', 'status'])
 after_register_schema = UserSchema(only=['id', 'email', 'created_at'])

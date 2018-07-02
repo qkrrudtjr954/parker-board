@@ -3,7 +3,7 @@ from app.error import NotFoundError, DuplicateValueError
 from app.service import user_service
 from webargs.flaskparser import use_args
 from app.schema.user import after_register_schema, after_login_schema, \
-    before_login_schema, before_register_schema
+    before_login_schema, before_register_schema, user_info_schema
 from flask_login import login_user, login_required, logout_user, current_user
 
 
@@ -57,3 +57,9 @@ def leave():
         return 'Server Error.', 500
     else:
         return 'User leaved.', 204
+
+
+@bp.route('/user-info', methods=['GET'])
+@login_required
+def get_current_user_info():
+    return user_info_schema.jsonify(current_user), 200
