@@ -26,18 +26,14 @@ class Board(db.Model):
     posts = db.relationship("Post", backref="board", lazy='dynamic')
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     @hybrid_property
     def is_deleted(self):
         return self.status == BoardStatus.DELETED
 
-    def deleted(self):
+    def delete(self):
         self.status = BoardStatus.DELETED
-
-
-    def refresh_update_time(self):
-        self.updated_at = datetime.utcnow()
 
     def is_owner(self, user: User):
         return self.user_id == user.id

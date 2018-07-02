@@ -40,7 +40,7 @@ EMAIL_REGEX = re.compile(r"[^@]+@[^@]+\.[^@]+")
 
 
 class UserFormSchema(ma.ModelSchema):
-    @pre_load
+    @validates_schema
     def validate_length_check(self, data):
         if 'password' not in data:
             raise ValidationError('Password can not be null', ['password'], status_code=422)

@@ -22,7 +22,7 @@ bp = Blueprint('comment', __name__)
 @use_args(pagination_schema)
 @login_required
 def comment_list(pagination, post_id):
-    target_post: Post= Post.query.get(post_id)
+    target_post: Post = Post.query.get(post_id)
 
     if not target_post:
         error = dict(message='존재하지 않는 게시글 입니다.')
