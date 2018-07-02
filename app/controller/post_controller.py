@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, abort
 from webargs.flaskparser import use_args
 
 from app.error import SameDataError
@@ -18,7 +18,6 @@ bp = Blueprint('post', __name__)
 글
 목록, 생성, 삭제, 수정, 읽기
 '''
-
 
 # list post
 # GET /boards/1/posts
@@ -48,12 +47,14 @@ def post_list(pagination, board_id):
 @bp.route('/posts/<int:post_id>', methods=['GET'])
 @login_required
 def detail(post_id):
-    post = Post.query.get(post_id)
+    target_post = Post.query.get(post_id)
 
-    if not post:
+    if not target_post:
         return 'No Post.', 404
-    post.read()
-    return main_post_schema.jsonify(post), 200
+
+    target_post.read()
+
+    return main_post_schema.jsonify(target_post), 200
 
 
 # create post
@@ -145,3 +146,4 @@ def unlike(post_id):
 def is_liked(post_id):
     result = dict(is_liked=current_user.is_liked(post_id))
     return is_liked_schema.jsonify(result), 200
+
