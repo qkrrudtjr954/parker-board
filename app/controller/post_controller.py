@@ -120,7 +120,7 @@ def like(post_id):
         return 'No Post.', 404
     
     target_post.like(current_user)
-    result = dict(like_count=target_post.like_count, is_liked=True)
+    result = dict(like_count=target_post.like_count)
 
     return jsonify(result), 200
 
@@ -134,7 +134,7 @@ def unlike(post_id):
         return 'No Post.', 404
 
     target_post.unlike(current_user)
-    result = dict(like_count=target_post.like_count, is_liked=False)
+    result = dict(like_count=target_post.like_count)
 
     return jsonify(result), 200
 

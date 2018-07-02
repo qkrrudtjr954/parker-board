@@ -40,15 +40,15 @@ export class PostDetailComponent implements OnInit {
   likePost($event) {
     if($event) {
       this.likeService.likePost(this.postId)
-        .subscribe((data: {like_count: number, is_liked: boolean}) => {
+        .subscribe((data: {like_count: number}) => {
           this.post.like_count = data.like_count;
-          this.isLiked = data.is_liked;
+          this.isLiked = true;
         })
     } else {
       this.likeService.unlikePost(this.postId)
-        .subscribe((data: {like_count: number, is_liked: boolean}) => {
+        .subscribe((data: {like_count: number}) => {
           this.post.like_count = data.like_count;
-          this.isLiked = data.is_liked;
+          this.isLiked = false;
         })
     }
   }
