@@ -33,6 +33,9 @@ class Comment(db.Model):
     def is_deleted(self):
         return self.status == CommentStatus.DELETED
 
+    def is_owner(self, user: User):
+        return self.user_id == user.id
+
     def __repr__(self):
         return "<Comment id: %d, content: %s, status: %s" \
                " created_at: %s, updated_at: %s>"\

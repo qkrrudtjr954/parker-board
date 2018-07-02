@@ -3,6 +3,7 @@ from flask_login import login_required, current_user
 from webargs.flaskparser import use_args
 
 from app.model.board import Board
+from app.schema.error import default_message_error_schema
 from app.service import board_service
 from app.schema.board import main_board_schema, board_create_form_schema, board_update_form_schema, board_id_schema, \
     simple_board_schema, concrete_board_schema
@@ -21,7 +22,8 @@ def get_board(board_id):
     target_board = Board.query.get(board_id)
 
     if not target_board:
-        return 'No Board.', 404
+        error = dict(message='존재하지 않는 게시판 입니다.')
+        return default_message_error_schema.jsonify(error), 404
 
     return concrete_board_schema.jsonify(target_board), 200
 
@@ -34,9 +36,9 @@ def create(board: Board):
     try:
         board_service.create(current_user, board)
         return board_id_schema.jsonify(board), 200
-    except Exception as e:
-        print(e)
-        return 'Server Error.', 500
+    except Exception:
+        error = dict(message='서버상의 문제가 발생했습니다. 다시 시도해주세요.')
+        return default_message_error_schema.jsonify(error), 500
 
 
 # update board
@@ -47,16 +49,19 @@ def update(board_data, board_id):
     target_board = Board.query.get(board_id)
 
     if not target_board:
-        return 'No Board.', 404
+        error = dict(message='존재하지 않는 게시판 입니다.')
+        return default_message_error_schema.jsonify(error), 404
 
-    if not target_board.user_id == current_user.id:
-        return 'No Authentication.', 401
+    if not target_board.is_owner(current_user):
+        error = dict(message='권한이 없습니다.')
+        return default_message_error_schema.jsonify(error), 401
 
     try:
         board_service.update(target_board, board_data)
         return board_id_schema.jsonify(target_board), 200
     except Exception:
-        return 'Server Error.', 500
+        error = dict(message='서버상의 문제가 발생했습니다. 다시 시도해주세요.')
+        return default_message_error_schema.jsonify(error), 500
 
 
 # delete board
@@ -66,14 +71,17 @@ def delete(board_id):
     target_board = Board.query.get(board_id)
 
     if not target_board:
-        return 'No Board.', 404
+        error = dict(message='존재하지 않는 게시판 입니다.')
+        return default_message_error_schema.jsonify(error), 404
 
-    if not target_board.user_id == current_user.id:
-        return 'No Authentication.', 401
+    if not target_board.is_owner(current_user):
+        error = dict(message='권한이 없습니다.')
+        return default_message_error_schema.jsonify(error), 401
 
     try:
         board_service.delete(target_board)
         return board_id_schema.jsonify(target_board), 204
     except Exception as e:
-        return 'Server Error.', 500
+        error = dict(message='서버상의 문제가 발생했습니다. 다시 시도해주세요.')
+        return default_message_error_schema.jsonify(error), 500
 

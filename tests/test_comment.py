@@ -182,14 +182,6 @@ class Describe_CommentController:
 
             assert db_comment.content == 'changed content.'
 
-        class Context_이전과_데이터가_같을_때:
-            @pytest.fixture
-            def update_data(self, target_comment):
-                return dict(content=target_comment.content)
-
-            def test_406을_반환한다(self, subject):
-                assert 406 == subject.status_code
-
         class Context_본인의_게시글이_아닌_경우:
             @pytest.fixture
             def target_comment(self):

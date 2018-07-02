@@ -2,6 +2,9 @@ import factory
 from app.model import db
 from app.model.user import User, UserStatus
 from datetime import datetime
+from werkzeug.security import generate_password_hash
+
+
 
 
 class FakeUserFactory(factory.alchemy.SQLAlchemyModelFactory):

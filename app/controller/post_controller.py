@@ -3,6 +3,7 @@ from webargs.flaskparser import use_args
 
 from app.error import SameDataError
 from app.schema.like import is_liked_schema
+from app.schema.error import default_message_error_schema
 from app.service import post_service
 from app.model.board import Board
 from app.model.post import Post
@@ -27,7 +28,8 @@ def post_list(pagination, board_id):
     board = Board.query.get(board_id)
 
     if not board:
-        return 'No Board.', 404
+        error = dict(message='존재하지 않는 게시판 입니다.')
+        return default_message_error_schema.jsonify(error), 404
 
     posts_data = board.posts\
         .filter(~Post.is_deleted)\
@@ -50,7 +52,8 @@ def detail(post_id):
     target_post = Post.query.get(post_id)
 
     if not target_post:
-        return 'No Post.', 404
+        error = dict(message='존재하지 않는 게시글 입니다.')
+        return default_message_error_schema.jsonify(error), 404
 
     target_post.read()
 
@@ -67,7 +70,8 @@ def create(post: Post, board_id):
         post_service.create(board_id, post, current_user)
         return post_id_schema.jsonify(post), 200
     except Exception as e:
-        return str(e), 500
+        error = dict(message='서버상의 문제가 발생했습니다. 다시 시도해주세요.')
+        return default_message_error_schema.jsonify(error), 500
 
 
 # update post
@@ -79,18 +83,19 @@ def update(post_data, post_id):
     target_post = Post.query.get(post_id)
 
     if not target_post:
-        return 'No Post.', 404
+        error = dict(message='존재하지 않는 게시글 입니다.')
+        return default_message_error_schema.jsonify(error), 404
 
     if not target_post.is_owner(current_user):
-        return 'No Authentication.', 401
+        error = dict(message='권한이 없습니다.')
+        return default_message_error_schema.jsonify(error), 401
 
     try:
         post_service.update(target_post, post_data)
         return post_id_schema.jsonify(target_post), 200
-    except SameDataError as e:
-        return str(e), 406
     except Exception:
-        return 'Server Error.', 500
+        error = dict(message='서버상의 문제가 발생했습니다. 다시 시도해주세요.')
+        return default_message_error_schema.jsonify(error), 500
 
 
 # delete post
@@ -101,16 +106,19 @@ def delete(post_id):
     target_post = Post.query.get(post_id)
 
     if not target_post:
-        return 'No Post.', 404
+        error = dict(message='존재하지 않는 게시글 입니다.')
+        return default_message_error_schema.jsonify(error), 404
 
     if not target_post.is_owner(current_user):
-        return 'No Authentication.', 401
+        error = dict(message='권한이 없습니다.')
+        return default_message_error_schema.jsonify(error), 401
 
     try:
         post_service.delete(target_post)
         return post_id_schema.jsonify(target_post), 204
     except Exception:
-        return 'Server Error.', 500
+        error = dict(message='서버상의 문제가 발생했습니다. 다시 시도해주세요.')
+        return default_message_error_schema.jsonify(error), 500
 
 
 @bp.route('/posts/<int:post_id>/like', methods=['POST'])
@@ -119,7 +127,8 @@ def like(post_id):
     target_post = Post.query.get(post_id)
 
     if not target_post:
-        return 'No Post.', 404
+        error = dict(message='존재하지 않는 게시글 입니다.')
+        return default_message_error_schema.jsonify(error), 404
     
     target_post.like(current_user)
     result = dict(like_count=target_post.like_count)
@@ -133,7 +142,8 @@ def unlike(post_id):
     target_post = Post.query.get(post_id)
 
     if not target_post:
-        return 'No Post.', 404
+        error = dict(message='존재하지 않는 게시글 입니다.')
+        return default_message_error_schema.jsonify(error), 404
 
     target_post.unlike(current_user)
     result = dict(like_count=target_post.like_count)

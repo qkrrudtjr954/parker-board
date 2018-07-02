@@ -7,12 +7,7 @@ from app.model.post import Post
 from app.model.comment import Comment
 
 
-def create(post_id, comment: Comment, user: User):
-    target_post = Post.query.get(post_id)
-
-    if not target_post:
-        raise NotFoundError('No Post.')
-
+def create(target_post, comment: Comment, user: User):
     try:
         target_post.increase_comments_count()
 
@@ -42,9 +37,6 @@ def delete(comment: Comment):
 
 
 def update(target_comment: Comment, comment_data):
-    if target_comment.content == comment_data.content:
-        raise SameDataError('Nothing Changed. Same data.')
-
     try:
         target_comment.content = comment_data.content
 

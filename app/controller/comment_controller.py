@@ -6,6 +6,7 @@ from webargs.flaskparser import use_args
 from app.error import NotFoundError, SameDataError
 from app.model.comment import Comment
 from app.model.post import Post
+from app.schema.error import default_message_error_schema
 from app.schema.pagination import pagination_schema
 from app.service import comment_service
 from app.schema.comment import comment_create_form_schema, comment_update_form_schema, after_updated_schema, \
@@ -25,7 +26,8 @@ def comment_list(pagination, post_id):
     target_post: Post= Post.query.get(post_id)
 
     if not target_post:
-        return 'No Post', 404
+        error = dict(message='존재하지 않는 게시글 입니다.')
+        return default_message_error_schema.jsonify(error), 404
 
     comments_data = target_post.get_comments(pagination.page, pagination.per_page)
 
@@ -39,32 +41,39 @@ def comment_list(pagination, post_id):
 @login_required
 @use_args(comment_create_form_schema)
 def create(comment, post_id):
-    try:
-        comment_service.create(post_id, comment, current_user)
+    target_post = Post.query.get(post_id)
+    if not target_post:
+        error = dict(message='존재하지 않는 게시글 입니다.')
+        return default_message_error_schema.jsonify(error), 404
 
+    try:
+        comment_service.create(target_post, comment, current_user)
         return after_create_schema.jsonify(comment), 200
-    except NotFoundError as e:
-        return str(e), 404
     except Exception:
-        return 'Server Error.', 500
+        error = dict(message='서버상의 문제가 발생했습니다. 다시 시도해주세요.')
+        return default_message_error_schema.jsonify(error), 500
 
 
 @bp.route('/comments/<int:comment_id>', methods=['DELETE'])
 @login_required
 def delete(comment_id):
-    comment = Comment.query.get(comment_id)
+    target_comment = Comment.query.get(comment_id)
 
-    if not comment:
-        return 'No Comment.', 404
+    if not target_comment:
+        error = dict(message='존재하지 않는 댓글 입니다.')
+        return default_message_error_schema.jsonify(error), 404
 
-    if comment.user_id != current_user.id:
-        return 'No Authentication.', 401
+    if not target_comment.is_owner(current_user):
+        error = dict(message='권한이 없습니다.')
+        return default_message_error_schema.jsonify(error), 401
 
     try:
-        comment_service.delete(comment)
+        comment_service.delete(target_comment)
         return 'Comment deleted', 204
+
     except Exception:
-        return 'Server Error.', 500
+        error = dict(message='서버상의 문제가 발생했습니다. 다시 시도해주세요.')
+        return default_message_error_schema.jsonify(error), 500
 
 
 @bp.route('/comments/<int:comment_id>', methods=['PATCH'])
@@ -74,15 +83,16 @@ def update(comment_data, comment_id):
     target_comment = Comment.query.get(comment_id)
 
     if not target_comment:
-        return 'No Comment.', 404
+        error = dict(message='존재하지 않는 댓글 입니다.')
+        return default_message_error_schema.jsonify(error), 404
 
-    if target_comment.user_id != current_user.id:
-        return 'No Authentication.', 401
+    if not target_comment.is_owner(current_user):
+        error = dict(message='권한이 없습니다.')
+        return default_message_error_schema.jsonify(error), 401
 
     try:
         comment_service.update(target_comment, comment_data)
         return after_updated_schema.jsonify(target_comment), 200
-    except SameDataError as e:
-        return str(e), 406
     except Exception:
-        return 'Server Error.', 500
+        error = dict(message='서버상의 문제가 발생했습니다. 다시 시도해주세요.')
+        return default_message_error_schema.jsonify(error), 500

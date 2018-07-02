@@ -7,7 +7,7 @@ from flask_login import UserMixin
 from datetime import datetime
 
 from app.model.like import Like
-
+from werkzeug.security import generate_password_hash, check_password_hash
 
 class UserStatus(enum.Enum):
     ACTIVE = 0
@@ -24,6 +24,12 @@ class User(UserMixin, db.Model):
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def set_password(self, password):
+        self.password =  generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
 
     def is_active(self):
         return self.status == UserStatus.ACTIVE

@@ -2,7 +2,7 @@ import logging
 import sys
 
 import pytest
-from app import create_app
+from app import create_app, User
 
 from app.model import db
 from app.schema.user import before_login_schema
@@ -39,10 +39,14 @@ def session(tdb):
 
 @pytest.fixture
 def logged_in_user(client, session):
-    user = FakeUserFactory.create()
+    user = FakeUserFactory.build()
+    data = dict(email=user.email, password=user.password)
+    user.set_password(user.password)
+
+    session.add(user)
     session.commit()
 
-    resp = client.post('/users/login', data=before_login_schema.dumps(user).data, content_type='application/json')
+    resp = client.post('/users/login', data=before_login_schema.dumps(data).data, content_type='application/json')
     assert 200 == resp.status_code
 
     return user

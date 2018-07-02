@@ -228,15 +228,6 @@ class Describe_PostController:
             assert db_post.content == update_data['content']
             assert db_post.description == update_data['description']
 
-        class Context_데이터가_이전과_같을_때:
-            @pytest.fixture
-            def update_data(self, target_post):
-                return dict(title=target_post.title, content=target_post.content, description=target_post.description)
-
-            def test_406을_반환한다(self, subject):
-                # 406 혀용되지 않는 요청
-                assert 406 == subject.status_code
-
         class Context_title이_없을_때:
             @pytest.fixture
             def update_data(self):

@@ -13,9 +13,15 @@ class Describe_UserController:
     class Describe_login:
         @pytest.fixture
         def user(self):
-            user = FakeUserFactory()
+            user = FakeUserFactory.build()
+            copy_user = FakeUserFactory.build(email=user.email, password=user.password)
+
+            user.set_password(user.password)
+
+            self.session.add(user)
             self.session.commit()
-            return user
+
+            return copy_user
 
         @pytest.fixture
         def login_data(self, user):
@@ -109,7 +115,7 @@ class Describe_UserController:
             db_user = User.query.get(user_id)
 
             assert db_user.email == form.email
-            assert db_user.password == form.password
+            assert db_user.check_password(form.password)
 
         class Context_중복_email일_때:
             @pytest.fixture

@@ -35,7 +35,7 @@ class Post(db.Model):
     likes = db.relationship("Like", lazy='dynamic')
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     def get_comments(self, page, per_page):
         return self.comments.filter(
