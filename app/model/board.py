@@ -35,11 +35,6 @@ class Board(db.Model):
     def deleted(self):
         self.status = BoardStatus.DELETED
 
-    def get_posts(self, page, per_page):
-        return self.posts\
-            .filter(~Post.is_deleted)\
-            .order_by(Post.created_at.desc())\
-            .paginate(page=page, per_page=per_page, error_out=False)
 
     def refresh_update_time(self):
         self.updated_at = datetime.utcnow()

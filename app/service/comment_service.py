@@ -14,7 +14,7 @@ def create(post_id, comment: Comment, user: User):
         raise NotFoundError('No Post.')
 
     try:
-        target_post.comments_count = target_post.comments_count + 1
+        target_post.increase_comments_count()
 
         comment.user_id = user.id
         comment.post_id = target_post.id
@@ -32,9 +32,9 @@ def get_comment(comment_id):
 
 def delete(comment: Comment):
     try:
-        comment.post.comments_count = comment.post.comments_count - 1
-        comment.delete()
+        comment.post.decrease_comments_count()
 
+        comment.delete()
         db.session.commit()
     except Exception as e:
         db.session.rollback()

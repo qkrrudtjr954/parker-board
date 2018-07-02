@@ -31,6 +31,8 @@ post_list_schema = PostSchema(only=['id', 'title', 'comments_count', 'created_at
 
 post_id_schema = PostSchema(only=['id'])
 
+post_like_count_schema = PostSchema(only=['like_count'])
+
 
 class PostCreateFormSchema(ma.ModelSchema):
     @validates_schema

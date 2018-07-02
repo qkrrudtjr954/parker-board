@@ -72,6 +72,9 @@ class Post(db.Model):
 
         return same
 
+    def is_owner(self, user: User):
+        return self.user_id == user.id
+
     def like(self, user: User):
         liked = self.likes.filter(Like.user_id == user.id).first()
         # liked = Like.query.filter(Like.user_id == user.id, Like.post_id == self.id).first()
@@ -88,6 +91,14 @@ class Post(db.Model):
         if liked:
             db.session.delete(liked)
             db.session.commit()
+
+    def increase_comments_count(self):
+        self.comments_count = Post.comments_count + 1
+        db.session.flush()
+
+    def decrease_comments_count(self):
+        self.comments_count = Post.comments_count - 1
+        db.session.flush()
 
     def __repr__(self):
         return "<Post title: %s, content: %s, description: %s, status: %s," \

@@ -2,13 +2,12 @@ from flask import Blueprint, jsonify
 from webargs.flaskparser import use_args
 
 from app.error import SameDataError
-from app.schema.user import simple_user_schema
+from app.schema.like import is_liked_schema
 from app.service import post_service
 from app.model.board import Board
 from app.model.post import Post
-from app.schema.board import simple_board_schema
-from app.schema.post import main_post_schema, post_create_form_schema, post_update_form_schema, post_id_schema, post_list_schema
-from app.schema.comment import comments_schema
+from app.schema.post import main_post_schema, post_create_form_schema, post_update_form_schema, post_id_schema, \
+    post_like_count_schema, post_list_schema
 from app.schema.pagination import pagination_schema
 from flask_login import login_required, current_user
 
@@ -31,11 +30,10 @@ def post_list(pagination, board_id):
     if not board:
         return 'No Board.', 404
 
-    # board.posts\
-    #         .filter(~Post.is_deleted)\
-    #         .order_by(Post.created_at.desc())\
-    #         .paginate(page=page, per_page=per_page, error_out=False)
-    posts_data = board.get_posts(pagination.page, pagination.per_page)
+    posts_data = board.posts\
+        .filter(~Post.is_deleted)\
+        .order_by(Post.created_at.desc())\
+        .paginate(page=pagination.page, per_page=pagination.per_page, error_out=False)
 
     post_list = post_list_schema.dump(posts_data.items).data
     total_count = posts_data.total
@@ -82,7 +80,7 @@ def update(post_data, post_id):
     if not target_post:
         return 'No Post.', 404
 
-    if target_post.user_id != current_user.id:
+    if not target_post.is_owner(current_user):
         return 'No Authentication.', 401
 
     try:
@@ -104,7 +102,7 @@ def delete(post_id):
     if not target_post:
         return 'No Post.', 404
 
-    if target_post.user_id != current_user.id:
+    if not target_post.is_owner(current_user):
         return 'No Authentication.', 401
 
     try:
@@ -125,7 +123,7 @@ def like(post_id):
     target_post.like(current_user)
     result = dict(like_count=target_post.like_count)
 
-    return jsonify(result), 200
+    return post_like_count_schema.jsonify(result), 200
 
 
 @bp.route('/posts/<int:post_id>/unlike', methods=['POST'])
@@ -139,11 +137,11 @@ def unlike(post_id):
     target_post.unlike(current_user)
     result = dict(like_count=target_post.like_count)
 
-    return jsonify(result), 200
+    return post_like_count_schema.jsonify(result), 200
 
 
 @bp.route('/posts/<int:post_id>/is-liked', methods=['GET'])
 @login_required
 def is_liked(post_id):
     result = dict(is_liked=current_user.is_liked(post_id))
-    return jsonify(result), 200
+    return is_liked_schema.jsonify(result), 200
