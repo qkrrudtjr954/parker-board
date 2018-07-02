@@ -3,7 +3,6 @@ from flask_login import current_user, login_required
 
 from webargs.flaskparser import use_args
 
-from app.error import NotFoundError, SameDataError
 from app.model.comment import Comment
 from app.model.post import Post
 from app.schema.error import default_message_error_schema

@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_login import LoginManager
 from app.model.user import User
+from app.schema.error import default_message_error_schema, default_messages_error_schema
 
 login_manager = LoginManager()
 
@@ -46,15 +47,14 @@ def create_app():
         next = request.path if request.path else '/'
 
         result = dict(message='Login First.', next=next)
-        return jsonify(result), 401
+        return default_message_error_schema.jsonify(result), 401
 
     @app.errorhandler(422)
     def schema_validation_handler(err):
         exc = getattr(err, 'exc')
         messages = exc.messages if exc else ['Invalid request']
-
-        result = dict(errors=messages)
-        return jsonify(result), 422
+        result = dict(messages=messages)
+        return default_messages_error_schema.jsonify(result), 422
 
     @app.after_request
     def after_request(response):

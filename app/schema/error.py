@@ -4,7 +4,7 @@ from app.schema import ma
 
 
 class ErrorSchema(ma.Schema):
-    messages = fields.List(fields.String(255))
+    messages = fields.Dict()
     message = fields.String(255)
 
 

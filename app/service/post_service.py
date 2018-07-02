@@ -1,6 +1,5 @@
 from datetime import datetime
 
-from app.error import SameDataError
 from app.model import db
 from app.model.board import Board
 from app.model.like import Like

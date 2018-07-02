@@ -38,16 +38,16 @@ class PostCreateFormSchema(ma.ModelSchema):
     @validates_schema
     def post_title_length_check(self, data):
         if 'title' not in data:
-            raise ValidationError('Post title can not be null.', 'title', status_code=422)
+            raise ValidationError('Post title can not be null.', ['title'], status_code=422)
 
         if 'content' not in data:
-            raise ValidationError('Post content can not be null.', 'content', status_code=422)
+            raise ValidationError('Post content can not be null.', ['content'], status_code=422)
 
         if len(data['title']) < 5:
-            raise ValidationError('Post title length mush more than 5.', status_code=422)
+            raise ValidationError('Post title length mush more than 5.', ['title'], status_code=422)
 
         if len(data['content']) < 20:
-            raise ValidationError('Post content length mush more than 20.', status_code=422)
+            raise ValidationError('Post content length mush more than 20.', ['content'], status_code=422)
 
     class Meta:
         strict = True

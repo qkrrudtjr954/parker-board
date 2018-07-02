@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from app.error import NotFoundError, SameDataError
+from app.error import NotFoundError
 from app.model import db
 from app.model.user import User
 from app.model.post import Post

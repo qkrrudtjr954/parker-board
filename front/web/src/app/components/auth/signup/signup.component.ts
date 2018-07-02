@@ -43,7 +43,7 @@ export class SignupComponent implements OnInit {
 
     this.authService.userRegister({email: emailControl.value, password: passwordGroup.get('password').value})
       .subscribe((data: AfterRegisterUser)=> {
-        alert(data.email +' 님 '+data.created_at+' 가입을 축하드립니다.');
+        alert(data.email +' 님 가입을 축하드립니다.');
         // this.router.navigate([`login`]);
         location.href='/login';
 

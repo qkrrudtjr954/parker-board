@@ -3,7 +3,7 @@ import re
 from app.model import db
 from app.schema import ma
 from app.model.user import User, UserStatus
-from marshmallow import fields, ValidationError, validates, validates_schema
+from marshmallow import fields, ValidationError, validates, validates_schema, pre_load
 from marshmallow_enum import EnumField
 
 
@@ -40,16 +40,16 @@ EMAIL_REGEX = re.compile(r"[^@]+@[^@]+\.[^@]+")
 
 
 class UserFormSchema(ma.ModelSchema):
-    @validates_schema
+    @pre_load
     def validate_length_check(self, data):
         if 'password' not in data:
-            raise ValidationError('Password can not be null', status_code=422)
+            raise ValidationError('Password can not be null', ['password'], status_code=422)
         if 'email' not in data:
-            raise ValidationError('Email can not be null', status_code=422)
+            raise ValidationError('Email can not be null', ['email'], status_code=422)
         if not EMAIL_REGEX.match(data['email']):
-            raise ValidationError('Not a Email structure', status_code=422)
+            raise ValidationError('Not a Email structure', ['email'], status_code=422)
         if len(data['password']) < 6:
-            raise ValidationError('Password length must more than 6', status_code=422)
+            raise ValidationError('Password length must more than 6', ['password'], status_code=422)
 
     class Meta:
         sqla_session = db.session

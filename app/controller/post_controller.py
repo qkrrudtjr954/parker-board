@@ -1,7 +1,6 @@
 from flask import Blueprint, jsonify, abort
 from webargs.flaskparser import use_args
 
-from app.error import SameDataError
 from app.schema.like import is_liked_schema
 from app.schema.error import default_message_error_schema
 from app.service import post_service
