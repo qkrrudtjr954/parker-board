@@ -216,3 +216,27 @@ class Describe_UserController:
 
             def test_401을_반환한다(self, subject):
                 assert 401 == subject.status_code
+
+    class Describe_is_logged_in:
+        @pytest.fixture
+        def user(self, logged_in_user):
+            return logged_in_user
+
+        @pytest.fixture
+        def subject(self, user):
+            resp = self.client.get('/users/is-logged-in')
+            return resp
+
+        def test_200을_리턴한다(self, subject):
+            assert 200 == subject.status_code
+
+        def test_true를_리턴한다(self, json_result):
+            assert json_result['is_logged_in']
+
+        class Context_로그인하지_않았을_때:
+            @pytest.fixture
+            def user(self, not_logged_in_user):
+                return not_logged_in_user
+
+            def test_false를_리턴한다(self, json_result):
+                assert not json_result['is_logged_in']

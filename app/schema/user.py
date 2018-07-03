@@ -1,5 +1,7 @@
 import re
 
+from flask_marshmallow.fields import fields
+
 from app.model import db
 from app.schema import ma
 from app.model.user import User, UserStatus
@@ -59,3 +61,10 @@ class UserFormSchema(ma.ModelSchema):
 
 before_login_schema = UserFormSchema()
 before_register_schema = UserFormSchema()
+
+
+class IsLoggedInSchema(ma.Schema):
+    is_logged_in = fields.Boolean(missing=False)
+
+
+is_logged_in_schema = IsLoggedInSchema()
