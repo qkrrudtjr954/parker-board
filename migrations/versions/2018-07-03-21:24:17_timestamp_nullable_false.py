@@ -48,6 +48,7 @@ def upgrade():
     op.alter_column('user', 'updated_at',
                existing_type=mysql.DATETIME(),
                nullable=False)
+
     # ### end Alembic commands ###
 
 
