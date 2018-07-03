@@ -26,9 +26,9 @@ class CommentFormSchema(ma.ModelSchema):
     @validates('content')
     def content_length_check(self, content):
         if not content:
-            raise ValidationError('Content can not be null.', status_code=422)
+            raise ValidationError('내용을 입력해주세요', status_code=422)
         if len(content) < 10:
-            raise ValidationError('Content length must more than 10.', status_code=422)
+            raise ValidationError('내용은 10글자 이상 입력해주세요', status_code=422)
 
     class Meta:
         strict = True

@@ -26,6 +26,7 @@ def delete(comment: Comment):
         comment.post.decrease_comments_count()
 
         comment.delete()
+
         db.session.commit()
     except Exception as e:
         db.session.rollback()

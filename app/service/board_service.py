@@ -4,11 +4,11 @@ from app.model.board import Board
 from app.model.user import User
 
 
-def create(user: User, board: Board):
+def create(user: User, target_board: Board):
     try:
-        board.user_id = user.id
+        target_board.user_id = user.id
 
-        db.session.add(board)
+        db.session.add(target_board)
         db.session.commit()
 
     except Exception as e:
@@ -31,9 +31,9 @@ def update(target_board: Board, board_data: Board):
         raise e
 
 
-def delete(board: Board):
+def delete(target_board: Board):
     try:
-        board.delete()
+        target_board.delete()
         db.session.commit()
     except Exception as e:
         db.session.rollback()

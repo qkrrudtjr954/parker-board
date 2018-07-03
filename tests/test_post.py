@@ -233,32 +233,16 @@ class Describe_PostController:
             def update_data(self):
                 return dict(content='this is changed content. and must longer than 20.', description='changed description')
 
-            def test_content_description만_갱신된다(self, json_result, update_data):
-                post_id = json_result['id']
-
-                db_post = Post.query.get(post_id)
-
-                assert db_post.id == post_id
-                assert db_post.title != ''
-                assert db_post.title is not None
-                assert db_post.content == update_data['content']
-                assert db_post.description == update_data['description']
+            def test_422를_반환한다(self, subject):
+                assert 422 == subject.status_code
 
         class Context_content가_없을_때:
             @pytest.fixture
             def update_data(self):
                 return dict(title='changed title', description='changed description')
 
-            def test_title_description만_갱신된다(self, json_result, update_data):
-                post_id = json_result['id']
-
-                db_post = Post.query.get(post_id)
-
-                assert db_post.id == post_id
-                assert db_post.title == update_data['title']
-                assert db_post.content != ''
-                assert db_post.content is not None
-                assert db_post.description == update_data['description']
+            def test_422를_반환한다(self, subject):
+                assert 422 == subject.status_code
 
         class Context_description이_없을_때:
             @pytest.fixture
@@ -273,8 +257,7 @@ class Describe_PostController:
                 assert db_post.id == post_id
                 assert db_post.title == update_data['title']
                 assert db_post.content == update_data['content']
-                assert db_post.description != ''
-                assert db_post.description is not None
+                assert db_post.description is None
 
         class Context_로그인_하지_않았을_때:
             @pytest.fixture

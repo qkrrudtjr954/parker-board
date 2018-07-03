@@ -1,11 +1,11 @@
 import enum
-from datetime import datetime
 
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy_utils import ChoiceType
 
 from app.model import db
 from app.model.likes import Likes
+from app.model.timestamp import TimestampMixin
 from app.model.user import User
 from app.model.comment import Comment
 
@@ -15,7 +15,7 @@ class PostStatus(enum.Enum):
     DELETED = 2
 
 
-class Post(db.Model):
+class Post(db.Model, TimestampMixin):
     id = db.Column(db.Integer, primary_key=True, nullable=False)
     title = db.Column(db.String(200), nullable=False)
     content = db.Column(db.Text, nullable=False)
@@ -34,16 +34,13 @@ class Post(db.Model):
 
     likes = db.relationship("Likes", lazy='dynamic')
 
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-
     @hybrid_property
     def is_deleted(self):
         return self.status == PostStatus.DELETED
 
     @property
     def like_count(self):
-        return Likes.query.filter(Likes.post_id == self.id).count()
+        return self.likes.filter(Likes.post_id == Post.id).count()
 
     def delete(self):
         self.status = PostStatus.DELETED
@@ -52,45 +49,32 @@ class Post(db.Model):
         self.read_count = Post.read_count + 1
         db.session.commit()
 
-    def is_same_data(self, dict_data):
-        same = True
-
-        if 'title' in dict_data and self.title != dict_data['title']:
-            same = False
-        if 'content' in dict_data and self.content != dict_data['content']:
-            same = False
-        if 'description' in dict_data and self.description != dict_data['description']:
-            same = False
-
-        return same
-
     def is_owner(self, user: User):
         return self.user_id == user.id
 
     def like(self, user: User):
-        liked = self.likes.filter(Likes.user_id == user.id).first()
-        # liked = Like.query.filter(Like.user_id == user.id, Like.post_id == self.id).first()
+        liked = self._get_liked(user.id)
 
         if not liked:
             like = Likes(user_id=user.id, post_id=self.id)
-            # self.likes.add(like)
             db.session.add(like)
             db.session.commit()
 
     def unlike(self, user: User):
-        liked = self.likes.filter(Likes.user_id == user.id).first()
+        liked = self._get_liked(user.id)
 
         if liked:
             db.session.delete(liked)
             db.session.commit()
 
+    def _get_liked(self, user_id):
+        return self.likes.filter(Likes.user_id == user_id).first()
+
     def increase_comments_count(self):
         self.comments_count = Post.comments_count + 1
-        db.session.flush()
 
     def decrease_comments_count(self):
         self.comments_count = Post.comments_count - 1
-        db.session.flush()
 
     def __repr__(self):
         return "<Post title: %s, content: %s, description: %s, status: %s," \

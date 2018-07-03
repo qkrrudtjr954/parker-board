@@ -4,7 +4,7 @@ from app.model.user import User
 
 
 def register(user):
-    if _is_duplicate_email(user.email):
+    if _get_user_by_email(user.email):
         raise DuplicateValueError('이미 존재하는 이메일입니다.')
 
     try:
@@ -19,10 +19,10 @@ def register(user):
         return user
 
 
-def leave(user):
+def leave(user: User):
     try:
         # 상태는 객체 스스로 변경할 수 있다.
-        user.leaved()
+        user.leave()
         db.session.commit()
 
     except Exception as e:
@@ -46,7 +46,3 @@ def _get_user_by_email(email):
     user = User.query.filter_by(email=email).one_or_none()
     return user
 
-
-def _is_duplicate_email(email):
-    temp = User.query.filter_by(email=email).one_or_none()
-    return temp

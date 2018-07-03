@@ -5,6 +5,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy_utils import ChoiceType
 
 from app.model import db
+from app.model.timestamp import TimestampMixin
 from app.model.user import User
 
 
@@ -13,7 +14,7 @@ class CommentStatus(enum.Enum):
     DELETED = 2
 
 
-class Comment(db.Model):
+class Comment(db.Model, TimestampMixin):
     id = db.Column(db.Integer, primary_key=True, nullable=False)
     content = db.Column(db.Text, nullable=False)
     status = db.Column(ChoiceType(CommentStatus, impl=db.Integer()), default=CommentStatus.NORMAL)
@@ -22,9 +23,6 @@ class Comment(db.Model):
     user = db.relationship("User")
 
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
-
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     def delete(self):
         self.status = CommentStatus.DELETED

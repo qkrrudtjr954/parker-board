@@ -19,16 +19,11 @@ def create(board_id, post: Post, user: User):
         raise e
 
 
-def update(target_post: Post, post_data):
+def update(target_post: Post, post_data: Post):
     try:
-        if 'title' in post_data and target_post.title != post_data['title']:
-            target_post.title = post_data['title']
-
-        if 'description' in post_data and target_post.description != post_data['description']:
-            target_post.description = post_data['description']
-
-        if 'content' in post_data and target_post.content != post_data['content']:
-            target_post.content = post_data['content']
+        target_post.content = post_data.content
+        target_post.description = post_data.description
+        target_post.title = post_data.title
 
         db.session.commit()
     except Exception as e:
@@ -39,7 +34,6 @@ def update(target_post: Post, post_data):
 def delete(target_post: Post):
     try:
         target_post.delete()
-        target_post.updated_at = datetime.utcnow()
 
         db.session.commit()
     except Exception as e:

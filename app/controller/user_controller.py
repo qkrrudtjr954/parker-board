@@ -12,9 +12,9 @@ from app.schema.error import default_message_error_schema
 
 from webargs.flaskparser import use_args
 
+login_manager = LoginManager()
 
 bp = Blueprint('user', __name__, url_prefix='/users')
-login_manager = LoginManager()
 
 
 @login_manager.user_loader
@@ -33,13 +33,12 @@ def unauthorized_callback():
 @bp.route('/login', methods=['POST'])
 @use_args(before_login_schema)
 def login(login_data):
-    # login_data는 marshmallow에 의해 input data를 app-level 객체로 변환된 객체.
     next = request.args.get('next') if 'next' in request.args else '/'
 
     try:
         # 로그인한 유저를 반환한다. -> login 의 기능에만 충실하는 코드
         logged_in_user = user_service.login(login_data.email, login_data.password)
-        login_user(logged_in_user, remember=True, duration=datetime.timedelta(minutes=15))
+        login_user(logged_in_user, remember=True, duration=datetime.timedelta(hours=1))
 
         return jsonify(dict(user=after_login_schema.dump(logged_in_user).data, next=next)), 200
 
@@ -56,7 +55,7 @@ def login(login_data):
 @login_required
 def logout():
     logout_user()
-    return jsonify(dict(message='Log out')), 200
+    return 'Log out', 200
 
 
 @bp.route('/', methods=['POST'])
@@ -66,7 +65,7 @@ def register(register_data):
         register_user = user_service.register(register_data)
 
     except DuplicateValueError as e:
-        return jsonify(dict(message=e.message)), 400
+        return default_message_error_schema.jsonify(dict(message=e.message)), 400
 
     except Exception:
         return default_message_error_schema.jsonify(dict(message='서버상의 문제가 발생했습니다. 다시 시도해주세요.')), 500

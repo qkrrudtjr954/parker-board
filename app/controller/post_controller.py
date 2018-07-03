@@ -92,6 +92,7 @@ def update(post_data, post_id):
     try:
         post_service.update(target_post, post_data)
         return post_id_schema.jsonify(target_post), 200
+
     except Exception:
         error = dict(message='서버상의 문제가 발생했습니다. 다시 시도해주세요.')
         return default_message_error_schema.jsonify(error), 500
