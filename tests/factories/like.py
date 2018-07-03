@@ -1,7 +1,7 @@
 import factory
 
 from app.model import db
-from app.model.like import Like
+from app.model.likes import Likes
 from tests.factories.user import FakeUserFactory
 from tests.factories.post import FakePostFactory
 
@@ -13,5 +13,5 @@ class FakeLikeFactory(factory.alchemy.SQLAlchemyModelFactory):
     # post_id = factory.SubFactory(FakePostFactory)
 
     class Meta:
-        model = Like
+        model = Likes
         sqlalchemy_session = db.session

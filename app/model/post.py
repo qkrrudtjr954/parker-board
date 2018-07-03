@@ -5,7 +5,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy_utils import ChoiceType
 
 from app.model import db
-from app.model.like import Like
+from app.model.likes import Likes
 from app.model.user import User
 from app.model.comment import Comment
 
@@ -18,7 +18,7 @@ class PostStatus(enum.Enum):
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True, nullable=False)
     title = db.Column(db.String(200), nullable=False)
-    content = db.Column(db.String(2000), nullable=False)
+    content = db.Column(db.Text, nullable=False)
     description = db.Column(db.String(200), nullable=True)
     read_count = db.Column(db.Integer, nullable=False, default=0)
     comments_count = db.Column(db.Integer, nullable=False, default=0)
@@ -32,7 +32,7 @@ class Post(db.Model):
 
     comments = db.relationship("Comment", backref='post', lazy='dynamic')
 
-    likes = db.relationship("Like", lazy='dynamic')
+    likes = db.relationship("Likes", lazy='dynamic')
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
@@ -51,7 +51,7 @@ class Post(db.Model):
 
     @property
     def like_count(self):
-        return Like.query.filter(Like.post_id == self.id).count()
+        return Likes.query.filter(Likes.post_id == self.id).count()
 
     def delete(self):
         self.status = PostStatus.DELETED
@@ -76,17 +76,17 @@ class Post(db.Model):
         return self.user_id == user.id
 
     def like(self, user: User):
-        liked = self.likes.filter(Like.user_id == user.id).first()
+        liked = self.likes.filter(Likes.user_id == user.id).first()
         # liked = Like.query.filter(Like.user_id == user.id, Like.post_id == self.id).first()
 
         if not liked:
-            like = Like(user_id=user.id, post_id=self.id)
+            like = Likes(user_id=user.id, post_id=self.id)
             # self.likes.add(like)
             db.session.add(like)
             db.session.commit()
 
     def unlike(self, user: User):
-        liked = self.likes.filter(Like.user_id == user.id).first()
+        liked = self.likes.filter(Likes.user_id == user.id).first()
 
         if liked:
             db.session.delete(liked)

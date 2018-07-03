@@ -2,9 +2,7 @@ from app.model import db
 from .timestamp import TimestampMixin
 
 
-class Like(TimestampMixin, db.Model):
-    __tablename__ = 'likes'
-
+class Likes(TimestampMixin, db.Model):
     def __init__(self, post_id, user_id):
         self.post_id = post_id
         self.user_id = user_id

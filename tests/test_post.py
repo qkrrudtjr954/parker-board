@@ -1,7 +1,7 @@
 import pytest
 import json
 
-from app.model.like import Like
+from app.model.likes import Likes
 from app.model.post import Post
 from app.schema.post import post_create_form_schema, post_update_form_schema
 from tests.factories.like import FakeLikeFactory
@@ -349,7 +349,7 @@ class Describe_PostController:
             return 200 == subject.status_code
 
         def test_like_table에_좋아요가_추가된다(self, subject, target_post, user):
-            assert Like.query.filter(Like.post_id == target_post.id, Like.user_id == user.id).one_or_none()
+            assert Likes.query.filter(Likes.post_id == target_post.id, Likes.user_id == user.id).one_or_none()
 
 
     class Describe_unlike:
@@ -357,7 +357,7 @@ class Describe_PostController:
         def target_post(self, user):
             post = FakePostFactory()
             FakeLikeFactory(post_id=post.id, user_id=user.id)
-            print(Like.query.all())
+            print(Likes.query.all())
             return post
 
         @pytest.fixture
@@ -369,7 +369,7 @@ class Describe_PostController:
             assert 200 == subject.status_code
 
         def test_like_table에서_row가_삭제된다(self, subject, target_post, user):
-            assert not Like.query.filter(Like.post_id == target_post.id, Like.user_id == user.id).one_or_none()
+            assert not Likes.query.filter(Likes.post_id == target_post.id, Likes.user_id == user.id).one_or_none()
 
 
     class Describe_is_liked:

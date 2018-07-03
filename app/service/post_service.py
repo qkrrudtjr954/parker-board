@@ -2,7 +2,7 @@ from datetime import datetime
 
 from app.model import db
 from app.model.board import Board
-from app.model.like import Like
+from app.model.likes import Likes
 from app.model.post import Post
 from app.model.user import User
 

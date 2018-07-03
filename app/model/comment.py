@@ -15,7 +15,7 @@ class CommentStatus(enum.Enum):
 
 class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True, nullable=False)
-    content = db.Column(db.String(1000), nullable=False)
+    content = db.Column(db.Text, nullable=False)
     status = db.Column(ChoiceType(CommentStatus, impl=db.Integer()), default=CommentStatus.NORMAL)
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)

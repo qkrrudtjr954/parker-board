@@ -6,7 +6,7 @@ from app.model import db
 from flask_login import UserMixin
 from datetime import datetime
 
-from app.model.like import Like
+from app.model.likes import Likes
 from werkzeug.security import generate_password_hash, check_password_hash
 
 class UserStatus(enum.Enum):
@@ -45,7 +45,7 @@ class User(UserMixin, db.Model):
             return False
 
     def is_liked(self, post_id):
-        if Like.query.filter(Like.post_id == post_id, Like.user_id == self.id).one_or_none():
+        if Likes.query.filter(Likes.post_id == post_id, Likes.user_id == self.id).one_or_none():
             return True
         return False
 
