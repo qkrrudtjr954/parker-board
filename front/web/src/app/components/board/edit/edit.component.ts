@@ -30,7 +30,7 @@ export class BoardEditComponent implements OnInit {
     })
   }
 
-  onSubmit() {
+  confirmUpdate() {
     const boardId = this.targetBoard.id;
     const title = this.editForm.controls['title'].value;
     const description = this.editForm.controls['description'].value;
@@ -41,11 +41,11 @@ export class BoardEditComponent implements OnInit {
         alert('수정되었습니다.');
         this.router.navigate([`/boards/${boardId}/posts`]);
       }, error1 => {
-        if (error1.status == 401 && error1.error == 'No Authentication.') {
-          alert('본인만 수정 가능합니다.');
-        }else if (error1. status == 401 && error1.error != 'Login first.'){
-          alert('로그인해주세요.');
-          this.router.navigate(['login'])
+        if (error1.status == 401) {
+          if(error1.error.messages === 'Login First.'){
+            this.router.navigate(['login'])
+          }
+          alert('권한이 없습니다.');
         } else if (error1.status == 422) {
           alert('입력값을 확인해주세요.');
         } else if (error1.status == 500) {
@@ -56,6 +56,12 @@ export class BoardEditComponent implements OnInit {
 
   goBoardDetail() {
     this.router.navigate([`/boards/${this.targetBoard.id}/posts`])
+  }
+
+  confirmSubmit() {
+    if(confirm('정말 수정하시겠습니까?')){
+      this.confirmUpdate()
+    }
   }
 
   ngOnInit() {

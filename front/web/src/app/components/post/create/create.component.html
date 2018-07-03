@@ -2,10 +2,10 @@
   <div class="text-center">
     <h1>게시글 작성하기</h1>
   </div>
-  <form [formGroup]="makeForm" (submit)="onSubmit()">
+  <form [formGroup]="makeForm">
     <div class="form-group">
       <label for="_title">게시글의 <b>제목</b>은 무엇인가요?</label>
-      <input type="text" class="form-control" id="_title" placeholder="제목을 입력해주세요" formControlName="title">
+      <input type="text" class="form-control" id="_title" placeholder="제목을 입력해주세요" formControlName="title" autocomplete="off">
       <div *ngIf="makeForm.controls['title'].invalid && (makeForm.controls['title'].dirty || makeForm.controls['title'].touched)">
         <div *ngIf="makeForm.controls['title'].errors.required">
           <span class="field-validation-error"> 제목을 입력해주세요. </span>
@@ -18,7 +18,7 @@
 
     <div class="form-group">
       <label for="_content"><b>내용</b>을 작성해주세요</label>
-      <textarea class="form-control" id="_content" rows="4" formControlName="content"></textarea>
+      <textarea class="form-control" id="_content" rows="4" formControlName="content" autocomplete="off"></textarea>
       <div *ngIf="makeForm.controls['content'].invalid && (makeForm.controls['content'].dirty || makeForm.controls['content'].touched)">
         <div *ngIf="makeForm.controls['content'].errors.required">
           <span class="field-validation-error"> 내용을 입력해주세요. </span>
@@ -29,6 +29,6 @@
       </div>
     </div>
 
-    <button class="btn btn-info btn-block" type="submit" [disabled]="makeForm.pristine || makeForm.invalid">생성하기</button>
+    <button class="btn btn-info btn-block" (click)="confirmCreate()" [disabled]="makeForm.pristine || makeForm.invalid">생성하기</button>
   </form>
 </div>

@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {PostService} from "../../../services/post.service";
-import {Post} from "../../../models/post";
 import {ActivatedRoute, Router} from "@angular/router";
 import {BoardService} from "../../../services/board.service";
 
@@ -40,8 +39,7 @@ export class PostCreateComponent implements OnInit {
   }
 
 
-  onSubmit() {
-
+  confirmSubmit() {
     const title = this.makeForm.controls['title'].value;
     const content = this.makeForm.controls['content'].value;
 
@@ -49,7 +47,21 @@ export class PostCreateComponent implements OnInit {
       .subscribe((data : { id:number }) => {
         alert('게시글이 생성 됐습니다.');
         this.router.navigate([`/posts/${data.id}`])
-      })
+      }, (error1 => {
+        if(error1.status == 401){
+          alert('로그인해주세요.');
+          location.href='/users/login';
+        } else if (error1.status == 422){
+          alert('입력값을 확인해주세요.');
+        } else if (error1.status == 500){
+          alert('서버 에러가 발생했습니다. 다시 시도해주세요.');
+        }
+      }))
   }
 
+  confirmCreate() {
+    if(confirm('생성하시겠습니까?')) {
+      this.confirmSubmit();
+    }
+  }
 }

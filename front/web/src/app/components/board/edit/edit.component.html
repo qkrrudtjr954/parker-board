@@ -3,10 +3,10 @@
     <h1>게시판 수정하기</h1>
   </div>
   <div class="offset-md-2 col-md-8">
-    <form [formGroup]="editForm" (submit)="onSubmit()">
+    <form [formGroup]="editForm">
       <div class="form-group">
-        <label for="_title">Board 제목</label>
-        <input type="text" class="form-control" id="_title" placeholder="제목을 입력해주세요" formControlName="title">
+        <label for="_title">수정할 <b>제목</b>은 무엇인가요?</label>
+        <input type="text" class="form-control" id="_title" placeholder="제목을 입력해주세요" formControlName="title" autocomplete="off">
         <div *ngIf="editForm.controls['title'].invalid && (editForm.controls['title'].dirty || editForm.controls['title'].touched)">
           <div *ngIf="editForm.controls['title'].errors.required">
             <span class="field-validation-error"> 제목을 입력해주세요. </span>
@@ -18,11 +18,11 @@
       </div>
 
       <div class="form-group">
-        <label for="_description">Board 설명</label>
-        <textarea class="form-control" id="_description" rows="3" formControlName="description"></textarea>
+        <label for="_description">수정할 <b>설명</b>을 입력해주세요</label>
+        <textarea class="form-control" id="_description" rows="3" formControlName="description" autocomplete="off"></textarea>
       </div>
 
-      <button class="btn btn-info btn-block" type="submit" [disabled]="editForm.pristine || editForm.invalid">수정하기</button>
+      <button class="btn btn-info btn-block" (click)="confirmSubmit()" [disabled]="editForm.pristine || editForm.invalid">수정하기</button>
       <button class="btn btn-default btn-block" (click)="goBoardDetail()">뒤로가기</button>
     </form>
   </div>

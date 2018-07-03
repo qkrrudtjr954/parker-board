@@ -40,7 +40,7 @@ export class PostUpdateComponent implements OnInit {
     });
   }
 
-  onSubmit() {
+  confirmUpdate() {
     const title = this.updateForm.controls['title'].value;
     const content = this.updateForm.controls['content'].value;
 
@@ -49,6 +49,12 @@ export class PostUpdateComponent implements OnInit {
         alert('게시글이 수정 됐습니다.');
         this.router.navigate([`/posts/${data.id}`])
       })
+  }
+
+  confirmSubmit() {
+    if(confirm('수정하시겠습니까?')) {
+      this.confirmUpdate();
+    }
   }
 
 }

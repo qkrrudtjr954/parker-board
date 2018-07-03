@@ -27,7 +27,7 @@ export class BoardCreateComponent implements OnInit {
     })
   }
 
-  onSubmit() {
+  confirmSubmit() {
     let title = this.makeForm.controls['title'].value;
     let description = this.makeForm.controls['description'].value;
 
@@ -44,6 +44,12 @@ export class BoardCreateComponent implements OnInit {
           alert('서버 에러가 발생했습니다. 다시 시도해주세요.');
         }
       })
+  }
+
+  confirmCreate() {
+    if(confirm('생성하시겠습니까?')) {
+      this.confirmSubmit();
+    }
   }
 
 

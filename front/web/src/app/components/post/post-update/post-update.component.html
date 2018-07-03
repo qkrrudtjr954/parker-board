@@ -29,6 +29,6 @@
       </div>
     </div>
 
-    <button class="btn btn-info btn-block" type="submit" [disabled]="updateForm.pristine || updateForm.invalid">수정하기</button>
+    <button class="btn btn-info btn-block" (click)="confirmSubmit()" [disabled]="updateForm.pristine || updateForm.invalid">수정하기</button>
   </form>
 </div>

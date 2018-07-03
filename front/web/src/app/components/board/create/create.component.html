@@ -2,7 +2,7 @@
   <div class="text-center">
     <h1>게시판 만들기</h1>
   </div>
-  <form [formGroup]="makeForm" (submit)="onSubmit()">
+  <form [formGroup]="makeForm">
     <div class="form-group">
       <label for="_title">게시판의 <b>제목</b>은 무엇인가요?</label>
       <input type="text" class="form-control" id="_title" placeholder="제목을 입력해주세요" formControlName="title" autocomplete="off">
@@ -21,6 +21,6 @@
       <textarea class="form-control" id="_description" rows="3" placeholder="게시판의 설명을 적어주세요" formControlName="description" autocomplete="off"></textarea>
     </div>
 
-    <button class="btn btn-info btn-block" type="submit" [disabled]="makeForm.pristine || makeForm.invalid">생성하기</button>
+    <button class="btn btn-info btn-block" (click)="confirmCreate()" [disabled]="makeForm.pristine || makeForm.invalid">생성하기</button>
   </form>
 </div>
