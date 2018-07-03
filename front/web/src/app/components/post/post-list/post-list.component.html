@@ -14,11 +14,12 @@
 
 <table class="table">
   <thead class="thead-dark">
-    <tr>
+    <tr class="text-center">
       <th scope="col" width="5%">No</th>
-      <th scope="col" width="45%">title</th>
-      <th scope="col" width="25%">author</th>
-      <th scope="col" width="25%">created</th>
+      <th scope="col" width="45%">제목</th>
+      <th scope="col" width="20%">작성자</th>
+      <th scope="col" width="20%">작성일</th>
+      <th scope="col" width="10%">조회수</th>
     </tr>
   </thead>
   <tbody *ngIf="!postList">
@@ -37,7 +38,8 @@
         <small class="comment_count">[{{post.comments_count}}]</small>
       </td>
       <td>{{post.user.email}}</td>
-      <td>{{post.created_at | date:'yyyy년 MM월 dd일 HH시 mm분 ss초'}}</td>
+      <td class="text-center">{{post.created_at | date:'yyyy년 MM월 dd일'}}</td>
+      <td class="text-center">{{post.read_count}}</td>
     </tr>
   </tbody>
 </table>

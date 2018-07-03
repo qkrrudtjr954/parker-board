@@ -28,7 +28,13 @@ def comment_list(pagination, post_id):
         error = dict(message='존재하지 않는 게시글 입니다.')
         return default_message_error_schema.jsonify(error), 404
 
-    comments_data = target_post.get_comments(pagination.page, pagination.per_page)
+    comments_data = target_post.comments\
+        .filter(
+            ~Comment.is_deleted
+        ).order_by(
+            Comment.created_at.desc()
+        ).paginate(
+            page=pagination.page, per_page=pagination.per_page, error_out=False)
 
     comment_list = comments_schema.dump(comments_data.items).data
     total_count = comments_data.total

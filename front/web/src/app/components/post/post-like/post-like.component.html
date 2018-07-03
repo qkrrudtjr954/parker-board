@@ -2,5 +2,5 @@
   ❤️좋아요 {{likeCount}}
 </p>
 
-<button *ngIf="!isLiked" (click)="sendLike(true)">Like</button>
-<button *ngIf="isLiked" (click)="sendLike(false)">Unlike</button>
+<a *ngIf="!isLiked" (click)="sendLike(true)"><i-heart></i-heart></a>
+<a *ngIf="isLiked" (click)="sendLike(false)"><i-heart style="fill: red"></i-heart></a>

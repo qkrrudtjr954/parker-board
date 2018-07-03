@@ -1,9 +1,6 @@
-from flask import Flask, request, jsonify
-from flask_login import LoginManager
+from flask import Flask, request
 from app.model.user import User
 from app.schema.error import default_message_error_schema, default_messages_error_schema
-
-login_manager = LoginManager()
 
 
 def create_app():
@@ -24,11 +21,8 @@ def create_app():
     from app import schema as ma
     ma.init_app(app)
 
+    from app.controller.user_controller import login_manager
     login_manager.init_app(app)
-
-    @login_manager.user_loader
-    def load_user(user_id):
-        return User.query.get(user_id)
 
     from app.controller.user_controller import bp as user_bp
     app.register_blueprint(user_bp)
@@ -41,13 +35,6 @@ def create_app():
 
     from app.controller.comment_controller import bp as comment_bp
     app.register_blueprint(comment_bp)
-
-    @login_manager.unauthorized_handler
-    def unauthorized_callback():
-        next = request.path if request.path else '/'
-
-        result = dict(message='Login First.', next=next)
-        return default_message_error_schema.jsonify(result), 401
 
     @app.errorhandler(422)
     def schema_validation_handler(err):

@@ -16,7 +16,6 @@ class CommentSchema(ma.ModelSchema):
         sqla_session = db.session
 
 
-comment_schema = CommentSchema()
 comments_schema = CommentSchema(only=['id', 'user', 'content', 'created_at'], many=True)
 
 after_create_schema = CommentSchema(only=['id', 'created_at'])  # comment 가 생성되면 id, create_at 만 내려줌, 다른 정보는 이미 존재함

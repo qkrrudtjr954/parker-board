@@ -3,6 +3,7 @@ import {PostList, PostListItem} from "../../../models/post";
 import {ActivatedRoute, Router} from "@angular/router";
 import {PostService} from "../../../services/post.service";
 import {AuthService} from "../../../services/auth.service";
+import {Location} from "@angular/common"
 
 @Component({
   selector: 'app-post-list',
@@ -23,7 +24,8 @@ export class PostListComponent implements OnInit {
   constructor(private route: ActivatedRoute,
               private postService: PostService,
               private authService: AuthService,
-              private router: Router) { }
+              private router: Router,
+              private _location: Location) { }
 
 
   getPostList() {

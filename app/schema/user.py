@@ -3,7 +3,7 @@ import re
 from app.model import db
 from app.schema import ma
 from app.model.user import User, UserStatus
-from marshmallow import fields, ValidationError, validates, validates_schema, pre_load
+from marshmallow import ValidationError, validates_schema
 from marshmallow_enum import EnumField
 
 
@@ -26,7 +26,6 @@ class UserSchema(ma.ModelSchema):
 simple_user_schema = UserSchema(only=['id', 'email'])
 user_info_schema = UserSchema(only=['email'])
 
-after_leave_schema = UserSchema(only=['id', 'email', 'created_at', 'updated_at', 'status'])
 after_register_schema = UserSchema(only=['id', 'email', 'created_at'])
 after_login_schema = UserSchema(only=['id', 'email'])
 
@@ -43,13 +42,13 @@ class UserFormSchema(ma.ModelSchema):
     @validates_schema
     def validate_length_check(self, data):
         if 'password' not in data:
-            raise ValidationError('Password can not be null', ['password'], status_code=422)
+            raise ValidationError('비밀번호를 입력해주세요', ['password'], status_code=422)
         if 'email' not in data:
-            raise ValidationError('Email can not be null', ['email'], status_code=422)
+            raise ValidationError('이메일을 입력해주세요', ['email'], status_code=422)
         if not EMAIL_REGEX.match(data['email']):
-            raise ValidationError('Not a Email structure', ['email'], status_code=422)
+            raise ValidationError('올바른 이메일 형식이 아닙니다', ['email'], status_code=422)
         if len(data['password']) < 6:
-            raise ValidationError('Password length must more than 6', ['password'], status_code=422)
+            raise ValidationError('비밀번호는 6자 이상 입력해주세요', ['password'], status_code=422)
 
     class Meta:
         sqla_session = db.session

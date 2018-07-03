@@ -26,6 +26,7 @@ import { CreateComponent } from './components/comment/create/create.component';
 import { BoardDetailComponent } from './components/board/board-detail/board-detail.component';
 import { CommentListComponent } from './components/comment/comment-list/comment-list.component';
 import { PostLikeComponent } from './components/post/post-like/post-like.component';
+import {IconsModule} from "./icons/icons.module";
 
 
 const routes: Routes = [{
@@ -84,7 +85,8 @@ const routes: Routes = [{
     HttpClientModule,
     RouterModule.forRoot(routes),
     ReactiveFormsModule,
-    NgxPaginationModule
+    NgxPaginationModule,
+    IconsModule
   ],
   providers: [CookieService],
   bootstrap: [AppComponent]

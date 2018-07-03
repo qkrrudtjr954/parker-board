@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, abort
+from flask import Blueprint, jsonify
 from webargs.flaskparser import use_args
 
 from app.schema.like import is_liked_schema

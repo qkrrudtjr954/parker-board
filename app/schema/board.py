@@ -24,17 +24,13 @@ class BoardSchema(ma.ModelSchema):
         sqla_session = db.session
 
 
-main_board_schema = BoardSchema(only=['id', 'title'], many=True)
-concrete_board_schema = BoardSchema(only=['id', 'title', 'description', 'created_at', 'user'])
-simple_board_schema = BoardSchema(only=['id', 'title', 'description'])
-
-
+board_list_schema = BoardSchema(only=['id', 'title'], many=True)
+board_schema = BoardSchema(only=['id', 'title', 'description', 'created_at', 'user'])
 board_id_schema = BoardSchema(only=['id'])
 
 
 # Board를 생성하거나 수정할 때 사용하는 스키마
 class BoardFormSchema(ma.ModelSchema):
-
     @validates('title')
     def title_length_check(self, title):
         if len(title) < 4:

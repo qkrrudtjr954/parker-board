@@ -1,15 +1,33 @@
-from flask import Blueprint, request, jsonify
-from flask_login import login_user, login_required, logout_user, current_user
+import datetime
 
+from flask import Blueprint, request, jsonify
+from flask_login import login_user, login_required, logout_user, current_user, LoginManager
+
+from app import User
 from app.error import NotFoundError, DuplicateValueError, WrongPasswordError
 from app.service import user_service
-from app.schema.user import after_register_schema, after_login_schema, before_login_schema, before_register_schema, user_info_schema
+from app.schema.user import after_register_schema, after_login_schema, before_login_schema, before_register_schema, \
+    user_info_schema
 from app.schema.error import default_message_error_schema
 
 from webargs.flaskparser import use_args
 
 
 bp = Blueprint('user', __name__, url_prefix='/users')
+login_manager = LoginManager()
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(user_id)
+
+
+@login_manager.unauthorized_handler
+def unauthorized_callback():
+    next = request.path if request.path else '/'
+
+    result = dict(message='Login First.', next=next)
+    return default_message_error_schema.jsonify(result), 401
 
 
 @bp.route('/login', methods=['POST'])
@@ -21,7 +39,7 @@ def login(login_data):
     try:
         # 로그인한 유저를 반환한다. -> login 의 기능에만 충실하는 코드
         logged_in_user = user_service.login(login_data.email, login_data.password)
-        login_user(logged_in_user, remember=True)
+        login_user(logged_in_user, remember=True, duration=datetime.timedelta(minutes=15))
 
         return jsonify(dict(user=after_login_schema.dump(logged_in_user).data, next=next)), 200
 
@@ -65,10 +83,14 @@ def leave():
     except Exception:
         return default_message_error_schema.jsonify(dict(message='서버상의 문제가 발생했습니다. 다시 시도해주세요.')), 500
     else:
-        return default_message_error_schema.jsonify(dict(message='이미 탈퇴한 유저입니다.')), 204
+        logout_user()
+        return 'leave', 204
 
 
 @bp.route('/user-info', methods=['GET'])
 @login_required
 def get_current_user_info():
     return user_info_schema.jsonify(current_user), 200
+
+
+

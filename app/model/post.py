@@ -37,14 +37,6 @@ class Post(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
-    def get_comments(self, page, per_page):
-        return self.comments.filter(
-            ~Comment.is_deleted
-        ).order_by(Comment.created_at.desc()).paginate(page=page, per_page=per_page, error_out=False)
-
-    def refresh_update_time(self):
-        self.updated_at = datetime.utcnow()
-
     @hybrid_property
     def is_deleted(self):
         return self.status == PostStatus.DELETED

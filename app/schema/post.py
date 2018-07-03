@@ -3,8 +3,6 @@ from app.model import db
 from app.schema import ma
 from app.model.post import Post
 from app.schema.user import simple_user_schema
-from app.schema.board import simple_board_schema
-
 
 '''
 스키마는 입력값 정제 vs 나가는값 정제
@@ -15,7 +13,6 @@ from app.schema.board import simple_board_schema
 
 
 class PostSchema(ma.ModelSchema):
-    board = fields.Nested(simple_board_schema)
     user = fields.Nested(simple_user_schema)
 
     class Meta:
@@ -27,7 +24,7 @@ class PostSchema(ma.ModelSchema):
 simple_post_schema = PostSchema(only=['id', 'title'])
 
 main_post_schema = PostSchema(only=['id', 'title', 'content', 'user', 'description', 'like_count', 'created_at', 'updated_at', 'read_count', 'comments_count'])
-post_list_schema = PostSchema(only=['id', 'title', 'comments_count', 'created_at', 'user'], many=True)
+post_list_schema = PostSchema(only=['id', 'title', 'comments_count', 'created_at', 'user', 'read_count'], many=True)
 
 post_id_schema = PostSchema(only=['id'])
 
