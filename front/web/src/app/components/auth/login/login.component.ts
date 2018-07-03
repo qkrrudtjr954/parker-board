@@ -35,10 +35,11 @@ export class LoginComponent implements OnInit {
 
     this.authService.userLogin(email, password)
       .subscribe((data: AfterLogin) => {
-        this.cookieService.set('current_user', data.user.email);
+
         alert(data.user.email + ' 님 환영합니다.');
         // this.router.navigate(['/']);
         location.href='/';
+
       }, error1 => {
         if (error1.status == 400) {
           alert('회원 정보가 존재하지 않습니다.');
@@ -47,7 +48,7 @@ export class LoginComponent implements OnInit {
         } else if (error1.status == 422) {
           alert('정보를 다시 입력해주세요.');
         }
-
+        
         this.loginForm.controls['password'].setValue('');
       });
   }

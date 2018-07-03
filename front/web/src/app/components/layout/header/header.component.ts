@@ -22,10 +22,15 @@ export class HeaderComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.isLoggedIn = this.authService.isLoggedIn();
-    if (this.isLoggedIn){
-      this.setCurrentUserEmail();
-    }
+    this.authService.isLoggedIn()
+      .subscribe((data: {is_logged_in: boolean}) => {
+        this.isLoggedIn = data.is_logged_in;
+
+        if (this.isLoggedIn){
+          this.setCurrentUserEmail();
+        }
+    });
+
   }
 
 }

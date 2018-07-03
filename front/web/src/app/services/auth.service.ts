@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import {HttpClient } from '@angular/common/http';
-import {CookieService} from "ngx-cookie-service";
 import {RegistUser} from "../models/user";
 
 
@@ -9,7 +8,7 @@ import {RegistUser} from "../models/user";
 })
 export class AuthService {
   uri = 'http://localhost:5000';
-  constructor(private http: HttpClient, private cookie: CookieService) { }
+  constructor(private http: HttpClient) { }
 
   options = {
     withCredentials: true
@@ -37,10 +36,6 @@ export class AuthService {
   }
 
   isLoggedIn() {
-    return this.cookie.check('remember_token');
-  }
-
-  isOwner(email: string) {
-    return this.cookie.get('current_user') === email;
+    return this.http.get(`${this.uri}/users/is-logged-in`, this.options)
   }
 }

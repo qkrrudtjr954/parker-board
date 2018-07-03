@@ -27,7 +27,10 @@ export class BoardDetailComponent implements OnInit, OnChanges {
     this.boardService.getBoard(this.boardId)
       .subscribe((data: Board) => {
         this.board = data;
-        this.isOwner = this.authService.isOwner(data.user.email)
+        this.authService.getCurrentUserInfo()
+          .subscribe((owner: {email: string}) => {
+            this.isOwner = (owner.email === this.board.user.email)
+          });
       });
   }
 

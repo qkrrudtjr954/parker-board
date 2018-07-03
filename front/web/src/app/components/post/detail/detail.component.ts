@@ -33,7 +33,10 @@ export class PostDetailComponent implements OnInit {
     this.postService.getPost(postId)
       .subscribe((data: Post) => {
         this.post = data;
-        this.isOwner = this.authService.isOwner(this.post.user.email);
+        this.authService.getCurrentUserInfo()
+          .subscribe((owner: {email: string}) => {
+            this.isOwner = (owner.email === this.post.user.email)
+          });
       })
   }
 
