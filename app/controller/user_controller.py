@@ -7,7 +7,7 @@ from app import User
 from app.error import NotFoundError, DuplicateValueError, WrongPasswordError
 from app.service import user_service
 from app.schema.user import after_register_schema, after_login_schema, before_login_schema, before_register_schema, \
-    user_info_schema
+    user_info_schema, is_logged_in_schema
 from app.schema.error import default_message_error_schema
 
 from webargs.flaskparser import use_args
@@ -93,4 +93,8 @@ def get_current_user_info():
     return user_info_schema.jsonify(current_user), 200
 
 
+@bp.route('/is-logged-in')
+def is_logged_in():
+    result = dict(is_logged_in=current_user.is_authenticated)
+    return is_logged_in_schema.jsonify(result), 200
 
