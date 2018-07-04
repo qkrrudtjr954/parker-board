@@ -23,8 +23,6 @@ def get_comment(comment_id):
 
 def delete(comment: Comment):
     try:
-        comment.post.decrease_comments_count()
-
         comment.delete()
 
         db.session.commit()
