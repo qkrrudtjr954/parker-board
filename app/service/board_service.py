@@ -18,12 +18,9 @@ def create(user: User, target_board: Board):
 
 def update(target_board: Board, board_data: Board):
     try:
-        if target_board.title != board_data.title:
-            target_board.title = board_data.title
-
-        if target_board.description != board_data.description:
-            target_board.description = board_data.description
-
+        target_board.title = board_data.title
+        target_board.description = board_data.description
+        
         db.session.commit()
 
     except Exception as e:
