@@ -25,6 +25,7 @@ class Comment(db.Model, TimestampMixin):
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
 
     def delete(self):
+        self.post.decrease_comments_count()
         self.status = CommentStatus.DELETED
 
     @hybrid_property
