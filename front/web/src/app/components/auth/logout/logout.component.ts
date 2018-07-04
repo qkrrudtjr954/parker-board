@@ -1,7 +1,6 @@
 import {Component, OnInit} from "@angular/core";
 import {AuthService} from "../../../services/auth.service";
 import {CookieService} from "ngx-cookie-service";
-import {Router} from "@angular/router";
 
 
 @Component({
@@ -11,16 +10,16 @@ import {Router} from "@angular/router";
   `
 })
 export class LogoutComponent implements OnInit {
-  constructor(private authservice: AuthService, private cookieservice: CookieService, private router: Router) { }
+  constructor(private authService: AuthService, private cookieService: CookieService) { }
 
   userLogout() {
-    this.authservice.userLogout()
-      .subscribe(() => {
-        this.cookieservice.delete('session');
-        this.cookieservice.delete('current_user');
+    this.authService.userLogout()
+      .subscribe((data) => {
+        this.cookieService.delete('session');
+        this.cookieService.delete('current_user');
+
         alert('로그아웃 되었습니다.');
-        // this.router.navigate(['/']);
-        location.href='/';
+        location.href = '/';
       }, error => {
         if(error.status == 401) {
           alert('로그인 후 가능합니다.');
