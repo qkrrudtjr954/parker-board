@@ -7,7 +7,7 @@ from werkzeug.security import generate_password_hash
 
 
 
-class FakeUserFactory(factory.alchemy.SQLAlchemyModelFactory):
+class UserFactory(factory.alchemy.SQLAlchemyModelFactory):
     id = factory.Sequence(lambda n: n+1)
     email = factory.Faker('email')
     password = factory.Faker('password')

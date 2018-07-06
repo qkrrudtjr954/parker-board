@@ -1,6 +1,6 @@
 import pytest
 import json
-from tests.factories.user import FakeUserFactory
+from tests.factories.user import UserFactory
 from app.schema.user import before_login_schema, before_register_schema
 from app.model.user import User
 
@@ -13,8 +13,8 @@ class Describe_UserController:
     class Describe_login:
         @pytest.fixture
         def user(self):
-            user = FakeUserFactory.build()
-            copy_user = FakeUserFactory.build(email=user.email, password=user.password)
+            user = UserFactory.build()
+            copy_user = UserFactory.build(email=user.email, password=user.password)
 
             user.set_password(user.password)
 
@@ -77,7 +77,7 @@ class Describe_UserController:
         class Context_email구조가_아닐_때:
             @pytest.fixture
             def user(self, email):
-                user = FakeUserFactory(email=email)
+                user = UserFactory(email=email)
                 self.session.commit()
                 return user
 
@@ -88,7 +88,7 @@ class Describe_UserController:
         class Context_password가_짧을_때:
             @pytest.fixture
             def user(self, password):
-                user = FakeUserFactory(password=password)
+                user = UserFactory(password=password)
                 self.session.commit()
                 return user
 
@@ -98,7 +98,7 @@ class Describe_UserController:
     class Describe_register:
         @pytest.fixture
         def form(self):
-            user = FakeUserFactory.build()
+            user = UserFactory.build()
             return user
 
         @pytest.fixture
@@ -120,7 +120,7 @@ class Describe_UserController:
         class Context_중복_email일_때:
             @pytest.fixture
             def form(self):
-                user = FakeUserFactory()
+                user = UserFactory()
                 self.session.commit()
                 return user
 
@@ -131,7 +131,7 @@ class Describe_UserController:
         class Context_email이_없을_때:
             @pytest.fixture
             def form(self, email):
-                user = FakeUserFactory.build(email=email)
+                user = UserFactory.build(email=email)
                 return user
 
             def test_422를_반환한다(self, subject):
@@ -141,7 +141,7 @@ class Describe_UserController:
         class Context_password가_없을_때:
             @pytest.fixture
             def form(self, password):
-                user = FakeUserFactory.build(password=password)
+                user = UserFactory.build(password=password)
                 return user
 
             def test_422를_반환한다(self, subject):
@@ -151,7 +151,7 @@ class Describe_UserController:
         class Context_email구조가_아닐_때:
             @pytest.fixture
             def form(self, email):
-                user = FakeUserFactory.build(email=email)
+                user = UserFactory.build(email=email)
                 return user
 
             def test_422를_반환한다(self, subject):
@@ -161,7 +161,7 @@ class Describe_UserController:
         class Context_password가_짧을_때:
             @pytest.fixture
             def form(self, password):
-                user = FakeUserFactory.build(password=password)
+                user = UserFactory.build(password=password)
                 return user
 
             def test_422를_반환한다(self, subject):

@@ -4,8 +4,8 @@ import json
 from app.model.board import Board
 from app.schema.board import board_create_form_schema, board_update_form_schema
 
-from tests.factories.user import FakeUserFactory
-from tests.factories.board import FakeBoardFactory
+from tests.factories.user import UserFactory
+from tests.factories.board import BoardFactory
 
 
 class Describe_BoardController:
@@ -16,7 +16,7 @@ class Describe_BoardController:
 
         @pytest.fixture
         def board_id(self, user):
-            board = FakeBoardFactory(user_id=user.id, user=user)
+            board = BoardFactory(user_id=user.id, user=user)
             self.session.commit()
             return board.id
 
@@ -35,7 +35,7 @@ class Describe_BoardController:
         class Context_Board가_없을_때:
             @pytest.fixture
             def board_id(self, user):
-                board = FakeBoardFactory.build(user_id=user.id, user=user)
+                board = BoardFactory.build(user_id=user.id, user=user)
                 return board.id
 
             def test_404를_반환하다(self, subject):
@@ -44,7 +44,7 @@ class Describe_BoardController:
     class Describe_main:
         @pytest.fixture
         def boards(self):
-            boards = FakeBoardFactory.create_batch(25)
+            boards = BoardFactory.create_batch(25)
             return boards
 
         @pytest.fixture
@@ -65,7 +65,7 @@ class Describe_BoardController:
     class Describe_create:
         @pytest.fixture
         def form(self):
-            board = FakeBoardFactory.build()
+            board = BoardFactory.build()
             return board_create_form_schema.dump(board).data
 
         @pytest.fixture
@@ -100,7 +100,7 @@ class Describe_BoardController:
         class Context_로그인이_되어있지_않은경우:
             @pytest.fixture
             def user(self):
-                user = FakeUserFactory.create()
+                user = UserFactory.create()
                 self.session.commit()
                 return user
 
@@ -115,7 +115,7 @@ class Describe_BoardController:
 
         @pytest.fixture
         def board_id(self, user):
-            board = FakeBoardFactory(user=user, user_id=user.id)
+            board = BoardFactory(user=user, user_id=user.id)
             self.session.commit()
 
             return board.id
@@ -144,7 +144,7 @@ class Describe_BoardController:
         class Context_로그인이_되어있지_않은_경우:
             @pytest.fixture
             def user(self):
-                user = FakeUserFactory.create()
+                user = UserFactory.create()
                 self.session.commit()
 
                 return user
@@ -155,7 +155,7 @@ class Describe_BoardController:
         class Context_board가_존재하지_않을_경우:
             @pytest.fixture
             def board_id(self, user):
-                board = FakeBoardFactory.build(user=user, user_id=user.id)
+                board = BoardFactory.build(user=user, user_id=user.id)
                 return board.id
 
             def test_404를_반환한다(self, subject):
@@ -164,7 +164,7 @@ class Describe_BoardController:
         class Context_본인_게시글이_아닌_경우:
             @pytest.fixture
             def board_id(self):
-                board = FakeBoardFactory()
+                board = BoardFactory()
                 self.session.commit()
 
                 return board.id
@@ -190,7 +190,7 @@ class Describe_BoardController:
 
         @pytest.fixture
         def board_id(self, user):
-            board = FakeBoardFactory(user=user, user_id=user.id)
+            board = BoardFactory(user=user, user_id=user.id)
             self.session.commit()
             return board.id
 
@@ -208,7 +208,7 @@ class Describe_BoardController:
         class Context_board가_없는_경우:
             @pytest.fixture
             def board_id(self, user):
-                board = FakeBoardFactory.build(user=user, user_id=user.id)
+                board = BoardFactory.build(user=user, user_id=user.id)
                 return board.id
 
             def test_404를_반환한다(self, subject):
@@ -217,7 +217,7 @@ class Describe_BoardController:
         class Context_본인_board가_아닌_경우:
             @pytest.fixture
             def board_id(self, user):
-                board = FakeBoardFactory()
+                board = BoardFactory()
                 self.session.commit()
                 return board.id
 
@@ -228,7 +228,7 @@ class Describe_BoardController:
         class Context_로그인이_되어있지_않은_경우:
             @pytest.fixture
             def user(self):
-                user = FakeUserFactory()
+                user = UserFactory()
                 self.session.commit()
 
                 return user

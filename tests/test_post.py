@@ -4,11 +4,11 @@ import json
 from app.model.likes import Likes
 from app.model.post import Post
 from app.schema.post import post_create_form_schema, post_update_form_schema
-from tests.factories.like import FakeLikeFactory
+from tests.factories.like import LikeFactory
 
-from tests.factories.post import FakePostFactory
-from tests.factories.board import FakeBoardFactory
-from tests.factories.user import FakeUserFactory
+from tests.factories.post import PostFactory
+from tests.factories.board import BoardFactory
+from tests.factories.user import UserFactory
 
 
 class Describe_PostController:
@@ -37,8 +37,8 @@ class Describe_PostController:
 
         @pytest.fixture
         def board(self):
-            board = FakeBoardFactory()
-            board.posts = FakePostFactory.create_batch(20)
+            board = BoardFactory()
+            board.posts = PostFactory.create_batch(20)
             self.session.commit()
 
             return board
@@ -55,7 +55,7 @@ class Describe_PostController:
         class Context_board가_존재하지_않을_때:
             @pytest.fixture
             def board(self):
-                board = FakeBoardFactory.build()
+                board = BoardFactory.build()
                 return board
 
             def test_404를_반환한다(self, subject):
@@ -68,7 +68,7 @@ class Describe_PostController:
     class Describe_detail:
         @pytest.fixture
         def post_id(self):
-            post = FakePostFactory()
+            post = PostFactory()
             return post.id
 
         @pytest.fixture
@@ -91,7 +91,7 @@ class Describe_PostController:
         class Context_post가_존재하지_않을_때:
             @pytest.fixture
             def post_id(self):
-                post = FakePostFactory.build()
+                post = PostFactory.build()
                 return post.id
 
             def test_404를_반환한다(self, subject):
@@ -108,8 +108,8 @@ class Describe_PostController:
         class Context_15개_좋아요를_받았을때:
             @pytest.fixture
             def post_id(self):
-                post = FakePostFactory()
-                post.likes = FakeLikeFactory.create_batch(15)
+                post = PostFactory()
+                post.likes = LikeFactory.create_batch(15)
                 return post.id
 
             @pytest.fixture
@@ -122,14 +122,14 @@ class Describe_PostController:
     class Describe_create:
         @pytest.fixture
         def target_board_id(self):
-            board = FakeBoardFactory()
+            board = BoardFactory()
             self.session.commit()
 
             return board.id
 
         @pytest.fixture
         def form(self):
-            post = FakePostFactory.build()
+            post = PostFactory.build()
             return post
 
         @pytest.fixture
@@ -154,7 +154,7 @@ class Describe_PostController:
         class Context_title이_없을_때:
             @pytest.fixture
             def form(self, title):
-                post = FakePostFactory.build(title=title)
+                post = PostFactory.build(title=title)
                 return post
 
             def test_422를_반환한다(self, subject):
@@ -164,7 +164,7 @@ class Describe_PostController:
         class Context_content가_없을_때:
             @pytest.fixture
             def form(self, content):
-                post = FakePostFactory.build(content=content)
+                post = PostFactory.build(content=content)
                 return post
 
             def test_422를_반환한다(self, subject):
@@ -174,7 +174,7 @@ class Describe_PostController:
         class Context_title이_10글자_이하일_때:
             @pytest.fixture
             def form(self, title):
-                post = FakePostFactory.build(title=title)
+                post = PostFactory.build(title=title)
                 return post
 
             def test_422를_반환한다(self, subject):
@@ -184,7 +184,7 @@ class Describe_PostController:
         class Context_content가_20글자_이하일_때:
             @pytest.fixture
             def form(self, content):
-                post = FakePostFactory.build(content=content)
+                post = PostFactory.build(content=content)
                 return post
 
             def test_422를_반환한다(self, subject):
@@ -206,7 +206,7 @@ class Describe_PostController:
 
         @pytest.fixture
         def target_post(self, user):
-            post = FakePostFactory(user_id=user.id, user=user)
+            post = PostFactory(user_id=user.id, user=user)
             self.session.commit()
             return post
 
@@ -274,7 +274,7 @@ class Describe_PostController:
 
         @pytest.fixture
         def post_id(self, user):
-            post = FakePostFactory(user=user, user_id=user.id)
+            post = PostFactory(user=user, user_id=user.id)
             self.session.commit()
             return post.id
 
@@ -293,7 +293,7 @@ class Describe_PostController:
         class Context_post가_존재하지_않는_경우:
             @pytest.fixture
             def post_id(self):
-                post = FakePostFactory.build()
+                post = PostFactory.build()
                 return post.id
 
             def test_404를_반환한다(self, subject):
@@ -302,7 +302,7 @@ class Describe_PostController:
         class Context_본인_게시글이_아닌_경우:
             @pytest.fixture
             def post_id(self):
-                post = FakePostFactory()
+                post = PostFactory()
                 self.session.commit()
                 return post.id
 
@@ -320,7 +320,7 @@ class Describe_PostController:
     class Describe_like:
         @pytest.fixture
         def target_post(self):
-            post = FakePostFactory()
+            post = PostFactory()
             return post
 
         @pytest.fixture
@@ -338,8 +338,8 @@ class Describe_PostController:
     class Describe_unlike:
         @pytest.fixture
         def target_post(self, user):
-            post = FakePostFactory()
-            FakeLikeFactory(post_id=post.id, user_id=user.id)
+            post = PostFactory()
+            LikeFactory(post_id=post.id, user_id=user.id)
             print(Likes.query.all())
             return post
 
@@ -358,8 +358,8 @@ class Describe_PostController:
     class Describe_is_liked:
         @pytest.fixture
         def post_id(self, user):
-            post = FakePostFactory()
-            FakeLikeFactory(post_id=post.id, user_id=user.id)
+            post = PostFactory()
+            LikeFactory(post_id=post.id, user_id=user.id)
             return post.id
 
         @pytest.fixture
@@ -380,10 +380,10 @@ class Describe_PostController:
         class Context_좋아요를_누르지_않은_게시글인_경우:
             @pytest.fixture
             def post_id(self, user):
-                another_user = FakeUserFactory()
+                another_user = UserFactory()
 
-                post = FakePostFactory()
-                FakeLikeFactory(post_id=post.id, user_id=another_user.id)
+                post = PostFactory()
+                LikeFactory(post_id=post.id, user_id=another_user.id)
 
                 return post.id
 

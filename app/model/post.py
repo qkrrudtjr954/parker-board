@@ -33,7 +33,7 @@ class Post(db.Model, TimestampMixin):
 
     likes = db.relationship("Likes", lazy='dynamic')
 
-    groups = db.relationship("CommentGroup", backref='post')
+    comment_groups = db.relationship("CommentGroup", backref='post')
 
     @hybrid_property
     def is_deleted(self):

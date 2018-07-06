@@ -5,7 +5,6 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy_utils import ChoiceType
 
 from app.model import db
-from app.model.commnet_group import CommentGroup
 from app.model.timestamp import TimestampMixin
 from app.model.user import User
 

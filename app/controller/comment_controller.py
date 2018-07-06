@@ -4,12 +4,13 @@ from flask_login import current_user, login_required
 from webargs.flaskparser import use_args
 
 from app.model.comment import Comment
+from app.model.commnet_group import CommentGroup
 from app.model.post import Post
 from app.schema.error import default_message_error_schema
 from app.schema.pagination import pagination_schema
 from app.service import comment_service
 from app.schema.comment import comment_create_form_schema, comment_update_form_schema, after_updated_schema, \
-    after_create_schema, comments_schema
+    after_create_schema, comment_list_schema
 
 bp = Blueprint('comment', __name__)
 
@@ -17,7 +18,32 @@ bp = Blueprint('comment', __name__)
 댓글 
 생성, 삭제, 수정
 '''
-#
+
+
+@bp.route('/posts/<int:post_id>/comments', methods=['GET'])
+@use_args(pagination_schema)
+def get_comment_list(pagination, post_id):
+    target_post = Post.query.get(post_id)
+
+    if not target_post:
+        error = dict(message='존재하지 않는 게시글 입니다.')
+        return default_message_error_schema.jsonify(error), 404
+
+    paged_data = Comment.query\
+        .join(CommentGroup)\
+        .filter(Comment.comment_group_id == CommentGroup.id)\
+        .filter(CommentGroup.post_id == post_id)\
+        .order_by(CommentGroup.created_at.desc())\
+        .order_by(Comment.id.desc())\
+        .paginate(page=pagination.page, per_page=pagination.per_page, error_out=False)
+
+    comment_list = comment_list_schema.dump(paged_data.items).data
+    total = paged_data.total
+
+    return jsonify(dict(comment_list=comment_list, total=total)), 200
+
+
+
 # @bp.route('/posts/<int:post_id>/comments', methods=['GET'])
 # @use_args(pagination_schema)
 # @login_required

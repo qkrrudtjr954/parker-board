@@ -6,7 +6,7 @@ from app import create_app, User
 
 from app.model import db
 from app.schema.user import before_login_schema
-from tests.factories.user import FakeUserFactory
+from tests.factories.user import UserFactory
 
 logging.basicConfig(level=logging.INFO, stream=sys.stdout)
 
@@ -39,7 +39,7 @@ def session(tdb):
 
 @pytest.fixture
 def logged_in_user(client, session):
-    user = FakeUserFactory.build()
+    user = UserFactory.build()
     data = dict(email=user.email, password=user.password)
     user.set_password(user.password)
 
@@ -54,7 +54,7 @@ def logged_in_user(client, session):
 
 @pytest.fixture
 def not_logged_in_user(session):
-    user = FakeUserFactory.create()
+    user = UserFactory.create()
     session.commit()
 
     return user
