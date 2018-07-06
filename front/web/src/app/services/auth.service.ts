@@ -34,8 +34,4 @@ export class AuthService {
   getCurrentUserInfo() {
     return this.http.get(`${this.uri}/users/user-info`, this.options)
   }
-
-  isLoggedIn() {
-    return this.http.get(`${this.uri}/users/is-logged-in`, this.options)
-  }
 }

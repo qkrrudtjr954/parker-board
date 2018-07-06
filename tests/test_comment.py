@@ -80,7 +80,7 @@ class Describe_CommentController:
 
         def test_post의_comment_count가_증가한다(self, json_result):
             db_comment = Comment.query.get(json_result['id'])
-            assert 1 == db_comment.post.comments_count
+            assert 1 == db_comment.post.comment_count
 
         class Context_로그인을_하지_않았을_때:
             @pytest.fixture
@@ -112,7 +112,7 @@ class Describe_CommentController:
         @pytest.fixture
         def target_comment_id(self, user):
             comment = FakeCommentFactory(user=user, user_id=user.id)
-            comment.post.comments_count = 1
+            comment.post.comment_count = 1
             self.session.commit()
             return comment.id
 
@@ -130,7 +130,7 @@ class Describe_CommentController:
 
         def test_post의_comment_count가_감소한다(self, subject, target_comment_id):
             db_comment = Comment.query.get(target_comment_id)
-            assert 0 == db_comment.post.comments_count
+            assert 0 == db_comment.post.comment_count
 
         class Context_comment가_존재하지_않을_때:
             @pytest.fixture

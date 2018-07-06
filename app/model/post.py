@@ -21,7 +21,7 @@ class Post(db.Model, TimestampMixin):
     content = db.Column(db.Text, nullable=False)
     description = db.Column(db.String(200), nullable=True)
     read_count = db.Column(db.Integer, nullable=False, default=0)
-    comments_count = db.Column(db.Integer, nullable=False, default=0)
+    comment_count = db.Column(db.Integer, nullable=False, default=0)
 
     status = db.Column(ChoiceType(PostStatus, impl=db.Integer()), default=PostStatus.NORMAL)
 
@@ -71,10 +71,10 @@ class Post(db.Model, TimestampMixin):
         return self.likes.filter(Likes.user_id == user_id).first()
 
     def increase_comments_count(self):
-        self.comments_count = Post.comments_count + 1
+        self.comment_count = Post.comment_count + 1
 
     def decrease_comments_count(self):
-        self.comments_count = Post.comments_count - 1
+        self.comment_count = Post.comment_count - 1
 
     def __repr__(self):
         return "<Post title: %s, content: %s, description: %s, status: %s," \

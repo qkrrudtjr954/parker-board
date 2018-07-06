@@ -10,7 +10,6 @@ import {AuthService} from "../../../services/auth.service";
   styleUrls: ['./navbar.component.css']
 })
 export class NavbarComponent implements OnInit {
-  isLoggedIn: boolean = false;
   boardList: NavBoard[] = [];
   selectedBoard: NavBoard;
 
@@ -31,10 +30,6 @@ export class NavbarComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.authService.isLoggedIn()
-      .subscribe((data: {is_logged_in: boolean}) => {
-        this.isLoggedIn = data.is_logged_in;
-      });
     this.getNavBoardList();
   }
 }

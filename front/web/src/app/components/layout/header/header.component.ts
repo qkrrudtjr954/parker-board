@@ -8,7 +8,6 @@ import {AuthService} from "../../../services/auth.service";
 })
 export class HeaderComponent implements OnInit {
   currentUser: string;
-  isLoggedIn: boolean = false;
 
   constructor(private authService: AuthService) { }
 
@@ -22,14 +21,7 @@ export class HeaderComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.authService.isLoggedIn()
-      .subscribe((data: {is_logged_in: boolean}) => {
-        this.isLoggedIn = data.is_logged_in;
-
-        if (this.isLoggedIn){
-          this.setCurrentUserEmail();
-        }
-    });
+    this.setCurrentUserEmail();
 
   }
 
