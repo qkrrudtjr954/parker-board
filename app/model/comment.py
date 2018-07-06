@@ -5,6 +5,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy_utils import ChoiceType
 
 from app.model import db
+from app.model.commnet_group import CommentGroup
 from app.model.timestamp import TimestampMixin
 from app.model.user import User
 
@@ -22,7 +23,7 @@ class Comment(db.Model, TimestampMixin):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     user = db.relationship("User")
 
-    post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
+    comment_group_id = db.Column(db.Integer, db.ForeignKey('comment_group.id'))
 
     def delete(self):
         self.post.decrease_comments_count()

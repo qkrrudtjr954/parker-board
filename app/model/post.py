@@ -4,6 +4,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy_utils import ChoiceType
 
 from app.model import db
+from app.model.commnet_group import CommentGroup
 from app.model.likes import Likes
 from app.model.timestamp import TimestampMixin
 from app.model.user import User
@@ -30,9 +31,9 @@ class Post(db.Model, TimestampMixin):
 
     board_id = db.Column(db.Integer, db.ForeignKey('board.id'), nullable=False)
 
-    comments = db.relationship("Comment", backref='post', lazy='dynamic')
-
     likes = db.relationship("Likes", lazy='dynamic')
+
+    groups = db.relationship("CommentGroup", backref='post')
 
     @hybrid_property
     def is_deleted(self):
