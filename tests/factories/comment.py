@@ -15,7 +15,10 @@ class CommentFactory(factory.alchemy.SQLAlchemyModelFactory):
     id = factory.Sequence(lambda n: n+1)
     content = factory.Faker('sentence')
 
-    status = factory.fuzzy.FuzzyChoice([CommentStatus.NORMAL, CommentStatus.DELETED])
+    # status = factory.fuzzy.FuzzyChoice([CommentStatus.NORMAL, CommentStatus.DELETED])
+    status = CommentStatus.NORMAL
+
+    comment_group_id = None
 
     user = factory.SubFactory(UserFactory)
 

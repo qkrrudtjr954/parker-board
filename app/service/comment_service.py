@@ -1,41 +1,69 @@
-from app.model import db
-from app.model.user import User
+from app import User
 from app.model.comment import Comment
+from app.model.comment_group import CommentGroup
+from app.model.post import Post
 
 
-def create(target_post, comment: Comment, user: User):
+def add_comment(target_post: Post, user: User, comment: Comment):
+    target_group = target_post.add_comment_group()
+
     try:
-        target_post.increase_comments_count()
-
-        comment.user_id = user.id
-        comment.post_id = target_post.id
-
-        db.session.add(comment)
-        db.session.commit()
+        # new_comment_group은 group에 댓글을 추가하는 책임을 수행한다.
+        new_comment = target_group.add_comment(user=user, comment=comment)
     except Exception as e:
-        db.session.rollback()
         raise e
 
-
-def get_comment(comment_id):
-    return Comment.query.get(comment_id)
+    return new_comment
 
 
-def delete(comment: Comment):
+# 계층 댓글을 생성하는 책임
+def add_layer_comment(target_group: CommentGroup, comment: Comment, user: User, parent_comment: Comment):
     try:
-        comment.delete()
+        new_comment = target_group.add_layer_comment(comment=comment, user=user, parent_comment=parent_comment)
 
-        db.session.commit()
     except Exception as e:
-        db.session.rollback()
         raise e
 
+    return new_comment
 
-def update(target_comment: Comment, comment_data):
-    try:
-        target_comment.content = comment_data.content
-
-        db.session.commit()
-    except Exception as e:
-        db.session.rollback()
-        raise e
+# from app.model import db
+# from app.model.user import User
+# from app.model.comment import Comment
+#
+#
+# def create(target_post, comment: Comment, user: User):
+#     try:
+#         target_post.increase_comments_count()
+#
+#         comment.user_id = user.id
+#         comment.post_id = target_post.id
+#
+#         db.session.add(comment)
+#         db.session.commit()
+#     except Exception as e:
+#         db.session.rollback()
+#         raise e
+#
+#
+# def get_comment(comment_id):
+#     return Comment.query.get(comment_id)
+#
+#
+# def delete(comment: Comment):
+#     try:
+#         comment.delete()
+#
+#         db.session.commit()
+#     except Exception as e:
+#         db.session.rollback()
+#         raise e
+#
+#
+# def update(target_comment: Comment, comment_data):
+#     try:
+#         target_comment.content = comment_data.content
+#
+#         db.session.commit()
+#     except Exception as e:
+#         db.session.rollback()
+#         raise e

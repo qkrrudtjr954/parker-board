@@ -1,6 +1,12 @@
 import pytest
 import json
 
+from app.model.comment import Comment
+from app.model.comment_group import CommentGroup
+from app.model.post import Post
+from app.schema.comment import comment_create_form_schema, layer_comment_create_form
+from tests.factories.comment import CommentFactory
+from tests.factories.comment_group import CommentGroupFactory
 from tests.factories.post import PostFactory, HasManyCommentPostFactory
 
 
@@ -32,7 +38,90 @@ class Describe_CommentController:
         def test_200을_반환한다(self, subject):
             assert 200 == subject.status_code
 
-    #
+        def test_comment_list를_반환한다(self, json_result):
+            for comment in json_result['comment_list']:
+                print(comment)
+            assert 'comment_list' in json_result
+
+        def test_total을_반환한다(self, json_result):
+            assert 'total' in json_result
+            # group 10개에 댓글 10개 씩
+            assert 100 == json_result['total']
+
+    class Describe_create_comment:
+        @pytest.fixture
+        def target_post(self):
+            post = PostFactory()
+            return post
+
+        @pytest.fixture
+        def comment_obj(self):
+            comment = CommentFactory.build()
+            return comment
+
+        @pytest.fixture
+        def subject(self, target_post, comment_obj, user):
+            resp = self.client.post('/posts/%d/comments' % target_post.id, data=comment_create_form_schema.dump(comment_obj).data)
+            return resp
+
+        def test_200을_반환한다(self, subject):
+            assert 200 == subject.status_code
+
+        def test_comment가_db에_저장된다(self, comment_obj, json_result):
+            new_comment = Comment.query.get(json_result['id'])
+            assert new_comment.content == comment_obj.content
+
+        @pytest.mark.parametrize('content', ['', None])
+        class Context_content가_없을_때:
+            @pytest.fixture
+            def comment_obj(self, content):
+                comment = CommentFactory.build(content=content)
+                return comment
+
+            def test_422를_반환한다(self, subject):
+                assert 422 == subject.status_code
+
+
+    class Describe_create_layer_comment:
+        @pytest.fixture
+        def target_post(self):
+            post = PostFactory()
+            return post
+
+        @pytest.fixture
+        def target_comment_group(self, target_post):
+            comment_group = CommentGroupFactory(post_id=target_post.id)
+            return comment_group
+
+        @pytest.fixture
+        def parent_comment(self, target_comment_group):
+            comment = CommentFactory(comment_group_id=target_comment_group.id)
+            return comment
+
+        @pytest.fixture
+        def comment_obj(self, parent_comment):
+            comment = CommentFactory.build(parent_id=parent_comment.id)
+            return comment
+
+        @pytest.fixture
+        def subject(self, target_comment_group, comment_obj, user):
+            resp = self.client.post('/comment_groups/%d/comments' % target_comment_group.id, data=layer_comment_create_form.dump(comment_obj).data)
+            return resp
+
+        def test_200을_반환한다(self, subject):
+            assert 200 == subject.status_code
+
+        def test_comment가_db에_저장된다(self, comment_obj, json_result):
+            new_comment = Comment.query.get(json_result['id'])
+            assert new_comment.content == comment_obj.content
+            assert new_comment.step > 0
+
+
+
+
+
+
+
     # class Describe_create:
     #     @pytest.fixture
     #     def form(self):

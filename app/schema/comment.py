@@ -39,3 +39,20 @@ class CommentFormSchema(ma.ModelSchema):
 
 comment_create_form_schema = CommentFormSchema()
 comment_update_form_schema = CommentFormSchema()
+
+
+class LayerCommentFormSchema(ma.ModelSchema):
+    @validates('content')
+    def content_length_check(self, content):
+        if not content:
+            raise ValidationError('내용을 입력해주세요', status_code=422)
+        if len(content) < 10:
+            raise ValidationError('내용은 10글자 이상 입력해주세요', status_code=422)
+
+    class Meta:
+        strict = True
+        model = Comment
+        sqla_session = db.session
+        fields = ['content', 'parent_id']
+
+layer_comment_create_form = LayerCommentFormSchema()

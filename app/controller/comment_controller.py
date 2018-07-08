@@ -4,13 +4,13 @@ from flask_login import current_user, login_required
 from webargs.flaskparser import use_args
 
 from app.model.comment import Comment
-from app.model.commnet_group import CommentGroup
+from app.model.comment_group import CommentGroup
 from app.model.post import Post
 from app.schema.error import default_message_error_schema
 from app.schema.pagination import pagination_schema
 from app.service import comment_service
 from app.schema.comment import comment_create_form_schema, comment_update_form_schema, after_updated_schema, \
-    after_create_schema, comment_list_schema
+    after_create_schema, comment_list_schema, layer_comment_create_form
 
 bp = Blueprint('comment', __name__)
 
@@ -31,10 +31,10 @@ def get_comment_list(pagination, post_id):
 
     paged_data = Comment.query\
         .join(CommentGroup)\
-        .filter(Comment.comment_group_id == CommentGroup.id)\
         .filter(CommentGroup.post_id == post_id)\
-        .order_by(CommentGroup.created_at.desc())\
-        .order_by(Comment.id.desc())\
+        .filter(Comment.comment_group_id == CommentGroup.id)\
+        .order_by(Comment.comment_group_id.desc())\
+        .order_by(Comment.step.asc())\
         .paginate(page=pagination.page, per_page=pagination.per_page, error_out=False)
 
     comment_list = comment_list_schema.dump(paged_data.items).data
@@ -43,6 +43,53 @@ def get_comment_list(pagination, post_id):
     return jsonify(dict(comment_list=comment_list, total=total)), 200
 
 
+@bp.route('/posts/<int:post_id>/comments', methods=['POST'])
+@use_args(comment_create_form_schema)
+def create_comment(comment, post_id):
+    target_post = Post.query.get(post_id)
+
+    if not target_post:
+        error = dict(message='존재하지 않는 게시글 입니다.')
+        return default_message_error_schema.jsonify(error), 404
+
+    try:
+        new_comment = comment_service.add_comment(target_post=target_post,
+                                                  comment=comment,
+                                                  user=current_user)
+    except Exception as e:
+        print(e)
+        error = dict(message='서버상의 문제가 발생했습니다. 다시 시도해주세요.')
+        return default_message_error_schema.jsonify(error), 500
+
+    return after_create_schema.jsonify(new_comment), 200
+
+
+@bp.route('/comment_groups/<int:group_id>/comments', methods=['POST'])
+@use_args(layer_comment_create_form)
+def create_layer_comment(comment, group_id):
+    target_group = CommentGroup.query.get(group_id)
+
+    if not target_group:
+        error = dict(message='댓글 그룹이 존재하지 않습니다.')
+        return default_message_error_schema.jsonify(error), 404
+
+    parent_comment = target_group.get_comment_in_group(comment.parent_id)
+
+    if not parent_comment:
+        error = dict(message='부모 댓글이 존재하지 않습니다.')
+        return default_message_error_schema.jsonify(error), 404
+
+    try:
+        new_comment = comment_service.add_layer_comment(target_group=target_group,
+                                                        parent_comment=parent_comment,
+                                                        comment=comment,
+                                                        user=current_user)
+
+    except Exception:
+        error = dict(message='서버상의 문제가 발생했습니다. 다시 시도해주세요.')
+        return default_message_error_schema.jsonify(error), 500
+
+    return after_create_schema.jsonify(new_comment), 200
 
 # @bp.route('/posts/<int:post_id>/comments', methods=['GET'])
 # @use_args(pagination_schema)

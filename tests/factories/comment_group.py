@@ -3,7 +3,7 @@ from datetime import datetime
 import factory
 
 from app.model import db
-from app.model.commnet_group import CommentGroup
+from app.model.comment_group import CommentGroup
 from tests.factories.comment import CommentFactory
 
 

@@ -1,5 +1,4 @@
 import enum
-from datetime import datetime
 
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy_utils import ChoiceType
@@ -22,7 +21,11 @@ class Comment(db.Model, TimestampMixin):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     user = db.relationship("User")
 
-    comment_group_id = db.Column(db.Integer, db.ForeignKey('comment_group.id'))
+    comment_group_id = db.Column(db.Integer, db.ForeignKey('comment_group.id'), nullable=False)
+
+    parent_id = db.Column(db.Integer, db.ForeignKey('comment.id'), nullable=True)
+    depth = db.Column(db.Integer, nullable=False, default=0)
+    step = db.Column(db.Integer, nullable=False, default=0)
 
     def delete(self):
         self.post.decrease_comments_count()
@@ -36,7 +39,7 @@ class Comment(db.Model, TimestampMixin):
         return self.user_id == user.id
 
     def __repr__(self):
-        return "<Comment id: %d, content: %s, status: %s" \
+        return "<Comment content: %s, status: %s" \
                " created_at: %s, updated_at: %s>"\
-               % (self.id, self.content, self.status,
+               % (self.content, self.status,
                   self.created_at, self.updated_at)

@@ -4,7 +4,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy_utils import ChoiceType
 
 from app.model import db
-from app.model.commnet_group import CommentGroup
+from app.model.comment_group import CommentGroup
 from app.model.likes import Likes
 from app.model.timestamp import TimestampMixin
 from app.model.user import User
@@ -76,6 +76,12 @@ class Post(db.Model, TimestampMixin):
 
     def decrease_comments_count(self):
         self.comment_count = Post.comment_count - 1
+
+    def add_comment_group(self):
+        new_group = CommentGroup(post_id=self.id)
+        self.comment_groups.append(new_group)
+        return new_group
+
 
     def __repr__(self):
         return "<Post title: %s, content: %s, description: %s, status: %s," \
