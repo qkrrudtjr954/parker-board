@@ -81,7 +81,6 @@ class Describe_CommentController:
             def test_422를_반환한다(self, subject):
                 assert 422 == subject.status_code
 
-
     class Describe_create_layer_comment:
         @pytest.fixture
         def target_post(self):
@@ -116,6 +115,26 @@ class Describe_CommentController:
             assert new_comment.content == comment_obj.content
             assert new_comment.step > 0
 
+        class Context_target_comment_group이_없을_때:
+            @pytest.fixture
+            def subject(self, target_comment_group, comment_obj, user):
+                wrong_id = target_comment_group.id + 123
+
+                resp = self.client.post('/comment_groups/%d/comments' % wrong_id, data=layer_comment_create_form.dump(comment_obj).data)
+                return resp
+
+            def test_404를_반환한다(self, subject):
+                assert 404 == subject.status_code
+
+        class Context_parent_comment가_없을_때:
+            @pytest.fixture
+            def comment_obj(self, parent_comment):
+                wrong_id = parent_comment.id + 123
+                comment = CommentFactory.build(parent_id=wrong_id)
+                return comment
+
+            def test_404를_반환한다(self, subject):
+                assert 404 == subject.status_code
 
 
 
