@@ -117,6 +117,27 @@ def delete_comment(comment_id):
         error = dict(message='서버상의 문제가 발생했습니다. 다시 시도해주세요.')
         return default_message_error_schema.jsonify(error), 500
 
+
+@bp.route('/comments/<int:comment_id>', methods=['PATCH'])
+@use_args(comment_update_form_schema)
+@login_required
+def update_comment(update_data, comment_id):
+    target_comment = Comment.query.get(comment_id)
+
+    if not target_comment:
+        error = dict(message='존재하지 않는 댓글 입니다.')
+        return default_message_error_schema.jsonify(error), 404
+
+    if not target_comment.is_owner(current_user):
+        error = dict(message='권한이 없습니다.')
+        return default_message_error_schema.jsonify(error), 401
+
+    try:
+        comment_service.update(target_comment, update_data)
+        return after_updated_schema.jsonify(target_comment), 200
+    except Exception:
+        error = dict(message='서버상의 문제가 발생했습니다. 다시 시도해주세요.')
+        return default_message_error_schema.jsonify(error), 500
 # @bp.route('/posts/<int:post_id>/comments', methods=['GET'])
 # @use_args(pagination_schema)
 # @login_required

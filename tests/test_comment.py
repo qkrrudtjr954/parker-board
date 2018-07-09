@@ -2,12 +2,11 @@ import pytest
 import json
 
 from app.model.comment import Comment
-from app.model.comment_group import CommentGroup
-from app.model.post import Post
 from app.schema.comment import comment_create_form_schema, layer_comment_create_form
 from tests.factories.comment import CommentFactory
 from tests.factories.comment_group import CommentGroupFactory
 from tests.factories.post import PostFactory, HasManyCommentPostFactory
+from tests.factories.user import UserFactory
 
 
 class Describe_CommentController:
@@ -101,7 +100,6 @@ class Describe_CommentController:
             return resp
 
         def test_200을_반환한다(self, subject):
-            print(Comment.query.all())
             assert 200 == subject.status_code
 
         def test_comment가_db에_저장된다(self, comment_obj, json_result):
@@ -137,10 +135,18 @@ class Describe_CommentController:
         # 댓글이 삭제되면 본인에 의해 삭제된 댓글임을 표시한다
         # 삭 제하면 댓글의 상태가 변경된다.
         @pytest.fixture
-        def target_comment(self, user):
+        def target_post(self):
             post = PostFactory()
-            group = CommentGroupFactory(post_id=post.id)
-            comment = CommentFactory(comment_group_id=group.id, user_id=user.id, user=user)
+            return post
+
+        @pytest.fixture
+        def target_group(self, target_post):
+            group = CommentGroupFactory(post_id=target_post.id)
+            return group
+
+        @pytest.fixture
+        def target_comment(self, target_group, user):
+            comment = CommentFactory(comment_group_id=target_group.id, user_id=user.id, user=user)
             return comment
 
         @pytest.fixture
@@ -154,6 +160,82 @@ class Describe_CommentController:
         def test_해당_댓글의_상태가_변경된다(self, target_comment, subject):
             deleted_comment = Comment.query.get(target_comment.id)
             assert deleted_comment.is_deleted
+
+        class Context_본인의_댓글이_아닐_때:
+            @pytest.fixture
+            def target_comment(self, target_group, user):
+                wrong_user = UserFactory()
+                comment = CommentFactory(comment_group_id=target_group.id, user_id=wrong_user.id, user=wrong_user)
+                return comment
+
+            def test_401을_반환한다(self, subject):
+                assert 401 == subject.status_code
+
+    class Describe_update_comment:
+        @pytest.fixture
+        def user(self, logged_in_user):
+            return logged_in_user
+
+        @pytest.fixture
+        def target_post(self):
+            post = PostFactory()
+            return post
+
+        @pytest.fixture
+        def target_group(self, target_post):
+            group = CommentGroupFactory(post_id=target_post.id)
+            return group
+
+        @pytest.fixture
+        def target_comment(self, target_group, user):
+            comment = CommentFactory(comment_group_id=target_group.id, user_id=user.id, user=user)
+            return comment
+
+        @pytest.fixture
+        def update_data(self):
+            return dict(content='this is changed content')
+
+        @pytest.fixture
+        def subject(self, target_comment, update_data):
+            print(update_data)
+            resp = self.client.patch('/comments/%d' % target_comment.id, data=update_data)
+            return resp
+
+        def test_200을_반환한다(self, subject):
+            assert 200 == subject.status_code
+
+        def test_comment_content가_갱신된다(self, json_result):
+            updated_comment = Comment.query.get(json_result['id'])
+            assert updated_comment.content == 'this is changed content'
+
+        @pytest.mark.parametrize('content', ['', None])
+        class Context_content가_없을_때:
+            @pytest.fixture
+            def update_data(self, content):
+                return dict(content=None)
+
+            def test_422를_반환_한다(self, subject):
+                assert 422 == subject.status_code
+
+        @pytest.mark.parametrize('content', ['짧은 댓글', '10글자 이하', '메롱메롱'])
+        class Context_content가_짧을_때:
+            @pytest.fixture
+            def update_data(self, content):
+                return dict(content=content)
+
+            def test_422를_반환_한다(self, subject):
+                assert 422 == subject.status_code
+
+        class Context_본인의_댓글이_아닐_때:
+            @pytest.fixture
+            def target_comment(self, target_group, user):
+                wrong_user = UserFactory()
+                comment = CommentFactory(comment_group_id=target_group.id, user_id=wrong_user.id, user=wrong_user)
+                return comment
+
+            def test_401을_반환한다(self, subject):
+                assert 401 == subject.status_code
+
 
 
     # class Describe_create:

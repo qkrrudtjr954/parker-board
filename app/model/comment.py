@@ -27,6 +27,8 @@ class Comment(db.Model, TimestampMixin):
     depth = db.Column(db.Integer, nullable=False, default=0)
     step = db.Column(db.Integer, nullable=False, default=0)
 
+    edited_count = db.Column(db.Integer, default=0)
+
     def delete(self):
         self.group.post.decrease_comment_count()
         self.status = CommentStatus.DELETED
@@ -39,6 +41,12 @@ class Comment(db.Model, TimestampMixin):
 
     def is_owner(self, user: User):
         return self.user_id == user.id
+
+    def update(self, data):
+        self.content = data
+        self.edited_count = Comment.edited_count + 1
+
+        db.session.commit()
 
     def __repr__(self):
         return "<Comment content: %s, status: %s" \
