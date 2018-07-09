@@ -41,7 +41,7 @@ def session(tdb):
 def logged_in_user(client, session):
     user = UserFactory.build()
     data = dict(email=user.email, password=user.password)
-    user.set_password(user.password)
+    user.encode_password()
 
     session.add(user)
     session.commit()

@@ -28,8 +28,10 @@ class Comment(db.Model, TimestampMixin):
     step = db.Column(db.Integer, nullable=False, default=0)
 
     def delete(self):
-        self.post.decrease_comments_count()
+        self.group.post.decrease_comment_count()
         self.status = CommentStatus.DELETED
+
+        db.session.commit()
 
     @hybrid_property
     def is_deleted(self):

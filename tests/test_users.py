@@ -16,7 +16,7 @@ class Describe_UserController:
             user = UserFactory.build()
             copy_user = UserFactory.build(email=user.email, password=user.password)
 
-            user.set_password(user.password)
+            user.encode_password()
 
             self.session.add(user)
             self.session.commit()

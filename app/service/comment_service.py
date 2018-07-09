@@ -26,6 +26,14 @@ def add_layer_comment(target_group: CommentGroup, comment: Comment, user: User, 
 
     return new_comment
 
+
+def delete(target_comment: Comment):
+    try:
+        target_comment.delete()
+    except Exception as e:
+        raise e
+
+
 # from app.model import db
 # from app.model.user import User
 # from app.model.comment import Comment

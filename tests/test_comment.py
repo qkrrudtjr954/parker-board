@@ -16,11 +16,6 @@ class Describe_CommentController:
         return logged_in_user
 
     @pytest.fixture
-    def target_post_id(self):
-        post = PostFactory()
-        return post.id
-
-    @pytest.fixture
     def json_result(self, subject):
         return json.loads(subject.data)
 
@@ -39,8 +34,6 @@ class Describe_CommentController:
             assert 200 == subject.status_code
 
         def test_comment_list를_반환한다(self, json_result):
-            for comment in json_result['comment_list']:
-                print(comment)
             assert 'comment_list' in json_result
 
         def test_total을_반환한다(self, json_result):
@@ -108,6 +101,7 @@ class Describe_CommentController:
             return resp
 
         def test_200을_반환한다(self, subject):
+            print(Comment.query.all())
             assert 200 == subject.status_code
 
         def test_comment가_db에_저장된다(self, comment_obj, json_result):
@@ -119,7 +113,6 @@ class Describe_CommentController:
             @pytest.fixture
             def subject(self, target_comment_group, comment_obj, user):
                 wrong_id = target_comment_group.id + 123
-
                 resp = self.client.post('/comment_groups/%d/comments' % wrong_id, data=layer_comment_create_form.dump(comment_obj).data)
                 return resp
 
@@ -136,9 +129,31 @@ class Describe_CommentController:
             def test_404를_반환한다(self, subject):
                 assert 404 == subject.status_code
 
+    class Describe_delete_comment:
+        @pytest.fixture
+        def user(self, logged_in_user):
+            return logged_in_user
 
+        # 댓글이 삭제되면 본인에 의해 삭제된 댓글임을 표시한다
+        # 삭 제하면 댓글의 상태가 변경된다.
+        @pytest.fixture
+        def target_comment(self, user):
+            post = PostFactory()
+            group = CommentGroupFactory(post_id=post.id)
+            comment = CommentFactory(comment_group_id=group.id, user_id=user.id, user=user)
+            return comment
 
+        @pytest.fixture
+        def subject(self, target_comment, user):
+            resp = self.client.delete('/comments/%d' % target_comment.id)
+            return resp
 
+        def test_204를_반환한다(self, subject):
+            assert 204 == subject.status_code
+
+        def test_해당_댓글의_상태가_변경된다(self, target_comment, subject):
+            deleted_comment = Comment.query.get(target_comment.id)
+            assert deleted_comment.is_deleted
 
 
     # class Describe_create:

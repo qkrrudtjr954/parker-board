@@ -18,8 +18,6 @@ class CommentFactory(factory.alchemy.SQLAlchemyModelFactory):
     # status = factory.fuzzy.FuzzyChoice([CommentStatus.NORMAL, CommentStatus.DELETED])
     status = CommentStatus.NORMAL
 
-    comment_group_id = None
-
     user = factory.SubFactory(UserFactory)
 
     created_at = factory.LazyFunction(datetime.utcnow)

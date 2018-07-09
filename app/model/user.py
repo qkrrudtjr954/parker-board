@@ -24,8 +24,8 @@ class User(UserMixin, db.Model, TimestampMixin):
 
     status = db.Column(ChoiceType(UserStatus, impl=db.Integer()), default=UserStatus.ACTIVE)
 
-    def set_password(self, password):
-        self.password = generate_password_hash(password)
+    def encode_password(self):
+        self.password = generate_password_hash(self.password)
 
     def check_password(self, password):
         return check_password_hash(self.password, password)

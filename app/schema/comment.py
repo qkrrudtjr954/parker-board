@@ -1,4 +1,4 @@
-from marshmallow import fields, validates, ValidationError
+from marshmallow import fields, validates, ValidationError, post_dump, pre_dump
 from marshmallow_enum import EnumField
 from app.model import db
 from app.model.comment import Comment, CommentStatus
@@ -9,6 +9,17 @@ from app.schema.user import simple_user_schema
 class CommentSchema(ma.ModelSchema):
     user = fields.Nested(simple_user_schema)
     status = EnumField(CommentStatus)
+
+    @pre_dump
+    def deleted_comment(self, data):
+        print('----'*50)
+        print(data)
+        print('----'*50)
+        if data.is_deleted:
+            data.content = '[본인에 의해 삭제된 댓글입니다.]'
+
+        return data
+
 
     class Meta:
         strict = True

@@ -8,7 +8,7 @@ def register(user):
         raise DuplicateValueError('이미 존재하는 이메일입니다.')
 
     try:
-        user.set_password(user.password)
+        user.encode_password()
 
         db.session.add(user)
         db.session.commit()

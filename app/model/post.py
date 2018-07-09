@@ -71,10 +71,10 @@ class Post(db.Model, TimestampMixin):
     def _get_liked(self, user_id):
         return self.likes.filter(Likes.user_id == user_id).first()
 
-    def increase_comments_count(self):
+    def increase_comment_count(self):
         self.comment_count = Post.comment_count + 1
 
-    def decrease_comments_count(self):
+    def decrease_comment_count(self):
         self.comment_count = Post.comment_count - 1
 
     def add_comment_group(self):

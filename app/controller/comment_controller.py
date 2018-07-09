@@ -3,6 +3,7 @@ from flask_login import current_user, login_required
 
 from webargs.flaskparser import use_args
 
+from app import User
 from app.model.comment import Comment
 from app.model.comment_group import CommentGroup
 from app.model.post import Post
@@ -11,6 +12,7 @@ from app.schema.pagination import pagination_schema
 from app.service import comment_service
 from app.schema.comment import comment_create_form_schema, comment_update_form_schema, after_updated_schema, \
     after_create_schema, comment_list_schema, layer_comment_create_form
+from flask_login import login_required
 
 bp = Blueprint('comment', __name__)
 
@@ -21,6 +23,7 @@ bp = Blueprint('comment', __name__)
 
 
 @bp.route('/posts/<int:post_id>/comments', methods=['GET'])
+@login_required
 @use_args(pagination_schema)
 def get_comment_list(pagination, post_id):
     target_post = Post.query.get(post_id)
@@ -44,6 +47,7 @@ def get_comment_list(pagination, post_id):
 
 
 @bp.route('/posts/<int:post_id>/comments', methods=['POST'])
+@login_required
 @use_args(comment_create_form_schema)
 def create_comment(comment, post_id):
     target_post = Post.query.get(post_id)
@@ -57,7 +61,6 @@ def create_comment(comment, post_id):
                                                   comment=comment,
                                                   user=current_user)
     except Exception as e:
-        print(e)
         error = dict(message='서버상의 문제가 발생했습니다. 다시 시도해주세요.')
         return default_message_error_schema.jsonify(error), 500
 
@@ -65,6 +68,7 @@ def create_comment(comment, post_id):
 
 
 @bp.route('/comment_groups/<int:group_id>/comments', methods=['POST'])
+@login_required
 @use_args(layer_comment_create_form)
 def create_layer_comment(comment, group_id):
     target_group = CommentGroup.query.get(group_id)
@@ -90,6 +94,28 @@ def create_layer_comment(comment, group_id):
         return default_message_error_schema.jsonify(error), 500
 
     return after_create_schema.jsonify(new_comment), 200
+
+
+@bp.route('/comments/<int:comment_id>', methods=['DELETE'])
+@login_required
+def delete_comment(comment_id):
+    target_comment = Comment.query.get(comment_id)
+
+    if not target_comment:
+        error = dict(message='존재하지 않는 댓글 입니다.')
+        return default_message_error_schema.jsonify(error), 404
+
+    if not target_comment.is_owner(current_user):
+        error = dict(message='권한이 없습니다.')
+        return default_message_error_schema.jsonify(error), 401
+
+    try:
+        comment_service.delete(target_comment)
+        return 'Comment deleted', 204
+
+    except Exception:
+        error = dict(message='서버상의 문제가 발생했습니다. 다시 시도해주세요.')
+        return default_message_error_schema.jsonify(error), 500
 
 # @bp.route('/posts/<int:post_id>/comments', methods=['GET'])
 # @use_args(pagination_schema)
