@@ -1,45 +1,36 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {CommentService} from "../../../services/comment.service";
-import {Comment, CommentList} from "../../../models/comment";
 
 @Component({
   selector: 'app-comment-list',
-  templateUrl: './comment-list.component.html',
-  styleUrls: ['./comment-list.component.css']
+  template: `
+      <h2>comment list area</h2>
+      
+      <div *ngFor="let comment of commentList | paginate: { itemsPerPage: paginationParam.per_page, currentPage: paginationParam.page, totalItems: total }; index as i;">
+        <div class="row">
+          <div class="col-md-3">
+            <span class="user_email">{{comment.user.email}}</span>
+          </div>
+          <div class="text-left col-md-7" [ngStyle]="{'padding-left.px': comment.depth*20}">
+            <span>{{comment.content}}</span>
+          </div>
+          <div class="col-md-2">{{comment.created_at | date: 'yyyy-MM-dd hh:mm:ss'}}</div>
+        </div>
+      </div>
+  `,
+  styles: [`
+    span.user_email{ 
+      font-size: 12px;
+    }
+  `]
 })
 export class CommentListComponent implements OnInit {
-  @Input() postId: number;
+  @Input() commentList;
+  @Input() paginationParam;
+  @Input() total;
 
-  private paginationParam: {page:number, per_page:number} = {
-    page: 1,
-    per_page: 10
-  };
-
-  commentList: Comment[] = [];
-  totalCount: number = 0;
-
-  constructor(private commentService: CommentService) { }
+  constructor() { }
 
   ngOnInit() {
-    this.getCommentList();
-  }
-
-  getCommentList() {
-    this.commentService.getCommentList(this.postId, this.paginationParam)
-      .subscribe((data: CommentList) => {
-        this.commentList = data.comment_list;
-        this.totalCount = data.total_count;
-      })
-  }
-
-  pageChange($event) {
-    this.paginationParam.page = $event;
-    this.getCommentList();
-  }
-
-  perPageChange($event) {
-    this.paginationParam.per_page = $event.target.value;
-    this.getCommentList();
   }
 
 }

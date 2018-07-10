@@ -22,11 +22,12 @@ import { PostListComponent } from './components/post/post-list/post-list.compone
 import { PostDetailComponent } from './components/post/detail/detail.component';
 import { PostCreateComponent } from './components/post/create/create.component';
 import { PostUpdateComponent } from './components/post/post-update/post-update.component';
-import { CreateComponent } from './components/comment/create/create.component';
 import { BoardDetailComponent } from './components/board/board-detail/board-detail.component';
-import { CommentListComponent } from './components/comment/comment-list/comment-list.component';
 import { PostLikeComponent } from './components/post/post-like/post-like.component';
 import {IconsModule} from "./icons/icons.module";
+
+import {CommentModule} from "./modules/comment/comment.module";
+import { CommentPaginationComponent } from './components/comment/comment-pagination/comment-pagination.component';
 
 
 const routes: Routes = [{
@@ -75,9 +76,7 @@ const routes: Routes = [{
     PostCreateComponent,
     PostUpdateComponent,
     PostListComponent,
-    CreateComponent,
     BoardDetailComponent,
-    CommentListComponent,
     PostLikeComponent
   ],
   imports: [
@@ -86,7 +85,8 @@ const routes: Routes = [{
     RouterModule.forRoot(routes),
     ReactiveFormsModule,
     NgxPaginationModule,
-    IconsModule
+    IconsModule,
+    CommentModule
   ],
   providers: [CookieService],
   bootstrap: [AppComponent]

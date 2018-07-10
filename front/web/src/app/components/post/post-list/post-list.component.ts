@@ -3,7 +3,6 @@ import {PostList, PostListItem} from "../../../models/post";
 import {ActivatedRoute, Router} from "@angular/router";
 import {PostService} from "../../../services/post.service";
 import {AuthService} from "../../../services/auth.service";
-import {Location} from "@angular/common"
 
 @Component({
   selector: 'app-post-list',

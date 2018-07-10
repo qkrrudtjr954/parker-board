@@ -12,9 +12,6 @@ class CommentSchema(ma.ModelSchema):
 
     @pre_dump
     def deleted_comment(self, data):
-        print('----'*50)
-        print(data)
-        print('----'*50)
         if data.is_deleted:
             data.content = '[본인에 의해 삭제된 댓글입니다.]'
 
@@ -27,7 +24,7 @@ class CommentSchema(ma.ModelSchema):
         sqla_session = db.session
 
 
-comment_list_schema = CommentSchema(only=['id', 'user', 'content', 'created_at'], many=True)
+comment_list_schema = CommentSchema(only=['id', 'user', 'content', 'step', 'depth', 'comment_group_id', 'created_at'], many=True)
 
 after_create_schema = CommentSchema(only=['id', 'created_at'])  # comment 가 생성되면 id, create_at 만 내려줌, 다른 정보는 이미 존재함
 after_updated_schema = CommentSchema(only=['id', 'updated_at'])

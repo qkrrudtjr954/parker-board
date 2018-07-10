@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import {Post, PostDetailData } from "../../../models/post";
+import {Post } from "../../../models/post";
 import {PostService} from "../../../services/post.service";
 import {ActivatedRoute} from "@angular/router";
 import {AuthService} from "../../../services/auth.service";
-import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {CommentService} from "../../../services/comment.service";
 import {LikeService} from "../../../services/like.service";
 

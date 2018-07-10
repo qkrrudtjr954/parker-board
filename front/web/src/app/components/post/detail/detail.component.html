@@ -23,10 +23,8 @@
   <div class="d-flex justify-content-center">
     <app-post-like (likePost)="likePost($event)" [isLiked]="isLiked" [likeCount]="post.like_count"></app-post-like>
   </div>
+
+  <app-comment [postId]="post.id"></app-comment>
+
 </div>
-
-
-
-<app-comment-list [postId]="postId"></app-comment-list>
-
 

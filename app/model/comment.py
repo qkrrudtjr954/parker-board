@@ -29,6 +29,7 @@ class Comment(db.Model, TimestampMixin):
 
     edited_count = db.Column(db.Integer, default=0)
 
+
     def delete(self):
         self.group.post.decrease_comment_count()
         self.status = CommentStatus.DELETED

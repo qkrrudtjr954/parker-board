@@ -79,5 +79,4 @@ def update(target_comment, data):
     try:
         target_comment.update(data.content)
     except Exception as e:
-        print(e)
         raise e
