@@ -31,7 +31,7 @@ class Comment(db.Model, TimestampMixin):
 
 
     def delete(self):
-        self.group.post.decrease_comment_count()
+        self.comment_group.post.decrease_comment_count()
         self.status = CommentStatus.DELETED
 
         db.session.commit()

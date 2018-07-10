@@ -9,7 +9,7 @@ class CommentGroup(db.Model):
     post_id = db.Column(db.ForeignKey('post.id'), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow(), nullable=False)
 
-    comments = db.relationship('Comment', backref='group', lazy='dynamic')
+    comments = db.relationship('Comment', backref='comment_group', lazy='dynamic')
 
     def __repr__(self):
         return '<CommentGroup id: %d> ' % self.id
@@ -20,6 +20,7 @@ class CommentGroup(db.Model):
     def add_comment(self, user, comment):
         try:
             comment.user_id = user.id
+            comment.comment_group.post.increase_comment_count()
 
             self.comments.append(comment)
             db.session.commit()
