@@ -63,6 +63,10 @@ class Describe_CommentController:
             new_comment = Comment.query.get(json_result['id'])
             assert new_comment.content == comment_obj.content
 
+        def test_comment_count_가_증가한다(self, json_result):
+            new_comment = Comment.query.get(json_result['id'])
+            assert new_comment.comment_group.post.comment_count > 0
+
         @pytest.mark.parametrize('content', ['', None])
         class Context_content가_없을_때:
             @pytest.fixture

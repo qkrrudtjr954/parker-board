@@ -1,6 +1,6 @@
 from app import User
 from app.model import db
-from app.model.comment import Comment, CommentStatus
+from app.model.comment import Comment
 from datetime import datetime
 
 
@@ -20,7 +20,7 @@ class CommentGroup(db.Model):
     def add_comment(self, user, comment):
         try:
             comment.user_id = user.id
-            comment.comment_group.post.increase_comment_count()
+            self.post.increase_comment_count()
 
             self.comments.append(comment)
             db.session.commit()
@@ -38,6 +38,7 @@ class CommentGroup(db.Model):
             comment.user_id = user.id
             comment.step = parent_comment.step+1
             comment.depth = parent_comment.depth+1
+            self.post.increase_comment_count()
 
             self.comments.append(comment)
 
