@@ -24,8 +24,7 @@ export class PostListComponent implements OnInit {
   constructor(private route: ActivatedRoute,
               private postService: PostService,
               private authService: AuthService,
-              private router: Router,
-              private _location: Location) { }
+              private router: Router) { }
 
 
   getPostList() {

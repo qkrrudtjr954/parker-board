@@ -35,7 +35,7 @@
       <th scope="row">{{i+1}}</th>
       <td>
         <a (click)="goPostDetail(post.id)">{{post.title}}</a>
-        <small class="comment_count">[{{post.comments_count}}]</small>
+        <small class="comment_count">[{{post.comment_count}}]</small>
       </td>
       <td>{{post.user.email}}</td>
       <td class="text-center">{{post.created_at | date:'yyyy년 MM월 dd일'}}</td>

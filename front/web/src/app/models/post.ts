@@ -10,7 +10,7 @@ export interface PostList {
 export interface PostListItem {
   id: number;
   title: string;
-  comments_count: number;
+  comment_count: number;
   read_count: number;
   created_at: string;
   user: User;
