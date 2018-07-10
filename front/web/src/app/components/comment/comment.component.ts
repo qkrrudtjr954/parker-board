@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, OnInit} from '@angular/core';
+import {Component, Input, OnInit } from '@angular/core';
 import {CommentService} from "../../services/comment.service";
 
 
@@ -6,6 +6,8 @@ interface Comment {
   id: number;
   content: string;
   created_at: string;
+  comment_group_id: number;
+  parent_id: number;
   depth: number;
   step: number;
   user: {
@@ -17,12 +19,12 @@ interface Comment {
 @Component({
   selector: 'app-comment',
   template: `
-    <app-comment-form (addComment)="helloworld($event)"></app-comment-form>
-    <app-comment-list [commentList]="commentList" [paginationParam]="paginationParam" [total]="total"></app-comment-list>
-    <app-comment-pagination (pageChange)="pageChange($event)"></app-comment-pagination>
+    <app-comment-form (addComment)="addComment($event)"></app-comment-form>
+    <app-comment-list [commentList]="commentList" [paginationParam]="paginationParam" [total]="total" (addLayerComment)="addLayerComment($event)"></app-comment-list>
+    <app-pagination (pageChange)="pageChange($event)"></app-pagination>
   `
 })
-export class CommentComponent implements OnChanges {
+export class CommentComponent implements OnInit {
   @Input() postId: number;
 
   paginationParam: {page:number, per_page:number} = {
@@ -35,8 +37,8 @@ export class CommentComponent implements OnChanges {
 
   constructor(private commentService: CommentService) { }
 
-  ngOnChanges() {
-    this.getCommentList()
+  ngOnInit() {
+    this.getCommentList();
   }
 
   pageChange($event) {
@@ -52,7 +54,34 @@ export class CommentComponent implements OnChanges {
       })
   }
 
-  helloworld($event) {
-    console.log($event)
+  addComment($event) {
+    this.commentService.addComment(this.postId, $event)
+      .subscribe((data) => {
+        this.paginationParam.page=1;
+        this.getCommentList();
+      }, error1 => {
+        if (error1.status == 422) {
+          alert('입력값에 오류가 있습니다. 다시 확인하고 시도해주세요.');
+        } else {
+          alert('문제가 발생했습니다. 다시 시도해주세요.')
+        }
+      })
   }
+
+  addLayerComment($event) {
+    console.log($event)
+    this.commentService.addLayerComment($event)
+      .subscribe((data) => {
+        console.log(data)
+        this.getCommentList();
+      }, error1 => {
+        console.log(error1)
+        if (error1.status == 422) {
+          alert('입력값에 오류가 있습니다. 다시 확인하고 시도해주세요.');
+        } else {
+          alert('문제가 발생했습니다. 다시 시도해주세요.')
+        }
+      })
+  }
+
 }

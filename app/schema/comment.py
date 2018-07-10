@@ -1,4 +1,4 @@
-from marshmallow import fields, validates, ValidationError, post_dump, pre_dump
+from marshmallow import fields, validates, ValidationError, pre_dump
 from marshmallow_enum import EnumField
 from app.model import db
 from app.model.comment import Comment, CommentStatus
@@ -24,7 +24,7 @@ class CommentSchema(ma.ModelSchema):
         sqla_session = db.session
 
 
-comment_list_schema = CommentSchema(only=['id', 'user', 'content', 'step', 'depth', 'comment_group_id', 'created_at'], many=True)
+comment_list_schema = CommentSchema(only=['id', 'user', 'content', 'step', 'depth', 'comment_group_id', 'parent_id', 'created_at'], many=True)
 
 after_create_schema = CommentSchema(only=['id', 'created_at'])  # comment 가 생성되면 id, create_at 만 내려줌, 다른 정보는 이미 존재함
 after_updated_schema = CommentSchema(only=['id', 'updated_at'])

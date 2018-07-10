@@ -15,7 +15,6 @@ import { LogoutComponent } from './components/auth/logout/logout.component';
 import { SignupComponent } from './components/auth/signup/signup.component';
 
 import { CookieService} from "ngx-cookie-service";
-import { PaginationComponent } from "./components/pagination/pagination.component";
 import { BoardCreateComponent } from './components/board/create/create.component';
 import { BoardEditComponent } from './components/board/edit/edit.component';
 import { PostListComponent } from './components/post/post-list/post-list.component';
@@ -27,7 +26,6 @@ import { PostLikeComponent } from './components/post/post-like/post-like.compone
 import {IconsModule} from "./icons/icons.module";
 
 import {CommentModule} from "./modules/comment/comment.module";
-import { CommentPaginationComponent } from './components/comment/comment-pagination/comment-pagination.component';
 
 
 const routes: Routes = [{
@@ -69,7 +67,6 @@ const routes: Routes = [{
     SignupComponent,
     LoginComponent,
     LogoutComponent,
-    PaginationComponent,
     BoardCreateComponent,
     BoardEditComponent,
     PostDetailComponent,

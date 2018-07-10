@@ -73,6 +73,16 @@ class Describe_CommentController:
             def test_422를_반환한다(self, subject):
                 assert 422 == subject.status_code
 
+        @pytest.mark.parametrize('content', ['짧은 댓글', '짧다짧아~'])
+        class Context_content가_짧을_때:
+            @pytest.fixture
+            def comment_obj(self, content):
+                comment = CommentFactory.build(content=content)
+                return comment
+
+            def test_422를_반환한다(self, subject):
+                assert 422 == subject.status_code
+
     class Describe_create_layer_comment:
         @pytest.fixture
         def target_post(self):

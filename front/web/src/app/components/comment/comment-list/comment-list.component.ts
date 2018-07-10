@@ -1,4 +1,5 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {CommentService} from "../../../services/comment.service";
 
 @Component({
   selector: 'app-comment-list',
@@ -7,11 +8,12 @@ import {Component, Input, OnInit} from '@angular/core';
       
       <div *ngFor="let comment of commentList | paginate: { itemsPerPage: paginationParam.per_page, currentPage: paginationParam.page, totalItems: total }; index as i;">
         <div class="row">
-          <div class="col-md-3">
+          <div class="col-md-2">
             <span class="user_email">{{comment.user.email}}</span>
           </div>
-          <div class="text-left col-md-7" [ngStyle]="{'padding-left.px': comment.depth*20}">
+          <div class="text-left col-md-8" [ngStyle]="{'padding-left.px': comment.depth*50}">
             <span>{{comment.content}}</span>
+            <layer-comment-form [commentGroupId]="comment.comment_group_id" [parentId]="comment.id" (addLayerComment)="addLayerComment($event)"></layer-comment-form>
           </div>
           <div class="col-md-2">{{comment.created_at | date: 'yyyy-MM-dd hh:mm:ss'}}</div>
         </div>
@@ -28,7 +30,13 @@ export class CommentListComponent implements OnInit {
   @Input() paginationParam;
   @Input() total;
 
+  @Output('addLayerComment') alc = new EventEmitter();
+
   constructor() { }
+
+  addLayerComment($event) {
+    this.alc.emit($event);
+  }
 
   ngOnInit() {
   }

@@ -5,7 +5,8 @@ import {CommentListComponent} from "../../components/comment/comment-list/commen
 import {CommentFormComponent} from "../../components/comment/comment-form/comment-form.component";
 import {ReactiveFormsModule} from "@angular/forms";
 import {NgxPaginationModule} from "ngx-pagination";
-import {CommentPaginationComponent} from "../../components/comment/comment-pagination/comment-pagination.component";
+import {PaginationComponent} from "../../components/pagination/pagination.component";
+import {LayerCommentFormComponent} from "../../components/comment/comment-list/layer-comment-form/layer-comment-form.component";
 
 
 @NgModule({
@@ -18,7 +19,8 @@ import {CommentPaginationComponent} from "../../components/comment/comment-pagin
     CommentComponent,
     CommentListComponent,
     CommentFormComponent,
-    CommentPaginationComponent
+    PaginationComponent,
+    LayerCommentFormComponent
   ],
   exports: [
     CommentComponent

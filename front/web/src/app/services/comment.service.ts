@@ -12,8 +12,12 @@ export class CommentService {
 
   constructor(private http: HttpClient) { }
 
-  createComment(content: string) {
+  addComment(postId: number, content: string) {
+    return this.http.post(`${this.uri}/posts/${postId}/comments`, {content: content}, this.options)
+  }
 
+  addLayerComment(data) {
+    return this.http.post(`${this.uri}/comment_groups/${data.commentGroupId}/comments`, {content: data.content, parent_id: data.parentId}, this.options)
   }
 
   getCommentList(postId: number, paginationParam: {page: number, per_page: number}) {
