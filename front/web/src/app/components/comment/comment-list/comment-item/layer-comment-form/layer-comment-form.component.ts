@@ -41,7 +41,7 @@ export class LayerCommentFormComponent implements OnInit {
 
   private createForm() {
     this.layerCommentForm = this.fb.group({
-      content: ['', [Validators.required, Validators.minLength(10)] ]
+      content: ['', [Validators.required, Validators.minLength(5)] ]
     })
   }
 
@@ -50,7 +50,7 @@ export class LayerCommentFormComponent implements OnInit {
 
   confirmSubmit() {
     if (this.layerCommentForm.invalid) {
-      alert('내용은 10글자 이상 입력해주세요.');
+      alert('내용은 5글자 이상 입력해주세요.');
       return;
     }
 

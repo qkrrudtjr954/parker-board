@@ -101,7 +101,7 @@ def create_layer_comment(comment, group_id):
 def delete_comment(comment_id):
     target_comment = Comment.query.get(comment_id)
 
-    if not target_comment:
+    if not target_comment or target_comment.is_deleted:
         error = dict(message='존재하지 않는 댓글 입니다.')
         return default_message_error_schema.jsonify(error), 404
 

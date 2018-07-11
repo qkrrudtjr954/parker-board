@@ -1,5 +1,8 @@
-import {Component, Input, OnInit } from '@angular/core';
+import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import {CommentService} from "../../services/comment.service";
+import {CommentFormComponent} from "./comment-form/comment-form.component";
+import {LayerCommentFormComponent} from "./comment-list/comment-item/layer-comment-form/layer-comment-form.component";
+import {CommentUpdateFormComponent} from "./comment-list/comment-item/comment-update-form/comment-update-form.component";
 
 
 interface Comment {
@@ -34,6 +37,7 @@ interface Comment {
   `
 })
 export class CommentComponent implements OnInit {
+  @ViewChild(CommentFormComponent) commentFormComponent: CommentFormComponent;
   @Input() postId: number;
 
   paginationParam: {page:number, per_page:number} = {
@@ -67,7 +71,9 @@ export class CommentComponent implements OnInit {
     this.commentService.addComment(this.postId, $event)
       .subscribe((data) => {
         this.paginationParam.page=1;
+        this.commentFormComponent.commentForm.controls['content'].setValue('');
         this.getCommentList();
+
       }, error1 => {
         if (error1.status == 422) {
           alert('입력값에 오류가 있습니다. 다시 확인하고 시도해주세요.');

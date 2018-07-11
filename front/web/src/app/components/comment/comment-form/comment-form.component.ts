@@ -27,7 +27,7 @@ export class CommentFormComponent implements OnInit {
 
   private createForm() {
     this.commentForm = this.fb.group({
-      content: ['', [Validators.required, Validators.minLength(10)] ],
+      content: ['', [Validators.required, Validators.minLength(5)] ],
     })
   }
 
@@ -38,7 +38,7 @@ export class CommentFormComponent implements OnInit {
     let contentControl = this.commentForm.controls['content'];
 
     if (contentControl.invalid) {
-      alert('내용은 10글자 이상 입력해주세요.');
+      alert('내용은 5글자 이상 입력해주세요.');
       return;
     }
 

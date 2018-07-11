@@ -17,12 +17,16 @@ import {CommentService} from "../../../../services/comment.service";
       </div>
     </div>
     <div class="comment_content">
-      <i-corner-down-right></i-corner-down-right>
-      <span>
-        {{comment.content}}
-      </span>
-      <layer-comment-form [commentGroupId]="comment.comment_group_id" [parentId]="comment.id" (addLayerComment)="addLayerComment($event)"></layer-comment-form>
-      <app-comment-update-form *ngIf="isShowUpdateForm" (updateComment)="updateComment($event)" [defaultValue]="comment.content"></app-comment-update-form>
+      <div *ngIf="!isShowUpdateForm">
+        <i-corner-down-right></i-corner-down-right>
+        <span>
+          {{comment.content}}
+        </span>
+        <layer-comment-form [commentGroupId]="comment.comment_group_id" [parentId]="comment.id" (addLayerComment)="addLayerComment($event)"></layer-comment-form>
+      </div>
+      <div *ngIf="isShowUpdateForm">
+        <app-comment-update-form (updateComment)="updateComment($event)" [defaultValue]="comment.content"></app-comment-update-form>
+      </div>
     </div>
   `,
   styles: [`

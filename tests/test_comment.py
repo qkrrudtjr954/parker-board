@@ -189,11 +189,11 @@ class Describe_CommentController:
             @pytest.fixture
             def target_comment(self, target_group, user):
                 wrong_user = UserFactory()
-                comment = CommentFactory(comment_group_id=target_group.id, user_id=wrong_user.id, user=wrong_user, status=2)
+                comment = CommentFactory(comment_group_id=target_group.id, user_id=wrong_user.id, user=wrong_user, status=CommentStatus.DELETED)
                 return comment
 
-            def test_400을_반환한다(self, subject):
-                assert 400 == subject.status_code
+            def test_404을_반환한다(self, subject):
+                assert 404 == subject.status_code
 
 
     class Describe_update_comment:
