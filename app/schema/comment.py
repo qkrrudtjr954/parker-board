@@ -13,7 +13,7 @@ class CommentSchema(ma.ModelSchema):
     @pre_dump
     def deleted_comment(self, data):
         if data.is_deleted:
-            data.content = '[본인에 의해 삭제된 댓글입니다.]'
+            data.content = '삭제된 댓글입니다.'
 
         return data
 

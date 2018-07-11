@@ -17,9 +17,7 @@ export class LoginComponent implements OnInit {
   });
 
   constructor(private fb: FormBuilder,
-              private authService: AuthService,
-              private cookieService: CookieService,
-              private router: Router) { }
+              private authService: AuthService) { }
 
   createForm() {
     this.loginForm = this.fb.group({
@@ -37,7 +35,9 @@ export class LoginComponent implements OnInit {
       .subscribe((data: AfterLogin) => {
 
         alert(data.user.email + ' 님 환영합니다.');
-        // this.router.navigate(['/']);
+        this.authService.currentUser = data.user.email;
+
+        localStorage.setItem('user_info', data.user.email);
         location.href='/';
 
       }, error1 => {
@@ -48,7 +48,7 @@ export class LoginComponent implements OnInit {
         } else if (error1.status == 422) {
           alert('정보를 다시 입력해주세요.');
         }
-        
+
         this.loginForm.controls['password'].setValue('');
       });
   }

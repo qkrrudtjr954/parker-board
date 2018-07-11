@@ -185,6 +185,17 @@ class Describe_CommentController:
             def test_401을_반환한다(self, subject):
                 assert 401 == subject.status_code
 
+        class Context_이미_삭제된_댓글일_경우:
+            @pytest.fixture
+            def target_comment(self, target_group, user):
+                wrong_user = UserFactory()
+                comment = CommentFactory(comment_group_id=target_group.id, user_id=wrong_user.id, user=wrong_user, status=2)
+                return comment
+
+            def test_400을_반환한다(self, subject):
+                assert 400 == subject.status_code
+
+
     class Describe_update_comment:
         @pytest.fixture
         def user(self, logged_in_user):

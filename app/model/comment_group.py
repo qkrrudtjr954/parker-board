@@ -15,7 +15,7 @@ class CommentGroup(db.Model):
         return '<CommentGroup id: %d> ' % self.id
 
     def get_comment_in_group(self, comment_id):
-        return self.comments.filter(~Comment.is_deleted).filter(Comment.id == comment_id).first()
+        return self.comments.filter(Comment.id == comment_id).first()
 
     def add_comment(self, user, comment):
         try:

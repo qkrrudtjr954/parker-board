@@ -24,4 +24,8 @@ export class CommentService {
     let paginationUri = `?page=${paginationParam.page}&per_page=${paginationParam.per_page}`;
     return this.http.get(`${this.uri}/posts/${postId}/comments${paginationUri}`, this.options)
   }
+
+  deleteComment(commentId: number) {
+    return this.http.delete(`${this.uri}/comments/${commentId}`, this.options);
+  }
 }

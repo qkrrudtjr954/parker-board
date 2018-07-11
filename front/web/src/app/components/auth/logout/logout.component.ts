@@ -10,14 +10,12 @@ import {CookieService} from "ngx-cookie-service";
   `
 })
 export class LogoutComponent implements OnInit {
-  constructor(private authService: AuthService, private cookieService: CookieService) { }
+  constructor(private authService: AuthService) { }
 
   userLogout() {
     this.authService.userLogout()
       .subscribe((data) => {
-        this.cookieService.delete('session');
-        this.cookieService.delete('current_user');
-
+        localStorage.removeItem('user_info');
         alert('로그아웃 되었습니다.');
         location.href = '/';
       }, error => {

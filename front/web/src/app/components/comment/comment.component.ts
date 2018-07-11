@@ -19,8 +19,16 @@ interface Comment {
 @Component({
   selector: 'app-comment',
   template: `
-    <app-comment-form (addComment)="addComment($event)"></app-comment-form>
-    <app-comment-list [commentList]="commentList" [paginationParam]="paginationParam" [total]="total" (addLayerComment)="addLayerComment($event)"></app-comment-list>
+    <div class="row">
+      <div class="offset-md-2 col-md-8">
+        <app-comment-form (addComment)="addComment($event)"></app-comment-form>
+      </div>
+    </div>
+    <div class="row">
+      <div class="offset-md-2 col-md-8">
+        <app-comment-list [commentList]="commentList" [paginationParam]="paginationParam" [total]="total" (addLayerComment)="addLayerComment($event)" (deleteComment)="deleteComment($event)"></app-comment-list>
+      </div>
+    </div>
     <app-pagination (pageChange)="pageChange($event)"></app-pagination>
   `
 })
@@ -69,17 +77,29 @@ export class CommentComponent implements OnInit {
   }
 
   addLayerComment($event) {
-    console.log($event)
     this.commentService.addLayerComment($event)
       .subscribe((data) => {
-        console.log(data)
         this.getCommentList();
       }, error1 => {
-        console.log(error1)
         if (error1.status == 422) {
           alert('입력값에 오류가 있습니다. 다시 확인하고 시도해주세요.');
         } else {
           alert('문제가 발생했습니다. 다시 시도해주세요.')
+        }
+      })
+  }
+
+  deleteComment($event) {
+    console.log('deleteComment id: ' + $event);
+    this.commentService.deleteComment($event)
+      .subscribe((data) => {
+        this.getCommentList();
+        alert('삭제되었습니다.')
+      }, error1 => {
+        if (error1.status == 500) {
+          alert('문제가 발생했습니다. 다시 시도해주세요.')
+        } else if(error1.status == 401) {
+          alert('삭제할 수 없습니다.');
         }
       })
   }

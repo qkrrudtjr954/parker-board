@@ -1,6 +1,5 @@
 import {User} from "./user";
 import {Pagination} from "./pagination";
-import {Comment} from "./comment";
 
 export interface PostList {
   total_count: number;

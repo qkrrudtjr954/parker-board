@@ -8,6 +8,8 @@ import {RegistUser} from "../models/user";
 })
 export class AuthService {
   uri = 'http://localhost:5000';
+  currentUser: string;
+
   constructor(private http: HttpClient) { }
 
   options = {
@@ -24,6 +26,7 @@ export class AuthService {
   }
 
   userLogout() {
+    this.currentUser = null;
     return this.http.get(`${this.uri}/users/logout`, this.options);
   }
 

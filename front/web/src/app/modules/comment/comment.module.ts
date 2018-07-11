@@ -6,13 +6,18 @@ import {CommentFormComponent} from "../../components/comment/comment-form/commen
 import {ReactiveFormsModule} from "@angular/forms";
 import {NgxPaginationModule} from "ngx-pagination";
 import {PaginationComponent} from "../../components/pagination/pagination.component";
+import {IconsModule} from "../../icons/icons.module";
 import {LayerCommentFormComponent} from "../../components/comment/comment-list/layer-comment-form/layer-comment-form.component";
+import {CommentUpdateComponent} from "../../components/comment/comment-list/comment-update/comment-update.component";
+import {CommentDeleteComponent} from "../../components/comment/comment-list/comment-delete/comment-delete.component";
+
 
 
 @NgModule({
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    IconsModule,
     NgxPaginationModule
   ],
   declarations: [
@@ -20,7 +25,9 @@ import {LayerCommentFormComponent} from "../../components/comment/comment-list/l
     CommentListComponent,
     CommentFormComponent,
     PaginationComponent,
-    LayerCommentFormComponent
+    LayerCommentFormComponent,
+    CommentDeleteComponent,
+    CommentUpdateComponent
   ],
   exports: [
     CommentComponent

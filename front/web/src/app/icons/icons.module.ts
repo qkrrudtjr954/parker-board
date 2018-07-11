@@ -1,9 +1,10 @@
 import { NgModule } from '@angular/core';
-import {IconHeart} from "angular-feather";
+import {IconCornerDownRight, IconHeart} from "angular-feather";
 
 const icons = [
-  IconHeart
-]
+  IconHeart,
+  IconCornerDownRight
+];
 
 @NgModule({
   exports: [icons]
