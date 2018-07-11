@@ -28,4 +28,8 @@ export class CommentService {
   deleteComment(commentId: number) {
     return this.http.delete(`${this.uri}/comments/${commentId}`, this.options);
   }
+
+  updateComment(data) {
+    return this.http.patch(`${this.uri}/comments/${data.id}`, {content: data.content}, this.options);
+  }
 }

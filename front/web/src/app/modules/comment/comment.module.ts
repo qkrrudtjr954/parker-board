@@ -7,9 +7,11 @@ import {ReactiveFormsModule} from "@angular/forms";
 import {NgxPaginationModule} from "ngx-pagination";
 import {PaginationComponent} from "../../components/pagination/pagination.component";
 import {IconsModule} from "../../icons/icons.module";
-import {LayerCommentFormComponent} from "../../components/comment/comment-list/layer-comment-form/layer-comment-form.component";
-import {CommentUpdateComponent} from "../../components/comment/comment-list/comment-update/comment-update.component";
-import {CommentDeleteComponent} from "../../components/comment/comment-list/comment-delete/comment-delete.component";
+import {LayerCommentFormComponent} from "../../components/comment/comment-list/comment-item/layer-comment-form/layer-comment-form.component";
+import {CommentDeleteComponent} from "../../components/comment/comment-list/comment-item/comment-delete/comment-delete.component";
+import {CommentUpdateComponent} from "../../components/comment/comment-list/comment-item/comment-update/comment-update.component";
+import {CommentItemComponent} from "../../components/comment/comment-list/comment-item/comment-item.component";
+import {CommentUpdateFormComponent} from "../../components/comment/comment-list/comment-item/comment-update-form/comment-update-form.component";
 
 
 
@@ -27,7 +29,9 @@ import {CommentDeleteComponent} from "../../components/comment/comment-list/comm
     PaginationComponent,
     LayerCommentFormComponent,
     CommentDeleteComponent,
-    CommentUpdateComponent
+    CommentUpdateComponent,
+    CommentItemComponent,
+    CommentUpdateFormComponent
   ],
   exports: [
     CommentComponent

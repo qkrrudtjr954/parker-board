@@ -74,7 +74,7 @@ const routes: Routes = [{
     PostUpdateComponent,
     PostListComponent,
     BoardDetailComponent,
-    PostLikeComponent
+    PostLikeComponent,
   ],
   imports: [
     BrowserModule,

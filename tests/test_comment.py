@@ -1,7 +1,7 @@
 import pytest
 import json
 
-from app.model.comment import Comment
+from app.model.comment import Comment, CommentStatus
 from app.schema.comment import comment_create_form_schema, layer_comment_create_form
 from tests.factories.comment import CommentFactory
 from tests.factories.comment_group import CommentGroupFactory
@@ -232,6 +232,17 @@ class Describe_CommentController:
         def test_comment_content가_갱신된다(self, json_result):
             updated_comment = Comment.query.get(json_result['id'])
             assert updated_comment.content == 'this is changed content'
+
+        class Context_삭제된_댓글일_경우:
+            @pytest.fixture
+            def target_comment(self, target_group, user):
+                comment = CommentFactory(comment_group_id=target_group.id, user_id=user.id, user=user, status=CommentStatus.DELETED)
+                return comment
+
+            def test_404를_반환한다(self, subject):
+                assert 404 == subject.status_code
+
+
 
         @pytest.mark.parametrize('content', ['', None])
         class Context_content가_없을_때:
