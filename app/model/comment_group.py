@@ -38,6 +38,7 @@ class CommentGroup(db.Model):
             comment.user_id = user.id
             comment.step = parent_comment.step+1
             comment.depth = parent_comment.depth+1
+
             self.post.increase_comment_count()
 
             self.comments.append(comment)

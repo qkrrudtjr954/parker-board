@@ -13,7 +13,7 @@ import {CommentService} from "../../../../services/comment.service";
         
       <div *ngIf="showButton(comment.user.email)">
         <a (click)="isShowUpdateForm=!isShowUpdateForm">수정</a>
-        <app-comment-delete [commentId]="comment.id" [userEmail]="comment.user.email" (deleteComment)="deleteComment($event)"></app-comment-delete>
+        <app-comment-delete [commentId]="comment.id" (deleteComment)="deleteComment($event)"></app-comment-delete>
       </div>
     </div>
     <div class="comment_content">
@@ -55,6 +55,7 @@ export class CommentItemComponent implements OnInit {
   }
 
   showButton(email) {
+    //상태값을 내려줘서 비교하는 방식으로 변경하기.
     return localStorage.getItem('user_info') === email && this.comment.content != '삭제된 댓글입니다.';
   }
 
